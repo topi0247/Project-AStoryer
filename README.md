@@ -86,3 +86,6 @@ TRPGで遊んだユーザーの中には、自分のPC、あるいは一緒に�
 | Environment | Docker |
 | CSS | tailwind CSS |
 | other | [stimulus-autocomplete](https://github.com/afcapel/stimulus-autocomplete), [bcdice-api](https://github.com/bcdice/bcdice-api), WebSocket |
+
+# 画面遷移図
+画面遷移図は[こちら](https://www.figma.com/file/Z8BLQOGYOCx1tB3gs7YeM9/Astoryer-%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?type=design&node-id=0%3A1&mode=design&t=N3XTulFLnkgiPiJh-1)
