@@ -89,3 +89,7 @@ TRPGで遊んだユーザーの中には、自分のPC、あるいは一緒に�
 
 # 画面遷移図
 画面遷移図は[こちら](https://www.figma.com/file/Z8BLQOGYOCx1tB3gs7YeM9/Astoryer-%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?type=design&node-id=0%3A1&mode=design&t=N3XTulFLnkgiPiJh-1)
+
+# ER図
+詳細は[こちら](https://dbdiagram.io/d/AStoryer-6609892837b7e33fd7263f64)
+<img src="https://github.com/topi0247/Project-AStoryer/assets/23026318/06ed92fc-af11-45a8-9a05-92ab834f169c" width="500px" />
