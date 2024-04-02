@@ -92,4 +92,4 @@ TRPGで遊んだユーザーの中には、自分のPC、あるいは一緒に�
 
 # ER図
 詳細は[こちら](https://dbdiagram.io/d/AStoryer-6609892837b7e33fd7263f64)
-![ER図](https://github.com/topi0247/Project-AStoryer/assets/23026318/9cfcd0ca-e802-4353-be91-60d2168c2570)
+<img src="https://github.com/topi0247/Project-AStoryer/assets/23026318/06ed92fc-af11-45a8-9a05-92ab834f169c" width="500px" />
