@@ -1,1 +1,3 @@
-export default function IllustEditPage() {}
+export default function IllustEditPage() {
+  return <div>イラスト編集ページ</div>;
+}

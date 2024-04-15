@@ -1,1 +1,3 @@
-export default function UserBookmarkPage() {}
+export default function UserBookmarkPage() {
+  return <div>ユーザーブックマークページ</div>;
+}

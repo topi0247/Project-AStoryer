@@ -1,1 +1,3 @@
-export default function PrivacyPolicyPage() {}
+export default function PrivacyPolicyPage() {
+  return <div>プライバシーポリシーページ</div>;
+}

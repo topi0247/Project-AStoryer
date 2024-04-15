@@ -1,1 +1,3 @@
-export default function UserPage() {}
+export default function UserPage() {
+  return <div>ユーザーページ</div>;
+}

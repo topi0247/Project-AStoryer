@@ -1,1 +1,3 @@
-export default function AccountPage() {}
+export default function AccountPage() {
+  return <div>アカウントページ</div>;
+}

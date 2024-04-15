@@ -1,1 +1,3 @@
-export default function IllustPage() {}
+export default function IllustPage() {
+  return <div>イラストページ</div>;
+}
