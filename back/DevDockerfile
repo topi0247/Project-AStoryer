@@ -21,10 +21,8 @@ ARG USERNAME
 ENV USERNAME ${USERNAME}
 
 # 環境変数を使用
-# RUN if [ "$USERNAME" != "root" ]; then useradd $USERNAME --create-home --shell /bin/bash; fi && \
-#   chown -R $USERNAME:$USERNAME db log storage tmp
-
-RUN if [ "$USERNAME" != "root" ]; then useradd $USERNAME --create-home --shell /bin/bash; fi
+RUN if [ "$USERNAME" != "root" ]; then useradd $USERNAME --create-home --shell /bin/bash; fi && \
+  chown -R $USERNAME:$USERNAME db log storage tmp
 
 EXPOSE 3000
 
