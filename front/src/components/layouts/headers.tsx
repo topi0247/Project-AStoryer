@@ -1,32 +1,38 @@
 "use client";
 import { Link, useRouter } from "@/lib";
-import {
-  Search,
-  AccountCircle,
-  Bookmark,
-  Settings,
-  Logout,
-} from "@mui/icons-material";
+import * as RecoilState from "@/recoilState";
+import * as MUI_ICONS from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
-import {
-  Avatar,
-  Box,
-  IconButton,
-  ListItemIcon,
-  Menu,
-  MenuItem,
-  Tooltip,
-} from "@mui/material";
+import * as MUI from "@mui/material";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { useSetRecoilState } from "recoil";
+import * as UI from "@/components/ui";
 
 export default function Headers() {
   const t_Header = useTranslations("Header");
+  const t_Auth = useTranslations("Auth");
   const [search, setSearch] = useState("");
+  const router = useRouter();
+  const setModalOpen = useSetRecoilState(RecoilState.modalOpenState);
+  const setModalTitle = useSetRecoilState(RecoilState.modalTitleState);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO : 検索処理
+  };
+
+  const handlePost = () => {
+    // TODO : ログインユーザーであれば画面遷移する
+    // router.push("/illusts/post");
+    // TODO : ログインユーザーでなければログインや登録を促す
+    setModalOpen(true);
+    setModalTitle("Attention");
+  };
+
+  const handleRequired = (path: string) => {
+    setModalOpen(false);
+    router.push(`/${path}`);
   };
 
   return (
@@ -34,7 +40,7 @@ export default function Headers() {
       <header className="flex justify-between items-center ml-2 md:mx-8 md:my-2">
         <h1>
           <Link href="/">
-            <img src="logo.png" width={150} />
+            <img src="/logo.png" width={150} />
           </Link>
         </h1>
         <div className="md:flex md:items-center md:justify-center md:gap-8">
@@ -44,7 +50,7 @@ export default function Headers() {
               onSubmit={handleSearch}
             >
               <label className="bg-green-100 md:p-1 rounded md:text-sm md:flex md:justify-center md:items-center text-gray-400">
-                <Search style={{ margin: "0 2px" }} />
+                <MUI_ICONS.Search style={{ margin: "0 2px" }} />
                 <input
                   type="text"
                   className="bg-green-100 focus:outline-none w-60 text-black"
@@ -60,15 +66,32 @@ export default function Headers() {
               </button>
             </form>
           </div>
-          <Link
-            href="/illusts/post"
+          <button
+            onClick={handlePost}
             className="hidden md:block bg-orange-100 px-2 py-1 rounded hover:bg-orange-300 transition-all"
           >
             {t_Header("postButton")}
-          </Link>
+          </button>
           {AccountMenu()}
         </div>
       </header>
+      <UI.Modal>
+        <p className="text-center">{t_Auth("requiredAuth")}</p>
+        <div className="flex gap-4 justify-center items-center mt-4 w-68 m-auto">
+          <button
+            onClick={() => handleRequired("signup")}
+            className="text-blue-300 underline hover:opacity-80 transition-all"
+          >
+            {t_Auth("to_signup")}
+          </button>
+          <button
+            onClick={() => handleRequired("login")}
+            className="text-blue-300 underline hover:opacity-80 transition-all"
+          >
+            {t_Auth("to_login")}
+          </button>
+        </div>
+      </UI.Modal>
     </>
   );
 }
@@ -98,9 +121,11 @@ function AccountMenu() {
 
   return (
     <>
-      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Tooltip title="マイメニュー">
-          <IconButton
+      <MUI.Box
+        sx={{ display: "flex", alignItems: "center", textAlign: "center" }}
+      >
+        <MUI.Tooltip title="マイメニュー">
+          <MUI.IconButton
             onClick={handleClick}
             size="small"
             aria-controls={open ? "account-menu" : undefined}
@@ -108,7 +133,7 @@ function AccountMenu() {
             aria-expanded={open ? "true" : undefined}
           >
             <div className="hidden md:block">
-              <Avatar
+              <MUI.Avatar
                 alt="icon"
                 src="https://placehold.jp/300x300.png"
                 sx={{ width: 56, height: 56 }}
@@ -117,10 +142,10 @@ function AccountMenu() {
             <div className="md:hidden m-4">
               <MenuIcon sx={{ width: 32, height: 32 }} />
             </div>
-          </IconButton>
-        </Tooltip>
-      </Box>
-      <Menu
+          </MUI.IconButton>
+        </MUI.Tooltip>
+      </MUI.Box>
+      <MUI.Menu
         anchorEl={anchorEl}
         id="account-menu"
         open={open}
@@ -129,16 +154,16 @@ function AccountMenu() {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={() => handleLink("users/1")}>
-          <Avatar
+        <MUI.MenuItem onClick={() => handleLink("users/1")}>
+          <MUI.Avatar
             alt="icon"
             src="https://placehold.jp/300x300.png"
             sx={{ width: 56, height: 56 }}
           />{" "}
           <span className="ml-4">ユーザー名</span>
-        </MenuItem>
+        </MUI.MenuItem>
         <div className="flex justify-center items-center">
-          <MenuItem onClick={() => handleLink("#")}>
+          <MUI.MenuItem onClick={() => handleLink("#")}>
             <Link
               href="#"
               className="flex flex-col justify-center items-center"
@@ -146,8 +171,8 @@ function AccountMenu() {
               <span>フォロー</span>
               <span>10人</span>
             </Link>
-          </MenuItem>
-          <MenuItem onClick={() => handleLink("#")}>
+          </MUI.MenuItem>
+          <MUI.MenuItem onClick={() => handleLink("#")}>
             <Link
               href="#"
               className="flex flex-col justify-center items-center"
@@ -155,33 +180,33 @@ function AccountMenu() {
               <span>フォロー</span>
               <span>10人</span>
             </Link>
-          </MenuItem>
+          </MUI.MenuItem>
         </div>
-        <MenuItem onClick={() => handleLink("users/1")}>
-          <ListItemIcon>
-            <AccountCircle fontSize="small" />
-          </ListItemIcon>
+        <MUI.MenuItem onClick={() => handleLink("users/1")}>
+          <MUI.ListItemIcon>
+            <MUI_ICONS.AccountCircle fontSize="small" />
+          </MUI.ListItemIcon>
           マイページ
-        </MenuItem>
-        <MenuItem onClick={() => handleLink("users/1/bookmarks")}>
-          <ListItemIcon>
-            <Bookmark fontSize="small" />
-          </ListItemIcon>
+        </MUI.MenuItem>
+        <MUI.MenuItem onClick={() => handleLink("users/1/bookmarks")}>
+          <MUI.ListItemIcon>
+            <MUI_ICONS.Bookmark fontSize="small" />
+          </MUI.ListItemIcon>
           ブックマーク
-        </MenuItem>
-        <MenuItem onClick={() => handleLink("account/1")}>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
+        </MUI.MenuItem>
+        <MUI.MenuItem onClick={() => handleLink("account/1")}>
+          <MUI.ListItemIcon>
+            <MUI_ICONS.Settings fontSize="small" />
+          </MUI.ListItemIcon>
           設定
-        </MenuItem>
-        <MenuItem onClick={handleLogout}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
+        </MUI.MenuItem>
+        <MUI.MenuItem onClick={handleLogout}>
+          <MUI.ListItemIcon>
+            <MUI_ICONS.Logout fontSize="small" />
+          </MUI.ListItemIcon>
           ログアウト
-        </MenuItem>
-      </Menu>
+        </MUI.MenuItem>
+      </MUI.Menu>
     </>
   );
 }
