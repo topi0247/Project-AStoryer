@@ -1,0 +1,15 @@
+{
+  "MyMenu": {
+    "follow": "フォロー",
+    "follower": "フォロワー",
+    "myPage": "マイページ",
+    "bookmark": "ブックマーク",
+    "setting": "設定",
+    "logout": "ログアウト"
+  },
+  "Header": {
+    "searchPlaceholder": "タグやシナリオ名で検索",
+    "searchButton": "検索",
+    "postButton": "作品を投稿"
+  }
+}
