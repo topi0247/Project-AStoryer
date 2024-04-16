@@ -28,10 +28,12 @@
     "signup_with_google": "Googleで登録",
     "signup_with_discord": "Discordで登録",
     "to_login": "ログインはこちら",
+    "to_signup": "新規登録はこちら",
     "or": "または",
     "invalidEmail": "メールアドレスの形式で入力してください",
     "invalidPassword": "6文字以上で入力してください",
     "invalidPasswordConfirmation": "パスワードが一致しません",
-    "required": "必須項目です"
+    "required": "必須項目です",
+    "requiredAuth": "この機能はログインが必要です"
   }
 }
