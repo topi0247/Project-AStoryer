@@ -34,7 +34,7 @@ export default function Headers() {
       <header className="flex justify-between items-center ml-2 md:mx-8 md:my-2">
         <h1>
           <Link href="/">
-            <img src="logo.png" width={150} />
+            <img src="/logo.png" width={150} />
           </Link>
         </h1>
         <div className="md:flex md:items-center md:justify-center md:gap-8">

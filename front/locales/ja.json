@@ -17,5 +17,21 @@
     "termsOfService": "利用規約",
     "privacyPolicy": "プライバシーポリシー",
     "contact": "お問い合わせ"
+  },
+  "Auth": {
+    "name": "名前",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "password_confirmation": "パスワード（確認）",
+    "login": "ログイン",
+    "signup": "新規登録",
+    "signup_with_google": "Googleで登録",
+    "signup_with_discord": "Discordで登録",
+    "to_login": "ログインはこちら",
+    "or": "または",
+    "invalidEmail": "メールアドレスの形式で入力してください",
+    "invalidPassword": "6文字以上で入力してください",
+    "invalidPasswordConfirmation": "パスワードが一致しません",
+    "required": "必須項目です"
   }
 }
