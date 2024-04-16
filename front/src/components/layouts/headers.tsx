@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "@/lib";
+import { Link, useRouter } from "@/lib";
 import {
   Search,
   AccountCircle,
@@ -18,11 +18,17 @@ import {
   Tooltip,
 } from "@mui/material";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 import { useState } from "react";
 
 export default function Headers() {
   const t_Header = useTranslations("Header");
+  const [search, setSearch] = useState("");
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    // TODO : 検索処理
+  };
+
   return (
     <>
       <header className="flex justify-between items-center ml-2 md:mx-8 md:my-2">
@@ -33,22 +39,29 @@ export default function Headers() {
         </h1>
         <div className="md:flex md:items-center md:justify-center md:gap-8">
           <div className="hidden  md:flex md:flex-col md:justify-end md:items-start">
-            <div className="md:flex md:justify-center md:items-center gap-2">
+            <form
+              className="md:flex md:justify-center md:items-center gap-2"
+              onSubmit={handleSearch}
+            >
               <label className="bg-green-100 md:p-1 rounded md:text-sm md:flex md:justify-center md:items-center text-gray-400">
                 <Search style={{ margin: "0 2px" }} />
                 <input
                   type="text"
                   className="bg-green-100 focus:outline-none w-60 text-black"
                   placeholder={t_Header("searchPlaceholder")}
+                  onChange={(e) => setSearch(e.target.value)}
                 />
               </label>
-              <button className=" bg-green-100 md:px-2 md:py-1 md:rounded hover:bg-green-300 transition-all">
+              <button
+                className=" bg-green-100 md:px-2 md:py-1 md:rounded hover:bg-green-300 transition-all"
+                type="button"
+              >
                 {t_Header("searchButton")}
               </button>
-            </div>
+            </form>
           </div>
           <Link
-            href="#"
+            href="/illusts/post"
             className="hidden md:block bg-orange-100 px-2 py-1 rounded hover:bg-orange-300 transition-all"
           >
             {t_Header("postButton")}
