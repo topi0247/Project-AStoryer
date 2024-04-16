@@ -11,5 +11,11 @@
     "searchPlaceholder": "タグやシナリオ名で検索",
     "searchButton": "検索",
     "postButton": "作品を投稿"
+  },
+  "Footer": {
+    "about": "AStoryerとは",
+    "termsOfService": "利用規約",
+    "privacyPolicy": "プライバシーポリシー",
+    "contact": "お問い合わせ"
   }
 }

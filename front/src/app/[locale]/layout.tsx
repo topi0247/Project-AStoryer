@@ -18,11 +18,14 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <NextIntlClientProvider locale={locale} messages={messages}>
-        <body className="w-screen min-h-screen flex flex-col bg-slate-200">
+        <body className="w-screen min-h-screen flex flex-col bg-slate-200 relative">
           <div className="w-full bg-white shadow-sm">
             <Layout.Headers />
           </div>
-          {children}
+          <main className="w-full flex-1">{children}</main>
+          <div className="w-full bg-slate-500">
+            <Layout.Footers />
+          </div>
         </body>
       </NextIntlClientProvider>
     </html>
