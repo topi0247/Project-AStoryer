@@ -82,13 +82,13 @@ export default function Headers() {
             onClick={() => handleRequired("signup")}
             className="text-blue-300 underline hover:opacity-80 transition-all"
           >
-            {t_Auth("to_signup")}
+            {t_Auth("toSignUp")}
           </button>
           <button
             onClick={() => handleRequired("login")}
             className="text-blue-300 underline hover:opacity-80 transition-all"
           >
-            {t_Auth("to_login")}
+            {t_Auth("toLogin")}
           </button>
         </div>
       </UI.Modal>
