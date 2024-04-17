@@ -37,6 +37,18 @@
     "invalidPassword": "6文字以上で入力してください",
     "invalidPasswordConfirmation": "パスワードが一致しません",
     "required": "必須項目です",
-    "requiredAuth": "この機能はログインが必要です"
+    "requiredAuth": "この機能はログインが必要です",
+    "forgotPassword": "パスワード再設定の申請",
+    "forgotPasswordDescription": "登録したメールアドレス宛にパスワード再設定のURLを送信します。",
+    "resetPassword": "パスワードの再設定",
+    "resetPasswordDescription": "新しいパスワードを入力してください。",
+    "resetting": "再設定",
+    "sendMail": "メールアドレス宛に送信しました",
+    "sensMailDescription":"送られたメールをご確認ください。",
+    "resetPasswordSuccess": "パスワードを再設定しました"
+  },
+  "General": {
+    "send": "送信",
+    "backHome": "ホームへ戻る"
   }
 }

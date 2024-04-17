@@ -69,7 +69,7 @@ export default function LoginPage() {
               {t_Auth("toSignUp")}
             </Link>
             <Link
-              href="/password-reset"
+              href="/forgot-password"
               className="underline hover:opacity-50 transition-all"
             >
               {t_Auth("toPasswordReset")}
