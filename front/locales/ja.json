@@ -44,11 +44,13 @@
     "resetPasswordDescription": "新しいパスワードを入力してください。",
     "resetting": "再設定",
     "sendMail": "メールアドレス宛に送信しました",
-    "sensMailDescription":"送られたメールをご確認ください。",
+    "sensMailDescription": "送られたメールをご確認ください。",
     "resetPasswordSuccess": "パスワードを再設定しました"
   },
   "General": {
     "send": "送信",
-    "backHome": "ホームへ戻る"
+    "backHome": "ホームへ戻る",
+    "followedNewIllusts": "フォロー新着順",
+    "newIllusts": "新着順"
   }
 }

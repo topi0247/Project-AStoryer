@@ -1,4 +1,5 @@
 import * as UI from "@/components/ui";
+import { useTranslations } from "next-intl";
 
 // 仮データをハードコーディング
 const illusts = Array.from({ length: 10 }).map((_, i) => ({
@@ -13,18 +14,21 @@ const illusts = Array.from({ length: 10 }).map((_, i) => ({
 }));
 
 export default function Home() {
+  const t_General = useTranslations("General");
   return (
     <div className="w-full flex flex-col gap-16">
       <article>
         <h2 className="text-2xl text-start mb-4 ml-8 font-semibold">
-          フォロー新着順
+          {t_General("followedNewIllusts")}
         </h2>
         <section>
           <UI.IllustCarousel illustsData={illusts} />
         </section>
       </article>
       <article>
-        <h2 className="text-2xl text-start mb-4 ml-8 font-semibold">新着順</h2>
+        <h2 className="text-2xl text-start mb-4 ml-8 font-semibold">
+          {t_General("newIllusts")}
+        </h2>
         <section>
           <UI.IllustCarousel illustsData={illusts} />
         </section>
