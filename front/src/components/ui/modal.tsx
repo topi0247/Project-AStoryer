@@ -1,18 +1,14 @@
 "use client";
 
-import Backdrop from "@mui/material/Backdrop";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import Fade from "@mui/material/Fade";
-import Typography from "@mui/material/Typography";
+import * as MUI from "@mui/material";
 import { useRecoilState, useRecoilValue } from "recoil";
 import * as ModalState from "@/recoilState";
 
 const style = {
   position: "absolute" as "absolute",
-  top: "50%",
+  top: "35%",
   left: "50%",
-  transform: "translate(-50%, -50%)",
+  transform: "translate(-50%, -65%)",
   width: 400,
   bgcolor: "background.paper",
   boxShadow: 24,
@@ -29,38 +25,38 @@ export default function TransitionsModal({
 
   return (
     <div>
-      <Modal
+      <MUI.Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         open={open}
         onClose={() => setOpen(false)}
         closeAfterTransition
-        slots={{ backdrop: Backdrop }}
+        slots={{ backdrop: MUI.Backdrop }}
         slotProps={{
           backdrop: {
             timeout: 300,
           },
         }}
       >
-        <Fade in={open}>
-          <Box sx={style}>
-            <Typography
+        <MUI.Fade in={open}>
+          <MUI.Box sx={style}>
+            <MUI.Typography
               id="transition-modal-title"
               variant="h6"
               component="h2"
               sx={{ textAlign: "center" }}
             >
               {title}
-            </Typography>
-            <Typography
+            </MUI.Typography>
+            <MUI.Typography
               id="transition-modal-description"
               sx={{ mt: 2, mx: "auto" }}
             >
               {children}
-            </Typography>
-          </Box>
-        </Fade>
-      </Modal>
+            </MUI.Typography>
+          </MUI.Box>
+        </MUI.Fade>
+      </MUI.Modal>
     </div>
   );
 }
