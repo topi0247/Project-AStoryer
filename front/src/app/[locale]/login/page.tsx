@@ -23,7 +23,7 @@ export default function LoginPage() {
 
   return (
     <article className="w-full flex flex-col justify-center items-center mb-8">
-      <section className="flex flex-col justify-center items-center max-w-96 w-full px-8">
+      <section className="flex flex-col justify-center items-center max-w-[448px] w-full px-8">
         <UI.H2>{t_Auth("login")}</UI.H2>
         <div className="flex flex-col gap-2 justify-center items-center w-full bg-white p-4 px-6 rounded">
           <form
@@ -75,7 +75,7 @@ export default function LoginPage() {
               <span className="bg-white px-6">{t_Auth("or")}</span>
             </p>
           </div>
-          <UI.LoginWith />
+          <UI.LoginWith state="login" />
         </div>
       </section>
     </article>

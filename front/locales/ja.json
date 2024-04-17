@@ -24,6 +24,8 @@
     "password": "パスワード",
     "password_confirmation": "パスワード（確認）",
     "login": "ログイン",
+    "login_with_google": "Googleでログイン",
+    "login_with_discord": "Discordでログイン",
     "signup": "新規登録",
     "signup_with_google": "Googleで登録",
     "signup_with_discord": "Discordで登録",
