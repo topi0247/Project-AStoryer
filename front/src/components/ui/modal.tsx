@@ -48,12 +48,9 @@ export default function TransitionsModal({
             >
               {title}
             </MUI.Typography>
-            <MUI.Typography
-              id="transition-modal-description"
-              sx={{ mt: 2, mx: "auto" }}
-            >
+            <div id="transition-modal-description" className="mt-4">
               {children}
-            </MUI.Typography>
+            </div>
           </MUI.Box>
         </MUI.Fade>
       </MUI.Modal>

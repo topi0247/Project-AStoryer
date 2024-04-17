@@ -76,7 +76,7 @@ export default function Headers() {
         </div>
       </header>
       <UI.Modal>
-        <p className="text-center">{t_Auth("requiredAuth")}</p>
+        <div className="text-center">{t_Auth("requiredAuth")}</div>
         <div className="flex gap-4 justify-center items-center mt-4 w-68 m-auto">
           <button
             onClick={() => handleRequired("signup")}

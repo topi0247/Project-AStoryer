@@ -79,7 +79,7 @@ export default function ForgotPasswordPage() {
         </section>
       </article>
       <UI.Modal>
-        <p className="text-center">{t_Auth("sensMailDescription")}</p>
+        <div className="text-center">{t_Auth("sensMailDescription")}</div>
         <div className="flex gap-4 justify-center items-center mt-4 w-68 m-auto">
           <Button type="submit" variant="outlined" onClick={handleBackHome}>
             {t_General("backHome")}
