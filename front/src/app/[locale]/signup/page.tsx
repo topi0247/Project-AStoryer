@@ -94,7 +94,7 @@ export default function SignUpPage() {
               href="/login"
               className="text-center text-sm text-blue-500 underline hover:opacity-50 transition-all"
             >
-              {t_Auth("to_login")}
+              {t_Auth("toLogin")}
             </Link>
           </div>
           <div className="w-full relative h-10">

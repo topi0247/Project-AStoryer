@@ -19,14 +19,14 @@ export default function LoginWith({ state }: { state: string }) {
         onClick={loginWithGoogle}
         sx={{ textTransform: "none" }}
       >
-        {t_Auth(`${state}_with_google`)}
+        {t_Auth(`${state}WithGoogle`)}
       </Button>
       <Button
         variant="outlined"
         onClick={loginWithDiscord}
         sx={{ textTransform: "none" }}
       >
-        {t_Auth(`${state}_with_discord`)}
+        {t_Auth(`${state}WithDiscord`)}
       </Button>
     </div>
   );

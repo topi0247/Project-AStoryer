@@ -61,12 +61,18 @@ export default function LoginPage() {
               {t_Auth("login")}
             </Button>
           </form>
-          <div className="text-center">
+          <div className="text-center text-sm text-blue-500 flex gap-2 flex-col md:flex-row">
             <Link
               href="/signup"
-              className="text-center text-sm text-blue-500 underline hover:opacity-50 transition-all"
+              className="underline hover:opacity-50 transition-all"
             >
-              {t_Auth("to_signup")}
+              {t_Auth("toSignUp")}
+            </Link>
+            <Link
+              href="/password-reset"
+              className="underline hover:opacity-50 transition-all"
+            >
+              {t_Auth("toPasswordReset")}
             </Link>
           </div>
           <div className="w-full relative h-10">
