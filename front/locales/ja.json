@@ -39,7 +39,10 @@
     "required": "必須項目です",
     "requiredAuth": "この機能はログインが必要です",
     "forgotPassword": "パスワード再設定の申請",
-    "forgotPasswordDescription": "登録したメールアドレス宛にパスワード再設定のURLを送信します。"
+    "forgotPasswordDescription": "登録したメールアドレス宛にパスワード再設定のURLを送信します。",
+    "resetPassword": "パスワードの再設定",
+    "resetPasswordDescription": "新しいパスワードを入力してください。",
+    "resetting": "再設定"
   },
   "General": {
     "send": "送信"

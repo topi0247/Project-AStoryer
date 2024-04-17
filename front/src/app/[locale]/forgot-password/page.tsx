@@ -18,7 +18,7 @@ export default function ForgotPasswordPage() {
   const { handleSubmit, control } = useForm<IFormInputs>();
 
   const onSubmit: SubmitHandler<IFormInputs> = async (data) => {
-    // TODO : ログイン処理
+    // TODO : パスワード再設定の申請用処理
   };
 
   return (
