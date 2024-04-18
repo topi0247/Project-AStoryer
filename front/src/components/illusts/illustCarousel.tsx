@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -9,7 +7,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "./styles.css";
 import { IndexIllustData } from "@/types";
-import { Link } from "@/lib";
+import Illust from "./illust";
 
 export default function IllustCarousel({
   illustsData,
@@ -48,30 +46,7 @@ export default function IllustCarousel({
     >
       {illustsData.map((illust: IndexIllustData) => (
         <SwiperSlide key={illust.id}>
-          <Link href={`/illusts/${illust.id}`}>
-            <Image
-              src={illust.image}
-              loading="lazy"
-              width={400}
-              height={400}
-              alt="Slider Image"
-              className="aspect-square object-cover"
-            />
-          </Link>
-          <div className="mt-4 flex justify-start items-center gap-3">
-            <Link href={`/users/${illust.user.id}`}>
-              <Image
-                src={illust.user.avatar}
-                width={40}
-                height={40}
-                alt={illust.user.name}
-                className="rounded-full aspect-square object-cover"
-              />
-            </Link>
-            <h4>
-              <Link href={`/illusts/${illust.id}`}>{illust.title}</Link>
-            </h4>
-          </div>
+          <Illust illust={illust} />
         </SwiperSlide>
       ))}
     </Swiper>
