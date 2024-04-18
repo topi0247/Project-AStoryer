@@ -7,4 +7,5 @@ export interface IndexIllustData {
     name: string;
     avatar: string;
   };
+  count: number;
 }

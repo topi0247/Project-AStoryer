@@ -15,7 +15,9 @@ export default function Illust({ illust }: { illust: IndexIllustData }) {
           alt="Slider Image"
           className="aspect-square object-cover z-10"
         />
-        <CollectionsIcon className="absolute bottom-2 right-2 text-white" />
+        {illust.count > 1 && (
+          <CollectionsIcon className="absolute bottom-2 right-2 text-white" />
+        )}
       </Link>
       <div className="mt-2 flex justify-start items-center gap-3">
         <Link href={`/users/${illust.user.id}`}>
