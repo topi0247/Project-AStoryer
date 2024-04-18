@@ -3,7 +3,7 @@ import { Link } from "@/lib";
 import { IndexIllustData } from "@/types";
 import * as MUI from "@mui/material";
 import { useTranslations } from "next-intl";
-import { ToggleSort } from "./components";
+import { SearchModal, ToggleSort } from "./components";
 
 // 仮データをハードコーディング
 const illusts = Array.from({ length: 20 }).map((_, i) => ({
@@ -16,6 +16,12 @@ const illusts = Array.from({ length: 20 }).map((_, i) => ({
     avatar: "/assets/900x1600.png",
   },
   count: Math.floor(Math.random() * 2) + 1,
+}));
+
+// 仮データをハードコーディング
+const Tags = Array.from({ length: 10 }).map((_, i) => ({
+  id: i,
+  title: `タグ${i}`,
 }));
 
 export default function IllustsPage({
@@ -56,12 +62,7 @@ export default function IllustsPage({
               {t_Search("posts")}
             </h4>
             <div>
-              <MUI.Button
-                variant="contained"
-                className="bg-orange-200 hover:bg-orange-400 text-black"
-              >
-                {t_Search("detailsSearch")}
-              </MUI.Button>
+              <SearchModal />
             </div>
           </div>
         </section>

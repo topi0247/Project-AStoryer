@@ -1,3 +1,4 @@
 import ToggleSort from "./toggleSort";
+import SearchModal from "./searchModal";
 
-export { ToggleSort };
+export { ToggleSort, SearchModal };
