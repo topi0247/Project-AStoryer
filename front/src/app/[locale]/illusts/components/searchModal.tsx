@@ -44,8 +44,9 @@ const style = {
 };
 
 export default function SearchModal() {
-  const [open, setOpen] = useState(false);
   const t_Search = useTranslations("Search");
+  const t_SearchOption = useTranslations("SearchOption");
+  const [open, setOpen] = useState(false);
   const [postTitle, setPostTitle] = useState("");
   const [gameSystem, setGameSystem] = useState(0);
   const [synalioName, setSynalioName] = useState("");
@@ -125,18 +126,18 @@ export default function SearchModal() {
             >
               <HighlightOffIcon />
             </MUI.IconButton>
-            <UI.H2>詳細検索</UI.H2>
+            <UI.H2>{t_Search("detailsSearch")}</UI.H2>
 
             <form className="flex flex-col gap-4" onSubmit={handleSearch}>
               <MUI.TextField
-                label="作品名"
+                label={t_SearchOption("postTitle")}
                 variant="outlined"
                 onChange={(e) => setPostTitle(e.target.value)}
                 fullWidth
               />
 
               <MUI.Select
-                label="システム名"
+                label={t_SearchOption("gameSystem")}
                 onChange={(e) => setGameSystem(e.target.value as number)}
                 defaultValue={0}
                 fullWidth
@@ -154,8 +155,8 @@ export default function SearchModal() {
                 renderInput={(params) => (
                   <MUI.TextField
                     {...params}
-                    label="シナリオ名"
-                    placeholder="シナリオ名"
+                    label={t_SearchOption("synalio")}
+                    placeholder={t_SearchOption("synalio")}
                   />
                 )}
                 fullWidth
@@ -170,7 +171,11 @@ export default function SearchModal() {
                 options={Tags.map((tag) => tag.title)}
                 getOptionLabel={(option) => option}
                 renderInput={(params) => (
-                  <MUI.TextField {...params} label="タグ" placeholder="タグ" />
+                  <MUI.TextField
+                    {...params}
+                    label={t_SearchOption("tag")}
+                    placeholder={t_SearchOption("tag")}
+                  />
                 )}
                 fullWidth
                 onChange={(_, value) => setTags(value)}
@@ -179,7 +184,7 @@ export default function SearchModal() {
               />
 
               <MUI.TextField
-                label="ユーザー名"
+                label={t_SearchOption("userName")}
                 variant="outlined"
                 onChange={(e) => setUserName(e.target.value)}
                 fullWidth
@@ -195,12 +200,12 @@ export default function SearchModal() {
                 <MUI.FormControlLabel
                   value={SearchType.AND}
                   control={<MUI.Radio />}
-                  label="AND検索"
+                  label={t_SearchOption("andSearch")}
                 />
                 <MUI.FormControlLabel
                   value={SearchType.OR}
                   control={<MUI.Radio />}
-                  label="OR検索"
+                  label={t_SearchOption("orSearch")}
                 />
               </MUI.RadioGroup>
               <div className="m-auto">
@@ -209,7 +214,7 @@ export default function SearchModal() {
                   className="bg-orange-200 hover:bg-orange-400 text-black"
                   type="submit"
                 >
-                  検索
+                  {t_SearchOption("search")}
                 </MUI.Button>
               </div>
             </form>
