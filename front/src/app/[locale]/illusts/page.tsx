@@ -27,10 +27,10 @@ export default function IllustsPage({
   return (
     <>
       <article className="bg-green-100 shadow-md py-8">
-        <section className="flex md:flex-col md:gap-4 container m-auto">
+        <section className="flex flex-col gap-4 container m-auto px-4 md:px-auto">
           <h2 className="text-3xl font-semibold">{t_Search("searchResult")}</h2>
           <div>
-            <ul className="flex justify-start items-center flex-wrap gap-2 md:flex-row">
+            <ul className="flex justify-start items-center flex-wrap gap-2 flex-row">
               {searchWords.map((word, index) => (
                 <li key={index}>
                   <Link
@@ -43,7 +43,7 @@ export default function IllustsPage({
               ))}
             </ul>
           </div>
-          <div className="md:flex md:justify-between">
+          <div className="flex justify-between">
             <h4 className="text-lg">
               {t_Search("total")}
               <span className="text-2xl font-semibold">100</span>
@@ -62,7 +62,7 @@ export default function IllustsPage({
       </article>
 
       <article className="container my-8 m-auto">
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 mx-4 md:mx-auto md:grid-cols-4 gap-4">
           {illusts.map((illust: IndexIllustData) => (
             <div key={illust.id} className="mb-8">
               <Illust illust={illust} />
