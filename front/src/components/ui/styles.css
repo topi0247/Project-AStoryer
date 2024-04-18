@@ -1,0 +1,22 @@
+/* swiperのスタイリング */
+.swiper-button-prev,
+.swiper-button-next {
+  background-color: rgba(127, 255, 212, 0.8);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  color: gray;
+  transition: all 0.3s;
+  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.5);
+}
+
+.swiper-button-prev:active,
+.swiper-button-next:active {
+  transform: translateY(3px);
+  box-shadow: none;
+}
+
+.swiper-button-prev:after,
+.swiper-button-next:after {
+  font-size: 1.6rem;
+}

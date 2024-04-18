@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useSetRecoilState } from "recoil";
 import * as UI from "@/components/ui";
+import Image from "next/image";
 
 export default function Headers() {
   const t_Header = useTranslations("Header");
@@ -40,7 +41,7 @@ export default function Headers() {
       <header className="flex justify-between items-center ml-2 md:mx-8 md:my-2">
         <h1>
           <Link href="/">
-            <img src="/logo.png" width={150} />
+            <Image src="/logo.png" width={150} height={300} alt="logo" />
           </Link>
         </h1>
         <div className="md:flex md:items-center md:justify-center md:gap-8">

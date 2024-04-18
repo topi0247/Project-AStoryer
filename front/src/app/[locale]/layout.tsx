@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="ja">
       <AppProvider>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <body className="w-screen min-h-screen flex flex-col bg-slate-200 relative">
+          <body>
             <MainLayout>{children}</MainLayout>
           </body>
         </NextIntlClientProvider>
