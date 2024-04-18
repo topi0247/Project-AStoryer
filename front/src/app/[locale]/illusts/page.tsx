@@ -1,8 +1,9 @@
 import Illust from "@/components/illusts/illust";
 import { Link } from "@/lib";
 import { IndexIllustData } from "@/types";
-import { Button, Pagination } from "@mui/material";
+import * as MUI from "@mui/material";
 import { useTranslations } from "next-intl";
+import { ToggleSort } from "./components";
 
 // 仮データをハードコーディング
 const illusts = Array.from({ length: 20 }).map((_, i) => ({
@@ -23,6 +24,7 @@ export default function IllustsPage({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const searchWords = (searchParams.search as string)?.split(",") ?? [];
+  const sortBy = searchParams.sortBy as string | undefined;
   const t_Search = useTranslations("Search");
 
   return (
@@ -35,7 +37,10 @@ export default function IllustsPage({
               {searchWords.map((word, index) => (
                 <li key={index}>
                   <Link
-                    href={`/illusts?search=${word}`}
+                    href={
+                      `/illusts?search=${word}` +
+                      (sortBy ? `&sortBy=${sortBy}` : "")
+                    }
                     className="py-1 px-2 rounded transition-all shadow-md bg-orange-200 hover:bg-orange-400 text-black"
                   >
                     {word}
@@ -51,18 +56,21 @@ export default function IllustsPage({
               {t_Search("posts")}
             </h4>
             <div>
-              <Button
+              <MUI.Button
                 variant="contained"
                 className="bg-orange-200 hover:bg-orange-400 text-black"
               >
                 {t_Search("detailsSearch")}
-              </Button>
+              </MUI.Button>
             </div>
           </div>
         </section>
       </article>
 
       <article className="container my-8 m-auto">
+        <div className="w-full mb-8 text-end">
+          <ToggleSort searchWords={searchWords} />
+        </div>
         <div className="grid grid-cols-2 mx-4 md:mx-auto md:grid-cols-4 gap-4">
           {illusts.map((illust: IndexIllustData) => (
             <div key={illust.id} className="mb-8">
@@ -73,7 +81,7 @@ export default function IllustsPage({
       </article>
 
       <article className="w-full m-auto text-center mb-8">
-        <Pagination
+        <MUI.Pagination
           count={11}
           defaultPage={6}
           size="large"
