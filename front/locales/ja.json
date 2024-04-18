@@ -50,7 +50,7 @@
   "General": {
     "send": "送信",
     "backHome": "ホームへ戻る",
-    "followedNewIllusts": "フォロー新着順",
-    "newIllusts": "新着順"
+    "followedNewPosts": "フォロー新着順",
+    "newPosts": "新着順"
   }
 }
