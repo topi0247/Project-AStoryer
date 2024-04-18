@@ -1,7 +1,7 @@
 import Illust from "@/components/illusts/illust";
 import { Link } from "@/lib";
 import { IndexIllustData } from "@/types";
-import { Button } from "@mui/material";
+import { Button, Pagination } from "@mui/material";
 import { useTranslations } from "next-intl";
 
 // 仮データをハードコーディング
@@ -70,6 +70,15 @@ export default function IllustsPage({
             </div>
           ))}
         </div>
+      </article>
+
+      <article className="w-full m-auto text-center mb-8">
+        <Pagination
+          count={11}
+          defaultPage={6}
+          size="large"
+          className="inline-block"
+        />
       </article>
     </>
   );
