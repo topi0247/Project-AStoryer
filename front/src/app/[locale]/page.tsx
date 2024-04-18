@@ -19,7 +19,7 @@ export default function Home() {
     <div className="w-full flex flex-col gap-16">
       <article>
         <h2 className="text-2xl text-start mb-4 ml-8 font-semibold">
-          {t_General("followedNewIllusts")}
+          {t_General("followedNewPosts")}
         </h2>
         <section>
           <UI.IllustCarousel illustsData={illusts} />
@@ -27,7 +27,7 @@ export default function Home() {
       </article>
       <article>
         <h2 className="text-2xl text-start mb-4 ml-8 font-semibold">
-          {t_General("newIllusts")}
+          {t_General("newPosts")}
         </h2>
         <section>
           <UI.IllustCarousel illustsData={illusts} />
