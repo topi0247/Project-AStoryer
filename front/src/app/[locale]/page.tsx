@@ -11,6 +11,7 @@ const illusts = Array.from({ length: 10 }).map((_, i) => ({
     name: `ユーザー${i}`,
     avatar: "/assets/900x1600.png",
   },
+  count: Math.floor(Math.random() * 2) + 1,
 }));
 
 export default function Home() {

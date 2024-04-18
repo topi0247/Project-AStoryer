@@ -5,7 +5,8 @@
     "myPage": "マイページ",
     "bookmark": "ブックマーク",
     "setting": "設定",
-    "logout": "ログアウト"
+    "logout": "ログアウト",
+    "toolTipTitle": "マイメニュー"
   },
   "Header": {
     "searchPlaceholder": "タグやシナリオ名で検索",
@@ -51,6 +52,15 @@
     "send": "送信",
     "backHome": "ホームへ戻る",
     "followedNewPosts": "フォロー新着順",
-    "newPosts": "新着順"
+    "newPosts": "新着順",
+    "oldPosts": "投稿順",
+    "sortBy": "表示順"
+  },
+  "Search": {
+    "searchResult": "検索結果",
+    "noResult": "検索結果がありません",
+    "total": "合計",
+    "posts": "作品",
+    "detailsSearch": "詳細検索"
   }
 }
