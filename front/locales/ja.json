@@ -52,7 +52,9 @@
     "send": "送信",
     "backHome": "ホームへ戻る",
     "followedNewPosts": "フォロー新着順",
-    "newPosts": "新着順"
+    "newPosts": "新着順",
+    "oldPosts": "投稿順",
+    "sortBy": "表示順"
   },
   "Search": {
     "searchResult": "検索結果",

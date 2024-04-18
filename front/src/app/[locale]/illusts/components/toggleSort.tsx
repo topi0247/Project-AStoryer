@@ -5,6 +5,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup, {
   toggleButtonGroupClasses,
 } from "@mui/material/ToggleButtonGroup";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
@@ -25,6 +26,7 @@ enum SortBy {
 export default function ToggleSort({ searchWords }: { searchWords: string[] }) {
   const [sortBy, setSortBy] = useState(SortBy.New);
   const router = useRouter();
+  const t_General = useTranslations("General");
 
   const handleSort = (
     event: React.MouseEvent<HTMLElement>,
@@ -43,13 +45,13 @@ export default function ToggleSort({ searchWords }: { searchWords: string[] }) {
         value={sortBy}
         exclusive
         onChange={handleSort}
-        aria-label="表示順"
+        aria-label={t_General("sortBy")}
       >
-        <ToggleButton value={SortBy.New} aria-label="新着順">
-          新着順
+        <ToggleButton value={SortBy.New} aria-label={t_General("newPosts")}>
+          {t_General("newPosts")}
         </ToggleButton>
-        <ToggleButton value={SortBy.Old} aria-label="投稿順">
-          投稿順
+        <ToggleButton value={SortBy.Old} aria-label={t_General("oldPosts")}>
+          {t_General("oldPosts")}
         </ToggleButton>
       </StyledToggleButtonGroup>
     </div>
