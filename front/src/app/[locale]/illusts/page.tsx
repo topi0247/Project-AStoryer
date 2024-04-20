@@ -1,9 +1,10 @@
-import Illust from "@/components/illusts/illust";
+"use client";
 import { Link } from "@/lib";
 import { IndexIllustData } from "@/types";
-import * as MUI from "@mui/material";
 import { useTranslations } from "next-intl";
-import { SearchModal, ToggleSort } from "./components";
+import { SearchModal, ToggleSort } from "@/components/ui";
+import { Illust } from "@/components/illusts";
+import { Pagination } from "@mui/material";
 
 // 仮データをハードコーディング
 const illusts = Array.from({ length: 20 }).map((_, i) => ({
@@ -16,12 +17,6 @@ const illusts = Array.from({ length: 20 }).map((_, i) => ({
     avatar: "/assets/900x1600.png",
   },
   count: Math.floor(Math.random() * 2) + 1,
-}));
-
-// 仮データをハードコーディング
-const Tags = Array.from({ length: 10 }).map((_, i) => ({
-  id: i,
-  title: `タグ${i}`,
 }));
 
 export default function IllustsPage({
@@ -82,7 +77,7 @@ export default function IllustsPage({
       </article>
 
       <article className="w-full m-auto text-center mb-8">
-        <MUI.Pagination
+        <Pagination
           count={11}
           defaultPage={6}
           size="large"
