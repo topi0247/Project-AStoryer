@@ -62,5 +62,15 @@
     "total": "合計",
     "posts": "作品",
     "detailsSearch": "詳細検索"
+  },
+  "SearchOption": {
+    "postTitle": "作品名",
+    "gameSystem": "システム名",
+    "synalio": "シナリオ名",
+    "tag": "タグ",
+    "userName": "ユーザー名",
+    "andSearch": "AND検索",
+    "orSearch": "OR検索",
+    "search": "検索"
   }
 }

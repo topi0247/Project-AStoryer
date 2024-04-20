@@ -49,6 +49,7 @@ export default function Headers() {
               height={300}
               style={{ width: "150px", height: "auto" }}
               alt="logo"
+              priority={true}
             />
           </Link>
         </h1>
