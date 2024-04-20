@@ -1,4 +1,4 @@
-import * as UI from "@/components/ui";
+import { IllustCarousel } from "@/components/illusts";
 import { useTranslations } from "next-intl";
 
 // 仮データをハードコーディング
@@ -23,7 +23,7 @@ export default function Home() {
           {t_General("followedNewPosts")}
         </h2>
         <section>
-          <UI.IllustCarousel illustsData={illusts} />
+          <IllustCarousel illustsData={illusts} />
         </section>
       </article>
       <article>
@@ -31,7 +31,7 @@ export default function Home() {
           {t_General("newPosts")}
         </h2>
         <section>
-          <UI.IllustCarousel illustsData={illusts} />
+          <IllustCarousel illustsData={illusts} />
         </section>
       </article>
     </div>

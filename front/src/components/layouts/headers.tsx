@@ -7,16 +7,14 @@ import * as MUI from "@mui/material";
 import { useTranslations } from "next-intl";
 import React, { useState } from "react";
 import { useSetRecoilState } from "recoil";
-import * as UI from "@/components/ui";
 import Image from "next/image";
+import { RequiredLoginModal } from "@/components/ui";
 
 export default function Headers() {
   const t_Header = useTranslations("Header");
-  const t_Auth = useTranslations("Auth");
   const [search, setSearch] = useState("");
   const router = useRouter();
   const setModalOpen = useSetRecoilState(RecoilState.modalOpenState);
-  const setModalTitle = useSetRecoilState(RecoilState.modalTitleState);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,12 +28,6 @@ export default function Headers() {
     // router.push("/illusts/post");
     // TODO : ログインユーザーでなければログインや登録を促す
     setModalOpen(true);
-    setModalTitle("Attention");
-  };
-
-  const handleRequired = (path: string) => {
-    setModalOpen(false);
-    router.push(`/${path}`);
   };
 
   return (
@@ -88,23 +80,7 @@ export default function Headers() {
           {AccountMenu()}
         </div>
       </header>
-      <UI.Modal>
-        <div className="text-center">{t_Auth("requiredAuth")}</div>
-        <div className="flex gap-4 justify-center items-center mt-4 w-68 m-auto">
-          <button
-            onClick={() => handleRequired("signup")}
-            className="text-blue-300 underline hover:opacity-80 transition-all"
-          >
-            {t_Auth("toSignUp")}
-          </button>
-          <button
-            onClick={() => handleRequired("login")}
-            className="text-blue-300 underline hover:opacity-80 transition-all"
-          >
-            {t_Auth("toLogin")}
-          </button>
-        </div>
-      </UI.Modal>
+      <RequiredLoginModal />
     </>
   );
 }

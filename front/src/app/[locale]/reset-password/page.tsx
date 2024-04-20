@@ -89,13 +89,13 @@ export default function ResetPasswordPage() {
           </div>
         </section>
       </article>
-      <UI.Modal>
+      <UI.TransitionsModal>
         <div className="flex gap-4 justify-center items-center h-20 mt-4 w-68 m-auto">
           <Button type="submit" variant="outlined" onClick={handleBackHome}>
             {t_General("backHome")}
           </Button>
         </div>
-      </UI.Modal>
+      </UI.TransitionsModal>
     </>
   );
 }

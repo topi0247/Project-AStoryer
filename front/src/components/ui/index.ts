@@ -1,6 +1,19 @@
-import Modal from "./modal";
+import { TransitionsModal, SearchModal, RequiredLoginModal } from "./modal";
 import H2 from "./headTag";
 import LoginWith from "./loginWith";
-import IllustCarousel from "../illusts/illustCarousel";
+import ToggleSort from "./toggleSort";
+import {
+  IconButtonList,
+  FixedIconButtonList,
+} from "./iconsButton/iconButtonList";
 
-export { Modal, LoginWith, H2, IllustCarousel };
+export {
+  TransitionsModal,
+  LoginWith,
+  H2,
+  ToggleSort,
+  SearchModal,
+  IconButtonList,
+  FixedIconButtonList,
+  RequiredLoginModal,
+};
