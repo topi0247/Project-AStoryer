@@ -8,6 +8,7 @@ import { Avatar, Button, IconButton, TextareaAutosize } from "@mui/material";
 import * as MUI_ICON from "@mui/icons-material";
 import { Link } from "@/lib";
 import { FixedIconButtonList, IconButtonList } from "@/components/ui";
+import { useTranslations } from "next-intl";
 
 export default function IllustPage({
   params: { id },
@@ -18,6 +19,7 @@ export default function IllustPage({
   const [openCaption, setOpenCaption] = useState(false);
   const [follow, setFollow] = useState(false);
   const setModalOpen = useSetRecoilState(RecoilState.modalOpenState);
+  const t_ShowPost = useTranslations("ShowPost");
 
   const handleOpenUser = () => {
     // TODO : 投稿者の情報モーダルの表示
@@ -140,7 +142,9 @@ export default function IllustPage({
           </article>
           <article className="flex flex-col gap-4">
             <section className="bg-slate-100 rounded p-3 flex flex-col gap-2 relative">
-              <h3 className="text-xl font-semibold">コメント投稿</h3>
+              <h3 className="text-xl font-semibold">
+                {t_ShowPost("postComment")}
+              </h3>
               <form onSubmit={handleSendComment}>
                 <div className="flex items-start gap-4">
                   <Avatar
@@ -162,7 +166,7 @@ export default function IllustPage({
                         variant="contained"
                         className="bg-orange-100 text-black hover:bg-orange-400"
                       >
-                        送信
+                        {t_ShowPost("send")}
                       </Button>
                     </div>
                   </div>

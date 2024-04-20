@@ -72,5 +72,13 @@
     "andSearch": "AND検索",
     "orSearch": "OR検索",
     "search": "検索"
+  },
+  "ShowPost": {
+    "postUser": "投稿者",
+    "postComment": "コメント投稿",
+    "follow": "フォロー",
+    "unFollow": "フォロー解除",
+    "send": "送信",
+    "requiredComment": "コメント機能はログインで使えます"
   }
 }
