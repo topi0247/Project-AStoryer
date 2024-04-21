@@ -4,7 +4,7 @@ import * as MUI from "@mui/material";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-const noticeStates = {
+const noticeStatesDummy = {
   app: {
     favorite: true,
     bookmark: true,
@@ -63,7 +63,7 @@ export default function AccountPage() {
           <h3 className="text-xl font-semibold text-center mt-10 mb-2">
             {t_AccountSettings("notificationSettings")}
           </h3>
-          <Tabs noticeStates={noticeStates} />
+          <Tabs noticeStates={noticeStatesDummy} />
         </section>
       </div>
     </article>
@@ -127,10 +127,9 @@ function Tabs({ noticeStates }: { noticeStates: NoticeStates }) {
 }
 
 function CustomTabPanel(props: TabPanelProps) {
-  const { value, index, ...other } = props;
-  const [noticeState, setNoticeState] = useState<NoticeState>(
-    props.noticeState
-  );
+  const { value, noticeState, index, ...other } = props;
+  const [newNoticeState, setNewNoticeState] =
+    useState<NoticeState>(noticeState);
   const t_AccountSettings = useTranslations("AccountSettings");
 
   return (
@@ -147,7 +146,7 @@ function CustomTabPanel(props: TabPanelProps) {
             control={
               <MUI.Switch
                 onChange={() =>
-                  setNoticeState((prevState) => ({
+                  setNewNoticeState((prevState) => ({
                     ...prevState,
                     favorite: !prevState.favorite,
                   }))
@@ -155,13 +154,13 @@ function CustomTabPanel(props: TabPanelProps) {
               />
             }
             label={t_AccountSettings("favorite")}
-            checked={noticeState.favorite}
+            checked={newNoticeState.favorite}
           />
           <MUI.FormControlLabel
             control={
               <MUI.Switch
                 onChange={() =>
-                  setNoticeState((prevState) => ({
+                  setNewNoticeState((prevState) => ({
                     ...prevState,
                     bookmark: !prevState.bookmark,
                   }))
@@ -169,13 +168,13 @@ function CustomTabPanel(props: TabPanelProps) {
               />
             }
             label={t_AccountSettings("bookmark")}
-            checked={noticeState.bookmark}
+            checked={newNoticeState.bookmark}
           />
           <MUI.FormControlLabel
             control={
               <MUI.Switch
                 onChange={() =>
-                  setNoticeState((prevState) => ({
+                  setNewNoticeState((prevState) => ({
                     ...prevState,
                     comment: !prevState.comment,
                   }))
@@ -183,13 +182,13 @@ function CustomTabPanel(props: TabPanelProps) {
               />
             }
             label={t_AccountSettings("comment")}
-            checked={noticeState.comment}
+            checked={newNoticeState.comment}
           />
           <MUI.FormControlLabel
             control={
               <MUI.Switch
                 onChange={() =>
-                  setNoticeState((prevState) => ({
+                  setNewNoticeState((prevState) => ({
                     ...prevState,
                     follow: !prevState.follow,
                   }))
@@ -197,7 +196,7 @@ function CustomTabPanel(props: TabPanelProps) {
               />
             }
             label={t_AccountSettings("follow")}
-            checked={noticeState.follow}
+            checked={newNoticeState.follow}
           />
         </>
       )}
