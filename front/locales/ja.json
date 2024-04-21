@@ -80,5 +80,20 @@
     "unFollow": "フォロー解除",
     "send": "送信",
     "requiredComment": "コメント機能はログインで使えます"
+  },
+  "AccountSettings": {
+    "settings": "設定",
+    "accountName": "アカウント名",
+    "email": "メールアドレス",
+    "changeEmail":"変更する",
+    "password": "パスワード",
+    "changePassword": "パスワード変更",
+    "notificationSettings": "通知設定",
+    "app": "アプリ",
+    "mail": "メール",
+    "favorite": "いいねされたとき",
+    "bookmark": "ブックマークされたとき",
+    "comment": "コメントされたとき",
+    "follow": "フォローされたとき"
   }
 }
