@@ -1,8 +1,9 @@
 import { Settings } from "@/settings";
+import { IUser } from "@/types";
 
 export const useAuth = () => {
   const login = async (email: string, password: string) => {
-    const response = await fetch(`${Settings.API_URL}/auth/sing_in`, {
+    const response = await fetch(`${Settings.API_URL}/auth/sign_in`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -10,13 +11,21 @@ export const useAuth = () => {
       body: JSON.stringify({ email, password }),
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      setAccessTokens(data);
-      return true;
+    const data = await response.json();
+    if (response.ok && data.success) {
+      setAccessTokens(
+        response.headers.get("access-token") || "",
+        response.headers.get("client") || "",
+        response.headers.get("uid") || "",
+        response.headers.get("expiry") || ""
+      );
+      return {
+        success: true,
+        user: { id: data.user.id, name: data.user.name } as IUser,
+      };
     }
 
-    return false;
+    return { success: false, message: data.message };
   };
 
   const signUp = async (
@@ -25,7 +34,6 @@ export const useAuth = () => {
     password: string,
     passwordConfirmation: string
   ) => {
-    console.log(Settings.API_URL);
     const response = await fetch(`${Settings.API_URL}/auth`, {
       method: "POST",
       headers: {
@@ -39,25 +47,33 @@ export const useAuth = () => {
       }),
     });
 
+    const data = await response.json();
     if (response.ok) {
-      const data = await response.json();
-      setAccessTokens(data);
-      return true;
+      setAccessTokens(
+        response.headers.get("access-token") || "",
+        response.headers.get("client") || "",
+        response.headers.get("uid") || "",
+        response.headers.get("expiry") || ""
+      );
+      return {
+        success: true,
+        user: { id: data.user.id, name: data.user.name } as IUser,
+      };
     }
 
-    return false;
+    return { success: false, message: data.message };
   };
 
-  const setAccessTokens = (data: {
-    accessToken: string;
-    client: string;
-    uid: string;
-    expiry: string;
-  }) => {
-    localStorage.setItem("access-token", data.accessToken);
-    localStorage.setItem("client", data.client);
-    localStorage.setItem("uid", data.uid);
-    localStorage.setItem("expiry", data.expiry);
+  const setAccessTokens = (
+    accessToken: string,
+    client: string,
+    uid: string,
+    expiry: string
+  ) => {
+    localStorage.setItem("access-token", accessToken);
+    localStorage.setItem("client", client);
+    localStorage.setItem("uid", uid);
+    localStorage.setItem("expiry", expiry);
   };
 
   const clearAccessTokens = () => {
