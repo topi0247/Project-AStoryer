@@ -6,6 +6,9 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/lib";
 import { InputText } from "@/components/form";
 import * as UI from "@/components/ui";
+import { useAuth } from "@/api/auth";
+import { useRouter } from "next/navigation";
+import { RouterPath } from "@/settings";
 
 interface IFormInputs {
   name: string;
@@ -15,12 +18,23 @@ interface IFormInputs {
 }
 
 export default function SignUpPage() {
+  const { signUp } = useAuth();
   const t_Auth = useTranslations("Auth");
+  const router = useRouter();
 
   const { handleSubmit, control, getValues } = useForm<IFormInputs>();
 
   const onSubmit: SubmitHandler<IFormInputs> = async (data) => {
-    // TODO : 新規登録処理を書く
+    const result = await signUp(
+      data.name,
+      data.email,
+      data.password,
+      data.passwordConfirmation
+    );
+
+    if (result) {
+      router.push(RouterPath.illustIndex);
+    }
   };
 
   return (

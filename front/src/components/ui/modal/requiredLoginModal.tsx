@@ -3,6 +3,7 @@ import * as RecoilState from "@/recoilState";
 import { useRouter } from "@/lib";
 import { useSetRecoilState } from "recoil";
 import { TransitionsModal } from ".";
+import { RouterPath } from "@/settings";
 
 export default function RequiredLoginModal() {
   const t_Auth = useTranslations("Auth");
@@ -11,7 +12,7 @@ export default function RequiredLoginModal() {
 
   const handleRequired = (path: string) => {
     setModalOpen(false);
-    router.push(`/${path}`);
+    router.push(path);
   };
 
   return (
@@ -19,13 +20,13 @@ export default function RequiredLoginModal() {
       <div className="text-center">{t_Auth("requiredAuth")}</div>
       <div className="flex gap-4 justify-center items-center mt-4 w-68 m-auto">
         <button
-          onClick={() => handleRequired("signup")}
+          onClick={() => handleRequired(RouterPath.signUp)}
           className="text-blue-300 underline hover:opacity-80 transition-all"
         >
           {t_Auth("toSignUp")}
         </button>
         <button
-          onClick={() => handleRequired("login")}
+          onClick={() => handleRequired(RouterPath.login)}
           className="text-blue-300 underline hover:opacity-80 transition-all"
         >
           {t_Auth("toLogin")}
