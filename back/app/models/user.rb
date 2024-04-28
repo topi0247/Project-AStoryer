@@ -21,4 +21,12 @@ class User < ActiveRecord::Base
         :omniauthable, omniauth_providers: %i[google_oauth2 discord]
   include DeviseTokenAuth::Concerns::User
   has_many :authentications, dependent: :destroy
+
+  def self.from_omniauth(auth)
+    find_or_create_by(provider: auth.provider, uid: auth.uid) do |user|
+      user.email = auth.info.email
+      user.name = auth.info.name
+      user.password = Devise.friendly_token[0, 20]
+    end
+  end
 end
