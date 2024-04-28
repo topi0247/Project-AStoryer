@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_28_025756) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_28_064238) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -24,12 +24,32 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_28_025756) do
     t.index ["user_id"], name: "index_authentictions_on_user_id"
   end
 
+  create_table "profiles", force: :cascade do |t|
+    t.string "avatar"
+    t.string "header_image"
+    t.text "text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_profiles_on_user_id"
+  end
+
+  create_table "relationships", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "follower_id", null: false
+    t.bigint "followed_id", null: false
+    t.index ["followed_id"], name: "index_relationships_on_followed_id"
+    t.index ["follower_id"], name: "index_relationships_on_follower_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "provider", null: false
     t.string "uid", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "name"
     t.string "email"
+    t.integer "role", default: 0
     t.json "tokens"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -38,4 +58,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_28_025756) do
   end
 
   add_foreign_key "authentictions", "users"
+  add_foreign_key "profiles", "users"
+  add_foreign_key "relationships", "users", column: "followed_id"
+  add_foreign_key "relationships", "users", column: "follower_id"
 end
