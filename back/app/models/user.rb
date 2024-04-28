@@ -26,7 +26,7 @@ class User < ActiveRecord::Base
 
   # フォローしている人とフォローされている人を取得するためのアソシエーション
   has_many :following_relationships, class_name: 'Relationship', foreign_key: 'follower_id', dependent: :destroy, inverse_of: :follower
-  has_many :follower_relationshis, class_name: 'Relationship', foreign_key: 'followed_id', dependent: :destroy, inverse_of: :followed
+  has_many :follower_relationships, class_name: 'Relationship', foreign_key: 'followed_id', dependent: :destroy, inverse_of: :followed
   # フォローしている人を呼び出す
   has_many :following, through: :following_relationships, source: :followed
   # フォロワーを呼びたす
