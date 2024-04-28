@@ -50,3 +50,19 @@ end
 gem 'dotenv-rails'
 # フロントとバックを分けているので同じサイト判定させるためのgem
 gem 'rails_same_site_cookie'
+# 認証
+gem "devise"
+# トークンの方はRails7に対応していないので、githubから取得
+gem 'devise_token_auth', '>= 1.2.0', git: "https://github.com/lynndylanhurley/devise_token_auth"
+# 多言語用
+gem 'devise-i18n'
+# OAuth2.0用
+gem 'omniauth'
+# Googleの認証用
+gem 'omniauth-google-oauth2'
+# Discordの認証用
+gem 'omniauth-discord'
+# CSRF対策用
+gem "omniauth-rails_csrf_protection"
+# JSONのシリアライザー
+gem 'jsonapi-serializer'
