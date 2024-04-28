@@ -3,9 +3,14 @@
 import { Button } from "@mui/material";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
-import { Link } from "@/lib";
+import { Link, useRouter } from "@/lib";
 import { InputText } from "@/components/form";
 import * as UI from "@/components/ui";
+import { useAuth } from "@/api/auth";
+import { RouterPath } from "@/settings";
+import { useSetRecoilState } from "recoil";
+import { userState } from "@/recoilState";
+import { useState } from "react";
 
 interface IFormInputs {
   name: string;
@@ -15,12 +20,29 @@ interface IFormInputs {
 }
 
 export default function SignUpPage() {
+  const { signUp } = useAuth();
   const t_Auth = useTranslations("Auth");
+  const router = useRouter();
+  const setUser = useSetRecoilState(userState);
+  const [error, setError] = useState<string>("");
 
   const { handleSubmit, control, getValues } = useForm<IFormInputs>();
 
   const onSubmit: SubmitHandler<IFormInputs> = async (data) => {
-    // TODO : 新規登録処理を書く
+    const result = await signUp(
+      data.name,
+      data.email,
+      data.password,
+      data.passwordConfirmation
+    );
+
+    if (result.success && result.user) {
+      setUser(result.user);
+      router.push(RouterPath.illustIndex);
+      return;
+    }
+
+    setError(result.message || t_Auth("signupFailed"));
   };
 
   return (
@@ -32,6 +54,11 @@ export default function SignUpPage() {
             className="flex flex-col gap-4 w-full"
             onSubmit={handleSubmit(onSubmit)}
           >
+            {error && (
+              <div className="bg-red-600 bg-opacity-30 border border-red-600 p-2 rounded text-slate-600">
+                <p>{error}</p>
+              </div>
+            )}
             <InputText
               control={control}
               name="name"

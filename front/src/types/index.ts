@@ -15,6 +15,11 @@ export interface ButtonState {
   bookmark: boolean;
 }
 
+export interface IUser {
+  id: number;
+  name: string;
+}
+
 export enum PublicState {
   DRAFT = 0, // 下書き
   PRIVATE = 1, // 非公開

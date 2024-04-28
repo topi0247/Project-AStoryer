@@ -6,6 +6,11 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/lib";
 import * as UI from "@/components/ui";
+import { RouterPath } from "@/settings";
+import { useAuth } from "@/api/auth";
+import { useSetRecoilState } from "recoil";
+import { userState } from "@/recoilState";
+import { useState } from "react";
 
 interface IFormInputs {
   email: string;
@@ -13,12 +18,24 @@ interface IFormInputs {
 }
 
 export default function LoginPage() {
+  const { login } = useAuth();
+  const setUser = useSetRecoilState(userState);
+  const router = useRouter();
   const t_Auth = useTranslations("Auth");
+  const [error, setError] = useState<string>("");
 
   const { handleSubmit, control } = useForm<IFormInputs>();
 
   const onSubmit: SubmitHandler<IFormInputs> = async (data) => {
-    // TODO : ログイン処理
+    const result = await login(data.email, data.password);
+
+    if (result.success && result.user) {
+      setUser(result.user);
+      router.push(RouterPath.illustIndex);
+      return;
+    }
+
+    setError(result.message || t_Auth("loginFailed"));
   };
 
   return (
@@ -30,6 +47,11 @@ export default function LoginPage() {
             className="flex flex-col gap-4 w-full"
             onSubmit={handleSubmit(onSubmit)}
           >
+            {error && (
+              <div className="bg-red-600 bg-opacity-30 border border-red-600 p-2 rounded text-slate-600">
+                <p>{error}</p>
+              </div>
+            )}
             <InputText
               control={control}
               name="email"

@@ -40,5 +40,6 @@ module App
     config.middleware.use ActionDispatch::Session::CookieStore, key: '_astoryer_auth_token'
     config.action_dispatch.cookies_same_site_protection = :none
     config.action_controller.forgery_protection_origin_check = false
+    config.i18n.default_locale = :ja
   end
 end
