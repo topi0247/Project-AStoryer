@@ -3,7 +3,13 @@ import { IndexIllustData } from "@/types";
 import Image from "next/image";
 import CollectionsIcon from "@mui/icons-material/Collections";
 
-export default function Illust({ illust }: { illust: IndexIllustData }) {
+export default function Illust({
+  illust,
+  isUserPage = true,
+}: {
+  illust: IndexIllustData;
+  isUserPage?: boolean;
+}) {
   return (
     <section>
       <Link href={`/illusts/${illust.id}`} className="relative z-0">
@@ -19,20 +25,22 @@ export default function Illust({ illust }: { illust: IndexIllustData }) {
           <CollectionsIcon className="absolute bottom-2 right-2 text-white" />
         )}
       </Link>
-      <div className="mt-2 flex justify-start items-center gap-3">
-        <Link href={`/users/${illust.user.id}`}>
-          <Image
-            src={illust.user.avatar}
-            width={40}
-            height={40}
-            alt={illust.user.name}
-            className="rounded-full aspect-square object-cover"
-          />
-        </Link>
-        <h4>
-          <Link href={`/illusts/${illust.id}`}>{illust.title}</Link>
-        </h4>
-      </div>
+      {isUserPage && (
+        <div className="mt-2 flex justify-start items-center gap-3">
+          <Link href={`/users/${illust.user.id}`}>
+            <Image
+              src={illust.user.avatar}
+              width={40}
+              height={40}
+              alt={illust.user.name}
+              className="rounded-full aspect-square object-cover"
+            />
+          </Link>
+          <h4>
+            <Link href={`/illusts/${illust.id}`}>{illust.title}</Link>
+          </h4>
+        </div>
+      )}
     </section>
   );
 }

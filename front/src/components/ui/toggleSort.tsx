@@ -34,7 +34,7 @@ export default function ToggleSort({ searchWords }: { searchWords: string[] }) {
   ) => {
     setSortBy(newSortBy);
     const query =
-      (searchWords.length > 0 && `search=${searchWords.join(",")}`) +
+      ((searchWords?.length ?? 0) > 0 && `search=${searchWords.join(",")}`) +
       (newSortBy === SortBy.New ? "" : "&sortBy=old");
     router.push(`/illusts?${query}`);
   };

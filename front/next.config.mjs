@@ -2,6 +2,10 @@ import createNextIntlPlugin from "next-intl/plugin"
 const withNextIntl = createNextIntlPlugin();
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  images: {
+    domains: ['placehold.jp'], // ダミー画像のURLを許可
+  }
+};
 
 export default withNextIntl(nextConfig);

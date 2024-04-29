@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import "@/styles/index.css";
+import "@/styles/globals.css"; // swiperの上書き
 import { IndexIllustData } from "@/types";
 import Illust from "./illust";
 

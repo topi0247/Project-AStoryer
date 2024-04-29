@@ -12,7 +12,7 @@ export default function MainLayout({
         <Headers />
       </div>
 
-      <main className="w-full flex-1">{children}</main>
+      <main className="w-full flex-1 relative">{children}</main>
 
       <div className="w-full bg-slate-500">
         <Footers />
