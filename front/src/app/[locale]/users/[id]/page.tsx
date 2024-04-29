@@ -3,6 +3,7 @@ import * as MUI from "@mui/material";
 import * as UI from "@/components/ui";
 import { IndexIllustData } from "@/types";
 import { Illust } from "@/components/illusts";
+import { useTranslations } from "next-intl";
 
 // 仮データをハードコーディング
 const illusts = Array.from({ length: 20 }).map((_, i) => ({
@@ -19,6 +20,8 @@ const illusts = Array.from({ length: 20 }).map((_, i) => ({
 
 export default function UserPage() {
   const imgUrl = ""; // TODO : ユーザーヘッダーのURLを取得
+  const t_General = useTranslations("General");
+  const t_UserPage = useTranslations("UserPage");
 
   return (
     <>
@@ -33,7 +36,7 @@ export default function UserPage() {
                 src={imgUrl}
                 width={1600}
                 height={900}
-                alt="ヘッダー"
+                alt={t_UserPage("headerImage")}
                 className="object-cover h-full w-full"
               />
             )}
@@ -45,14 +48,14 @@ export default function UserPage() {
               <div className="w-full relative flex md:gap-3 md:mb-8">
                 {/* SP */}
                 <MUI.Avatar
-                  alt="icon"
+                  alt={t_UserPage("avatar")}
                   src="https://placehold.jp/300x300.png" // TODO : ユーザーアイコンのURLを取得
                   sx={{ width: 100, height: 100 }}
                   className="shadow-md md:hidden"
                 />
                 {/* PC */}
                 <MUI.Avatar
-                  alt="icon"
+                  alt={t_UserPage("avatar")}
                   src="https://placehold.jp/300x300.png" // TODO : ユーザーアイコンのURLを取得
                   sx={{ width: 150, height: 150 }}
                   className="hidden shadow-md md:block"
@@ -60,7 +63,7 @@ export default function UserPage() {
 
                 {/* SP */}
                 <button className="absolute top-0 right-0  bg-gray-500 text-white text-sm rounded px-2 py-1 md:hidden">
-                  編集
+                  {t_General("edit")}
                 </button>
                 <ul className="flex h-1/2 mt-auto ml-2 flex-wrap gap-2 md:hidden">
                   <li>
@@ -87,7 +90,7 @@ export default function UserPage() {
                       className="text-white bg-amber-700 bg-opacity-80 px-2 py-1 rounded text-sm"
                       target="_blank"
                     >
-                      ふせったー
+                      {t_UserPage("fusetter")}
                     </a>
                   </li>
                   <li>
@@ -105,7 +108,7 @@ export default function UserPage() {
                       className="text-white bg-slate-500 px-2 py-1 rounded text-sm"
                       target="_blank"
                     >
-                      その他
+                      {t_UserPage("other")}
                     </a>
                   </li>
                 </ul>
@@ -162,7 +165,7 @@ export default function UserPage() {
                     </li>
                   </ul>
                   <button className="absolute bottom-0 left-0 bg-gray-500 text-white text-sm rounded px-2 py-1">
-                    編集
+                    {t_General("edit")}
                   </button>
                 </div>
               </div>
