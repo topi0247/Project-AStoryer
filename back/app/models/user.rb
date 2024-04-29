@@ -10,10 +10,10 @@
 #  encrypted_password :string           default(""), not null
 #  name               :string
 #  email              :string
+#  role               :integer          default("general")
 #  tokens             :json
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
-#  role               :integer          default(0)
 #
 class User < ActiveRecord::Base
   extend Devise::Models
