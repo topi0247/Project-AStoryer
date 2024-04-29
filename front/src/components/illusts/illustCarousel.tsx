@@ -34,13 +34,7 @@ export default function IllustCarousel({
     <Swiper
       modules={[Navigation, Autoplay]}
       breakpoints={slideSettings}
-      loop={true}
       speed={5000}
-      centeredSlides={true}
-      autoplay={{
-        delay: 4000,
-        disableOnInteraction: false,
-      }}
       navigation
       className="w-full"
     >
