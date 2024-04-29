@@ -22,6 +22,7 @@ export default function Pagination({
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
+    // TODO : プロフィール文章を表示しているとずれる
     window.scrollTo({
       top: topPosY + adjust,
       behavior: "smooth",
@@ -30,6 +31,7 @@ export default function Pagination({
 
   return (
     <article className="w-full m-auto text-center">
+      {/* SP */}
       <div className="md:hidden">
         <MUI.Pagination
           count={11}
@@ -40,6 +42,8 @@ export default function Pagination({
           page={page}
         />
       </div>
+
+      {/* PC */}
       <div className="hidden md:block">
         <MUI.Pagination
           count={11}

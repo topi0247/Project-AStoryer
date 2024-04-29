@@ -18,13 +18,14 @@ const illusts = Array.from({ length: 20 }).map((_, i) => ({
 }));
 
 export default function UserPage() {
-  const imgUrl = "https://placehold.jp/1600x900.png";
+  const imgUrl = ""; // TODO : ユーザーヘッダーのURLを取得
 
   return (
     <>
       <article className="w-full relative mb-8">
-        <div className="w-full h-full relative z-0">
-          <div className="absolute top-0 left-0 w-full h-[200px] md:h-[300px] -z-10">
+        <section className="w-full h-full relative z-0">
+          {/* ヘッダー画像 */}
+          <div className="absolute top-0 left-0 w-full h-[180px] md:h-[300px] -z-10">
             {imgUrl.length === 0 ? (
               <div className="w-full h-full bg-slate-400"></div>
             ) : (
@@ -33,23 +34,35 @@ export default function UserPage() {
                 width={1600}
                 height={900}
                 alt="ヘッダー"
-                className="object-cover h-1/2 md:h-full w-full"
+                className="object-cover h-full w-full"
               />
             )}
           </div>
+
+          {/* ユーザー情報 */}
           <div className="w-full pt-[140px] md:pt-[240px] px-4 m-auto md:container">
             <div className="flex flex-col justify-center items-center w-full">
               <div className="w-full relative flex md:gap-3 md:mb-8">
+                {/* SP */}
                 <MUI.Avatar
                   alt="icon"
-                  src="https://placehold.jp/300x300.png"
-                  sx={{ width: 150, height: 150 }}
-                  className="shadow-md"
+                  src="https://placehold.jp/300x300.png" // TODO : ユーザーアイコンのURLを取得
+                  sx={{ width: 100, height: 100 }}
+                  className="shadow-md md:hidden"
                 />
-                <button className="absolute top-6 right-0  bg-gray-500 text-white text-sm rounded px-2 py-1 md:hidden">
+                {/* PC */}
+                <MUI.Avatar
+                  alt="icon"
+                  src="https://placehold.jp/300x300.png" // TODO : ユーザーアイコンのURLを取得
+                  sx={{ width: 150, height: 150 }}
+                  className="hidden shadow-md md:block"
+                />
+
+                {/* SP */}
+                <button className="absolute top-0 right-0  bg-gray-500 text-white text-sm rounded px-2 py-1 md:hidden">
                   編集
                 </button>
-                <ul className="absolute right-0 bottom-5 flex flex-wrap gap-2 w-1/2 md:hidden">
+                <ul className="flex h-1/2 mt-auto ml-2 flex-wrap gap-2 md:hidden">
                   <li>
                     <a
                       href="#"
@@ -96,11 +109,12 @@ export default function UserPage() {
                     </a>
                   </li>
                 </ul>
+                {/* PC */}
                 <div className="hidden md:block grid grid-col-2 gap-4 h-[150px] flex-1 relative">
                   <h3 className="text-3xl font-semibold flex justify-start items-end h-1/3">
                     ユーザー名
                   </h3>
-                  <ul className="flex flex-wrap gap-2 mt-4 h-1/3">
+                  <ul className="flex justify-start items-center flex-wrap gap-2 h-1/3">
                     <li>
                       <a
                         href="#"
@@ -152,9 +166,12 @@ export default function UserPage() {
                   </button>
                 </div>
               </div>
+
+              {/* SP */}
               <h3 className="text-xl font-semibold my-4 md:hidden">
                 ユーザー名
               </h3>
+
               <div className="bg-white p-5 rounded">
                 <UI.Collapse>
                   プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィープロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィープロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文
@@ -162,8 +179,10 @@ export default function UserPage() {
               </div>
             </div>
           </div>
-        </div>
+        </section>
       </article>
+
+      {/* イラスト一覧 */}
       <article>
         <section id="tabs" className="mx-2 md:container md:m-auto md:mb-8">
           <UI.Tabs />
@@ -178,7 +197,7 @@ export default function UserPage() {
           </div>
         </section>
         <section className="mt-4 mb-16">
-          <UI.Pagination elementName="#tabs" adjust={-10} />
+          <UI.Pagination elementName="#tabs" adjust={-20} />
         </section>
       </article>
     </>
