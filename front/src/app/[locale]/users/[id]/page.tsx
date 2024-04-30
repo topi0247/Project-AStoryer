@@ -4,6 +4,7 @@ import * as UI from "@/components/ui";
 import { IndexIllustData } from "@/types";
 import { Illust } from "@/components/illusts";
 import { useTranslations } from "next-intl";
+import { UserEdit } from "@/components/users";
 
 // 仮データをハードコーディング
 const illusts = Array.from({ length: 20 }).map((_, i) => ({
@@ -113,7 +114,7 @@ export default function UserPage() {
                   </li>
                 </ul>
                 {/* PC */}
-                <div className="hidden md:block grid grid-col-2 gap-4 h-[150px] flex-1 relative">
+                <div className="hidden md:block h-[150px] flex-1 relative">
                   <h3 className="text-3xl font-semibold flex justify-start items-end h-1/3">
                     ユーザー名
                   </h3>
@@ -203,6 +204,9 @@ export default function UserPage() {
           <UI.Pagination elementName="#tabs" adjust={-20} />
         </section>
       </article>
+
+      {/* 編集ドロワー */}
+      <UserEdit />
     </>
   );
 }

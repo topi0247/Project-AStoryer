@@ -11,7 +11,7 @@
 #
 class Authentiction < ActiveRecord::Base
   belongs_to :user
-  validations :provider, :uid, presence: true
+  validates :provider, :uid, presence: true
 
   def self.find_for_oauth(auth)
     find_by(provider: auth.provider, uid: auth.uid)
