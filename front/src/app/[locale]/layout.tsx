@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "@/app/globals.css";
+import "@/styles/globals.css";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 import AppProvider from "@/providers/index";
 import { MainLayout } from "@/components/layouts";

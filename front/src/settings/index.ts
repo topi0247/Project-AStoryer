@@ -7,4 +7,5 @@ export const RouterPath = {
   signUp: "/signup",
   login: "/login",
   illustIndex: "/",
+  myPage: (id: number) => `/users/${id}`,
 };

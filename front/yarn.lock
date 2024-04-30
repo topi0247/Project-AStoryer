@@ -378,6 +378,19 @@
   dependencies:
     "@babel/runtime" "^7.24.4"
 
+"@mui/lab@^5.0.0-alpha.170":
+  version "5.0.0-alpha.170"
+  resolved "https://registry.yarnpkg.com/@mui/lab/-/lab-5.0.0-alpha.170.tgz#4519dfc8d1c51ca54fb9d8b91b95a3733d07be16"
+  integrity sha512-0bDVECGmrNjd3+bLdcLiwYZ0O4HP5j5WSQm5DV6iA/Z9kr8O6AnvZ1bv9ImQbbX7Gj3pX4o43EKwCutj3EQxQg==
+  dependencies:
+    "@babel/runtime" "^7.23.9"
+    "@mui/base" "5.0.0-beta.40"
+    "@mui/system" "^5.15.15"
+    "@mui/types" "^7.2.14"
+    "@mui/utils" "^5.15.14"
+    clsx "^2.1.0"
+    prop-types "^15.8.1"
+
 "@mui/material@^5.15.15":
   version "5.15.15"
   resolved "https://registry.yarnpkg.com/@mui/material/-/material-5.15.15.tgz#e3ba35f50b510aa677cec3261abddc2db7b20b59"
@@ -2889,6 +2902,7 @@ streamsearch@^1.1.0:
   integrity sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==
 
 "string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0:
+  name string-width-cjs
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==

@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import "@/styles/index.css";
+import "@/styles/globals.css"; // swiperの上書き
 import { IndexIllustData } from "@/types";
 import Illust from "./illust";
 
@@ -34,13 +34,7 @@ export default function IllustCarousel({
     <Swiper
       modules={[Navigation, Autoplay]}
       breakpoints={slideSettings}
-      loop={true}
       speed={5000}
-      centeredSlides={true}
-      autoplay={{
-        delay: 4000,
-        disableOnInteraction: false,
-      }}
       navigation
       className="w-full"
     >
