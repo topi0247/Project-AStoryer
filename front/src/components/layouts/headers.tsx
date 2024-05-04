@@ -87,12 +87,12 @@ export default function Headers() {
               {t_Header("postButton")}
             </Mantine.Button>
           ) : (
-            <Mantine.Button
-              variant="contained"
-              className="hidden md:block bg-orange-200 hover:bg-orange-400 text-black  transition-all"
+            <Link
+              href="/login"
+              className="p-2 px-3 rounded hidden md:block bg-orange-200 hover:bg-orange-400 text-black  transition-all hover:text-white"
             >
               {t_Header("signUpOrLogin")}
-            </Mantine.Button>
+            </Link>
           )}
           {AccountMenu()}
         </div>
