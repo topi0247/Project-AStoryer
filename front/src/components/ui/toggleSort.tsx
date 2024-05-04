@@ -1,17 +1,8 @@
 "use client";
 import { useRouter } from "@/lib";
+import { Button, ButtonGroup } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
-  [`& .${toggleButtonGroupClasses.grouped}`]: {
-    margin: "0px 2px",
-    border: 0,
-    borderRadius: theme.shape.borderRadius,
-    letterSpacing: "2px",
-    textAlign: "center",
-  },
-}));
 
 enum SortBy {
   New = 0,
@@ -23,10 +14,7 @@ export default function ToggleSort({ searchWords }: { searchWords: string[] }) {
   const router = useRouter();
   const t_General = useTranslations("General");
 
-  const handleSort = (
-    event: React.MouseEvent<HTMLElement>,
-    newSortBy: SortBy
-  ) => {
+  const handleSort = (newSortBy: SortBy) => {
     setSortBy(newSortBy);
     const query =
       ((searchWords?.length ?? 0) > 0 && `search=${searchWords.join(",")}`) +
@@ -36,7 +24,22 @@ export default function ToggleSort({ searchWords }: { searchWords: string[] }) {
 
   return (
     <div>
-      <StyledToggleButtonGroup
+      <ButtonGroup>
+        <Button
+          color={sortBy === SortBy.New ? "bg-green-100" : "bg-slate-300"}
+          onClick={() => handleSort(SortBy.New)}
+        >
+          {t_General("newPosts")}
+        </Button>
+
+        <Button
+          color={sortBy === SortBy.Old ? "bg-green-100" : "bg-slate-300"}
+          onClick={() => handleSort(SortBy.Old)}
+        >
+          {t_General("newPosts")}
+        </Button>
+      </ButtonGroup>
+      {/* <StyledToggleButtonGroup
         value={sortBy}
         exclusive
         onChange={handleSort}
@@ -48,7 +51,7 @@ export default function ToggleSort({ searchWords }: { searchWords: string[] }) {
         <ToggleButton value={SortBy.Old} aria-label={t_General("oldPosts")}>
           {t_General("oldPosts")}
         </ToggleButton>
-      </StyledToggleButtonGroup>
+      </StyledToggleButtonGroup> */}
     </div>
   );
 }

@@ -20,10 +20,12 @@
     "@mantine/notifications": "^7.8.1",
     "@mantine/spotlight": "^7.8.1",
     "axios": "^1.6.8",
+    "embla-carousel-react": "^8.0.2",
     "next": "14.2.1",
     "next-intl": "^3.11.1",
     "react": "^18",
     "react-dom": "^18",
+    "react-icons": "^5.2.0",
     "recoil": "^0.7.7"
   },
   "devDependencies": {

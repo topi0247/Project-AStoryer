@@ -1,9 +1,10 @@
 import Image from "next/image";
+import * as Mantine from "@mantine/core";
 import * as UI from "@/components/ui";
 import { IndexIllustData } from "@/types";
 import { Illust } from "@/components/illusts";
 import { useTranslations } from "next-intl";
-import { UserEdit } from "@/components/users";
+import { UserEdit, UserTabs } from "@/components/users";
 
 // 仮データをハードコーディング
 const illusts = Array.from({ length: 20 }).map((_, i) => ({
@@ -47,18 +48,9 @@ export default function UserPage() {
             <div className="flex flex-col justify-center items-center w-full">
               <div className="w-full relative flex md:gap-3 md:mb-8">
                 {/* SP */}
-                <MUI.Avatar
+                <Mantine.Avatar
                   alt={t_UserPage("avatar")}
                   src="https://placehold.jp/300x300.png" // TODO : ユーザーアイコンのURLを取得
-                  sx={{ width: 100, height: 100 }}
-                  className="shadow-md md:hidden"
-                />
-                {/* PC */}
-                <MUI.Avatar
-                  alt={t_UserPage("avatar")}
-                  src="https://placehold.jp/300x300.png" // TODO : ユーザーアイコンのURLを取得
-                  sx={{ width: 150, height: 150 }}
-                  className="hidden shadow-md md:block"
                 />
 
                 {/* SP */}
@@ -188,7 +180,7 @@ export default function UserPage() {
       {/* イラスト一覧 */}
       <article>
         <section id="tabs" className="mx-2 md:container md:m-auto md:mb-8">
-          <UI.Tabs />
+          <UserTabs />
         </section>
         <section className="container my-2 m-auto">
           <div className="grid grid-cols-2 md:mx-auto md:grid-cols-4 mx-2 gap-1">

@@ -4,6 +4,9 @@ import * as UI from "@/components/ui";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useRouter } from "@/lib";
+import * as Mantine from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { IoMdCloseCircle } from "react-icons/io";
 
 // 仮データをハードコーディング
 const Tags = Array.from({ length: 10 }).map((_, i) => ({
@@ -44,18 +47,14 @@ const style = {
 export default function SearchModal() {
   const t_Search = useTranslations("Search");
   const t_SearchOption = useTranslations("SearchOption");
-  const [open, setOpen] = useState(false);
+  const [opened, { open, close }] = useDisclosure(false);
   const [postTitle, setPostTitle] = useState("");
-  const [gameSystem, setGameSystem] = useState(0);
+  const [gameSystem, setGameSystem] = useState<string | null>("");
   const [synalioName, setSynalioName] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [userName, setUserName] = useState("");
   const [searchType, setSearchType] = useState(SearchType.AND);
   const router = useRouter();
-
-  const handleSearchButton = () => {
-    setOpen(true);
-  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,7 +75,7 @@ export default function SearchModal() {
 
     // タグ取得
     // TODO : 空白削除の処理は未実装
-    if (tags.length >= 1) query += getQuery(query, "tags", tags.join(","));
+    //if (tags.length >= 1) query += getQuery(query, "tags", tags.join(","));
 
     // ユーザー名取得
     if (userName) query += getQuery(query, "userName", userName);
@@ -84,7 +83,7 @@ export default function SearchModal() {
     // 検索タイプ取得
     query += getQuery(query, "searchType", searchType);
 
-    setOpen(false);
+    close();
 
     router.push(`/illusts${query}`);
   };
@@ -95,130 +94,83 @@ export default function SearchModal() {
 
   return (
     <>
-      <MUI.Button
+      <Mantine.Button
         variant="contained"
         className="bg-orange-200 hover:bg-orange-400 text-black"
-        onClick={handleSearchButton}
+        onClick={open}
       >
         {t_Search("detailsSearch")}
-      </MUI.Button>
-      <MUI.Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={open}
-        onClose={() => setOpen(false)}
-        closeAfterTransition
-        slots={{ backdrop: MUI.Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 300,
-          },
-        }}
-      >
-        <MUI.Fade in={open}>
-          <MUI.Box sx={style} className="md:top-[45%]">
-            <MUI.IconButton
-              aria-label="close"
-              onClick={() => setOpen(false)}
-              className="absolute right-0 top-0"
+      </Mantine.Button>
+      <Mantine.Modal opened={opened} onClose={close}>
+        <Mantine.Button onClick={close}>
+          <IoMdCloseCircle />
+        </Mantine.Button>
+        <UI.H2>{t_Search("detailsSearch")}</UI.H2>
+
+        <form className="flex flex-col gap-4" onSubmit={handleSearch}>
+          <Mantine.TextInput
+            label={t_SearchOption("postTitle")}
+            variant="filled"
+            onChange={(e) => setPostTitle(e.target.value)}
+          />
+          <Mantine.Select
+            data={[]}
+            value={gameSystem}
+            onChange={setGameSystem}
+          />
+          <Mantine.Select
+            label={t_SearchOption("gameSystem")}
+            onChange={setGameSystem}
+            data={GameSystems.map((system) => system.name)}
+            value={gameSystem}
+          />
+
+          <Mantine.Autocomplete
+            label={t_SearchOption("synalioName")}
+            value={synalioName}
+            onChange={setSynalioName}
+            data={Synalios.map((synalio) => synalio.title)}
+          />
+
+          <Mantine.TagsInput
+            label={t_SearchOption("tag")}
+            splitChars={[" ", "|"]}
+            data={Tags.map((tag) => tag.title)}
+            onChange={setTags}
+            value={tags}
+          />
+
+          <Mantine.TextInput
+            label={t_SearchOption("userName")}
+            variant="filled"
+            onChange={(e) => setUserName(e.target.value)}
+          />
+
+          <Mantine.Radio.Group>
+            <Mantine.Group>
+              <Mantine.Radio
+                checked
+                label={t_SearchOption("andSearch")}
+                value={SearchType.AND}
+              />
+              <Mantine.Radio
+                checked
+                label={t_SearchOption("orSearch")}
+                value={SearchType.OR}
+              />
+            </Mantine.Group>
+          </Mantine.Radio.Group>
+          <div className="m-auto">
+            <Mantine.Button
+              variant="contained"
+              className="bg-orange-200 hover:bg-orange-400 text-black"
+              type="submit"
             >
-              <HighlightOffIcon />
-            </MUI.IconButton>
-            <UI.H2>{t_Search("detailsSearch")}</UI.H2>
-
-            <form className="flex flex-col gap-4" onSubmit={handleSearch}>
-              <MUI.TextField
-                label={t_SearchOption("postTitle")}
-                variant="outlined"
-                onChange={(e) => setPostTitle(e.target.value)}
-                fullWidth
-              />
-
-              <MUI.Select
-                label={t_SearchOption("gameSystem")}
-                onChange={(e) => setGameSystem(e.target.value as number)}
-                defaultValue={0}
-                fullWidth
-              >
-                {GameSystems.map((system) => (
-                  <MUI.MenuItem key={system.id} value={system.id}>
-                    {system.name}
-                  </MUI.MenuItem>
-                ))}
-              </MUI.Select>
-
-              <MUI.Autocomplete
-                options={Synalios.map((synalio) => synalio.title)}
-                getOptionLabel={(option) => option}
-                renderInput={(params) => (
-                  <MUI.TextField
-                    {...params}
-                    label={t_SearchOption("synalio")}
-                    placeholder={t_SearchOption("synalio")}
-                  />
-                )}
-                fullWidth
-                onInputChange={(e, value) => setSynalioName(value)}
-                freeSolo
-                value={synalioName}
-                onChange={(_, value) => setSynalioName(value || "")}
-              />
-
-              <MUI.Autocomplete
-                multiple
-                options={Tags.map((tag) => tag.title)}
-                getOptionLabel={(option) => option}
-                renderInput={(params) => (
-                  <MUI.TextField
-                    {...params}
-                    label={t_SearchOption("tag")}
-                    placeholder={t_SearchOption("tag")}
-                  />
-                )}
-                fullWidth
-                onChange={(_, value) => setTags(value)}
-                freeSolo
-                value={tags}
-              />
-
-              <MUI.TextField
-                label={t_SearchOption("userName")}
-                variant="outlined"
-                onChange={(e) => setUserName(e.target.value)}
-                fullWidth
-              />
-
-              <MUI.RadioGroup
-                row
-                defaultValue={SearchType.AND}
-                onChange={(e) => setSearchType(parseInt(e.target.value))}
-                value={searchType}
-                className="flex justify-center items-center gap-3"
-              >
-                <MUI.FormControlLabel
-                  value={SearchType.AND}
-                  control={<MUI.Radio />}
-                  label={t_SearchOption("andSearch")}
-                />
-                <MUI.FormControlLabel
-                  value={SearchType.OR}
-                  control={<MUI.Radio />}
-                  label={t_SearchOption("orSearch")}
-                />
-              </MUI.RadioGroup>
-              <div className="m-auto">
-                <MUI.Button
-                  variant="contained"
-                  className="bg-orange-200 hover:bg-orange-400 text-black"
-                  type="submit"
-                >
-                  {t_SearchOption("search")}
-                </MUI.Button>
-              </div>
-            </form>
-          </MUI.Box>
-        </MUI.Fade>
-      </MUI.Modal>
+              {t_SearchOption("search")}
+            </Mantine.Button>
+          </div>
+        </form>
+      </Mantine.Modal>
     </>
   );
 }

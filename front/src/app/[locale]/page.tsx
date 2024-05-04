@@ -19,7 +19,7 @@ export default function Home() {
   return (
     <div className="w-full flex flex-col gap-16">
       <article>
-        <h2 className="text-2xl text-start mb-4 ml-8 font-semibold">
+        <h2 className="text-xl text-start my-4 ml-8">
           {t_General("followedNewPosts")}
         </h2>
         <section>

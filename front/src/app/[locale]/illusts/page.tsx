@@ -2,7 +2,7 @@
 import { Link } from "@/lib";
 import { IndexIllustData } from "@/types";
 import { useTranslations } from "next-intl";
-import { SearchModal, ToggleSort } from "@/components/ui";
+import { Pagination, SearchModal, ToggleSort } from "@/components/ui";
 import { Illust } from "@/components/illusts";
 
 // 仮データをハードコーディング
@@ -76,12 +76,7 @@ export default function IllustsPage({
       </article>
 
       <article className="w-full m-auto text-center mb-8">
-        <Pagination
-          count={11}
-          defaultPage={6}
-          size="large"
-          className="inline-block"
-        />
+        <Pagination adjust={0} />
       </article>
     </>
   );

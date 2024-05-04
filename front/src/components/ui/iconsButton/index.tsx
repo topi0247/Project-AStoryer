@@ -4,12 +4,15 @@ import { useState } from "react";
 import { useSetRecoilState } from "recoil";
 import * as RecoilState from "@/recoilState";
 import { IconButtonList, FixedIconButtonList } from "./iconButtonList";
+import { MdFavorite, MdOutlineFavoriteBorder, MdShare } from "react-icons/md";
+import { FaBookmark, FaRegBookmark } from "react-icons/fa";
+import { Button } from "@mantine/core";
 
 const FavoriteButton = ({ state }: { state: boolean }) => {
   const [favorite, setFavorite] = useState(state);
   const setModalOpen = useSetRecoilState(RecoilState.modalOpenState);
 
-  const handleFavorite = () => {
+  const handleFavorite = (value: boolean) => {
     // TODO : ログインユーザーでなければログインや登録を促す
     setModalOpen(true);
     return;
@@ -20,13 +23,23 @@ const FavoriteButton = ({ state }: { state: boolean }) => {
 
   return (
     <>
-      <IconButton size="medium" onClick={handleFavorite}>
-        {favorite ? (
-          <MUI_ICON.Favorite className="text-red-500" />
-        ) : (
-          <MUI_ICON.FavoriteBorder className="text-gray-400" />
-        )}
-      </IconButton>
+      {favorite ? (
+        <Button
+          onClick={() => handleFavorite(false)}
+          variant="transparent"
+          color="pink"
+        >
+          <MdFavorite />
+        </Button>
+      ) : (
+        <Button
+          onClick={() => handleFavorite(true)}
+          variant="transparent"
+          color="gray"
+        >
+          <MdOutlineFavoriteBorder />
+        </Button>
+      )}
     </>
   );
 };
@@ -35,7 +48,7 @@ const BookmarkButton = ({ state }: { state: boolean }) => {
   const [bookmark, setBookmark] = useState(state);
   const setModalOpen = useSetRecoilState(RecoilState.modalOpenState);
 
-  const handleBookmark = () => {
+  const handleBookmark = (value: boolean) => {
     // TODO : ログインユーザーでなければログインや登録を促す
     setModalOpen(true);
     return;
@@ -45,13 +58,21 @@ const BookmarkButton = ({ state }: { state: boolean }) => {
   };
 
   return (
-    <IconButton size="medium" onClick={handleBookmark}>
+    <>
       {bookmark ? (
-        <MUI_ICON.Bookmark className="text-orange-400" />
+        <Button onClick={() => setBookmark(false)} variant="transparent">
+          <FaBookmark />
+        </Button>
       ) : (
-        <MUI_ICON.BookmarkBorder className="text-gray-400" />
+        <Button
+          onClick={() => setBookmark(true)}
+          variant="transparent"
+          color="gray"
+        >
+          <FaRegBookmark />
+        </Button>
       )}
-    </IconButton>
+    </>
   );
 };
 
@@ -61,9 +82,9 @@ const ShareButton = () => {
   };
 
   return (
-    <IconButton size="medium" onClick={handleShare}>
-      <MUI_ICON.Share className="text-blue-400" />
-    </IconButton>
+    <Button onClick={handleShare} variant="transparent">
+      <MdShare />
+    </Button>
   );
 };
 

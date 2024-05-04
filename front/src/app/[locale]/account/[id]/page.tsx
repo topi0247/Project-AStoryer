@@ -1,5 +1,6 @@
 "use client";
 
+import * as Mantine from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -40,13 +41,13 @@ export default function AccountPage() {
             <dd className="flex flex-col ml-4 md:ml-0 border-b border-slate-300 pb-2">
               *****@example.com
               <div>
-                <MUI.Button
+                <Mantine.Button
                   variant="contained"
                   size="small"
                   className="text-xs inline-block"
                 >
                   {t_AccountSettings("changeEmail")}
-                </MUI.Button>
+                </Mantine.Button>
               </div>
             </dd>
             <dt className="md:border-b md:border-slate-300 md:pb-2">
@@ -76,6 +77,11 @@ interface NoticeState {
   follow: boolean;
 }
 
+enum NoticeTypes {
+  app = "app",
+  email = "email",
+}
+
 interface NoticeStates {
   app: NoticeState;
   email: NoticeState;
@@ -83,16 +89,22 @@ interface NoticeStates {
 
 interface TabPanelProps {
   children?: React.ReactNode;
-  index: number;
-  value: number;
+  index: string | null;
+  value: string | null;
   noticeState: NoticeState;
 }
 
 function Tabs({ noticeStates }: { noticeStates: NoticeStates }) {
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState<string | null>("");
   const t_AccountSettings = useTranslations("AccountSettings");
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (newValue: string | null) => {
+    if (newValue === value) return;
+
+    if (newValue === null) {
+      setValue(NoticeTypes.app);
+      return;
+    }
     setValue(newValue);
   };
 
@@ -104,29 +116,39 @@ function Tabs({ noticeStates }: { noticeStates: NoticeStates }) {
   };
 
   return (
-    <MUI.Box sx={{ width: "100%" }}>
-      <MUI.Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <MUI.Tabs
-          value={value}
-          onChange={handleChange}
+    <Mantine.Box>
+      <Mantine.Tabs value={value} onChange={handleChange}>
+        <Mantine.Tabs.List
           aria-label={t_AccountSettings("notificationSettings")}
         >
-          <MUI.Tab label={t_AccountSettings("app")} {...a11yProps(0)} />
-          <MUI.Tab label={t_AccountSettings("mail")} {...a11yProps(1)} />
-        </MUI.Tabs>
-      </MUI.Box>
-      <CustomTabPanel value={value} index={0} noticeState={noticeStates.app} />
-      <CustomTabPanel
-        value={value}
-        index={1}
-        noticeState={noticeStates.email}
-      />
-    </MUI.Box>
+          <Mantine.Tabs.Tab value={NoticeTypes.app}>
+            {t_AccountSettings("app")}
+          </Mantine.Tabs.Tab>
+          <Mantine.Tabs.Tab value={NoticeTypes.email}>
+            {t_AccountSettings("mail")}
+          </Mantine.Tabs.Tab>
+        </Mantine.Tabs.List>
+        <Mantine.Tabs.Panel value={NoticeTypes.app}>
+          <CustomTabPanel
+            value={value}
+            index={NoticeTypes.app}
+            noticeState={noticeStates.app}
+          />
+          <CustomTabPanel
+            value={value}
+            index={NoticeTypes.app}
+            noticeState={noticeStates.email}
+          />
+        </Mantine.Tabs.Panel>
+      </Mantine.Tabs>
+    </Mantine.Box>
   );
 }
 
 function CustomTabPanel(props: TabPanelProps) {
   const { value, noticeState, index, ...other } = props;
+  if (value === null) return null;
+
   const [newNoticeState, setNewNoticeState] =
     useState<NoticeState>(noticeState);
   const t_AccountSettings = useTranslations("AccountSettings");
@@ -141,61 +163,45 @@ function CustomTabPanel(props: TabPanelProps) {
     >
       {value === index && (
         <>
-          <MUI.FormControlLabel
-            control={
-              <MUI.Switch
-                onChange={() =>
-                  setNewNoticeState((prevState) => ({
-                    ...prevState,
-                    favorite: !prevState.favorite,
-                  }))
-                }
-              />
-            }
+          <Mantine.Switch
             label={t_AccountSettings("favorite")}
             checked={newNoticeState.favorite}
-          />
-          <MUI.FormControlLabel
-            control={
-              <MUI.Switch
-                onChange={() =>
-                  setNewNoticeState((prevState) => ({
-                    ...prevState,
-                    bookmark: !prevState.bookmark,
-                  }))
-                }
-              />
+            onChange={() =>
+              setNewNoticeState((prevState) => ({
+                ...prevState,
+                favorite: !prevState.favorite,
+              }))
             }
+          />
+          <Mantine.Switch
             label={t_AccountSettings("bookmark")}
             checked={newNoticeState.bookmark}
-          />
-          <MUI.FormControlLabel
-            control={
-              <MUI.Switch
-                onChange={() =>
-                  setNewNoticeState((prevState) => ({
-                    ...prevState,
-                    comment: !prevState.comment,
-                  }))
-                }
-              />
+            onChange={() =>
+              setNewNoticeState((prevState) => ({
+                ...prevState,
+                bookmark: !prevState.bookmark,
+              }))
             }
+          />
+          <Mantine.Switch
             label={t_AccountSettings("comment")}
             checked={newNoticeState.comment}
-          />
-          <MUI.FormControlLabel
-            control={
-              <MUI.Switch
-                onChange={() =>
-                  setNewNoticeState((prevState) => ({
-                    ...prevState,
-                    follow: !prevState.follow,
-                  }))
-                }
-              />
+            onChange={() =>
+              setNewNoticeState((prevState) => ({
+                ...prevState,
+                comment: !prevState.comment,
+              }))
             }
+          />
+          <Mantine.Switch
             label={t_AccountSettings("follow")}
             checked={newNoticeState.follow}
+            onChange={() =>
+              setNewNoticeState((prevState) => ({
+                ...prevState,
+                follow: !prevState.follow,
+              }))
+            }
           />
         </>
       )}

@@ -1,6 +1,7 @@
 import { Link } from "@/lib";
 import { IndexIllustData } from "@/types";
 import Image from "next/image";
+import { MdCollections } from "react-icons/md";
 
 export default function Illust({
   illust,
@@ -21,7 +22,7 @@ export default function Illust({
           className="aspect-square object-cover z-10"
         />
         {illust.count > 1 && (
-          <CollectionsIcon className="absolute bottom-2 right-2 text-white" />
+          <MdCollections className="absolute bottom-2 right-2 text-white" />
         )}
       </Link>
       {isUserPage && (

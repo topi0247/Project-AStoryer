@@ -1,6 +1,9 @@
 "use client";
 
 import { IndexIllustData } from "@/types";
+import { useMediaQuery } from "@mantine/hooks";
+import { useMantineTheme } from "@mantine/core";
+import { Carousel } from "@mantine/carousel";
 import Illust from "./illust";
 
 export default function IllustCarousel({
@@ -8,6 +11,8 @@ export default function IllustCarousel({
 }: {
   illustsData: IndexIllustData[];
 }) {
+  const theme = useMantineTheme();
+  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   // ブレイクポイントに応じた表示枚数
   const slideSettings = {
     0: {
@@ -25,18 +30,20 @@ export default function IllustCarousel({
   };
 
   return (
-    <Swiper
-      modules={[Navigation, Autoplay]}
-      breakpoints={slideSettings}
-      speed={5000}
-      navigation
-      className="w-full"
+    <Carousel
+      withIndicators
+      height={200}
+      slideSize="33.333333%"
+      slideGap="md"
+      loop
+      align="start"
+      slidesToScroll={mobile ? 1 : 8}
     >
       {illustsData.map((illust: IndexIllustData) => (
-        <SwiperSlide key={illust.id}>
+        <Carousel.Slide key={illust.id}>
           <Illust illust={illust} />
-        </SwiperSlide>
+        </Carousel.Slide>
       ))}
-    </Swiper>
+    </Carousel>
   );
 }

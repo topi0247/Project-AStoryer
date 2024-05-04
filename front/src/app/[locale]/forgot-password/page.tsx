@@ -1,10 +1,10 @@
 "use client";
 
-import { InputText } from "@/components/form";
+import * as MantineForm from "@mantine/form";
+import * as Mantine from "@mantine/core";
 import * as UI from "@/components/ui";
 import { Link, useRouter } from "@/lib";
 import { useTranslations } from "next-intl";
-import { SubmitHandler, useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
 import * as RecoilState from "@/recoilState";
 
@@ -19,9 +19,18 @@ export default function ForgotPasswordPage() {
   const setModalTitle = useSetRecoilState(RecoilState.modalTitleState);
   const router = useRouter();
 
-  const { handleSubmit, control } = useForm<IFormInputs>();
+  const form = MantineForm.useForm({
+    mode: "uncontrolled",
+    initialValues: {
+      email: "",
+    },
+    validate: {
+      email: MantineForm.isEmail("有効なメールアドレスを入力してください"),
+    },
+  });
 
-  const onSubmit: SubmitHandler<IFormInputs> = async (data) => {
+  const handleSubmit = async () => {
+    const { email } = form.getValues();
     // TODO : パスワード再設定の申請用処理
     setModalOpen(true);
     setModalTitle(t_Auth("sendMail"));
@@ -41,24 +50,19 @@ export default function ForgotPasswordPage() {
             <p>{t_Auth("forgotPasswordDescription")}</p>
             <form
               className="flex flex-col gap-4 w-full"
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleSubmit}
             >
-              <InputText
-                control={control}
-                name="email"
+              <Mantine.TextInput
+                withAsterisk
+                type="email"
                 label={t_Auth("email")}
-                rules={{
-                  required: { value: true, message: t_Auth("required") },
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                    message: t_Auth("invalidEmail"),
-                  },
-                }}
                 autoComplete="email"
+                key={form.key("email")}
+                {...form.getInputProps("email")}
               />
-              <Button type="submit" variant="outlined">
+              <Mantine.Button variant="outlined" type="submit">
                 {t_General("send")}
-              </Button>
+              </Mantine.Button>
             </form>
             <div className="text-center text-sm text-blue-500 flex gap-2 flex-col md:flex-row">
               <Link
@@ -80,9 +84,13 @@ export default function ForgotPasswordPage() {
       <UI.TransitionsModal>
         <div className="text-center">{t_Auth("sensMailDescription")}</div>
         <div className="flex gap-4 justify-center items-center mt-4 w-68 m-auto">
-          <Button type="submit" variant="outlined" onClick={handleBackHome}>
+          <Mantine.Button
+            type="submit"
+            variant="outlined"
+            onClick={handleBackHome}
+          >
             {t_General("backHome")}
-          </Button>
+          </Mantine.Button>
         </div>
       </UI.TransitionsModal>
     </>

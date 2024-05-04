@@ -8,7 +8,6 @@ import {
   FixedIconButtonList,
 } from "./iconsButton/iconButtonList";
 import Collapse from "./collapse";
-import Tabs from "./tabs";
 import Pagination from "./pagination";
 
 export {
@@ -21,6 +20,5 @@ export {
   FixedIconButtonList,
   RequiredLoginModal,
   Collapse,
-  Tabs,
   Pagination,
 };

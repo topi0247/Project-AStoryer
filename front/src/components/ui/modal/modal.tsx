@@ -2,6 +2,7 @@
 
 import { useRecoilState, useRecoilValue } from "recoil";
 import * as ModalState from "@/recoilState";
+import { Button, Modal } from "@mantine/core";
 
 const style = {
   position: "absolute" as "absolute",
@@ -23,36 +24,14 @@ export default function TransitionsModal({
   const title = useRecoilValue(ModalState.modalTitleState);
 
   return (
-    <div>
-      <MUI.Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={open}
+    <>
+      <Modal
+        opened={open}
         onClose={() => setOpen(false)}
-        closeAfterTransition
-        slots={{ backdrop: MUI.Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 300,
-          },
-        }}
+        title="Authentication"
       >
-        <MUI.Fade in={open}>
-          <MUI.Box sx={style}>
-            <MUI.Typography
-              id="transition-modal-title"
-              variant="h6"
-              component="h2"
-              sx={{ textAlign: "center" }}
-            >
-              {title}
-            </MUI.Typography>
-            <div id="transition-modal-description" className="mt-4">
-              {children}
-            </div>
-          </MUI.Box>
-        </MUI.Fade>
-      </MUI.Modal>
-    </div>
+        {children}
+      </Modal>
+    </>
   );
 }

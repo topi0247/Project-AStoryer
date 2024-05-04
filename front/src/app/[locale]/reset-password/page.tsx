@@ -1,17 +1,12 @@
 "use client";
 
-import { InputText } from "@/components/form";
+import * as MantineForm from "@mantine/form";
+import * as Mantine from "@mantine/core";
 import * as UI from "@/components/ui";
 import { useRouter } from "@/lib";
 import { useTranslations } from "next-intl";
-import { SubmitHandler, useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
 import * as RecoilState from "@/recoilState";
-
-interface IFormInputs {
-  password: string;
-  passwordConfirmation: string;
-}
 
 export default function ResetPasswordPage() {
   const t_Auth = useTranslations("Auth");
@@ -20,9 +15,26 @@ export default function ResetPasswordPage() {
   const setModalTitle = useSetRecoilState(RecoilState.modalTitleState);
   const router = useRouter();
 
-  const { handleSubmit, control, getValues } = useForm<IFormInputs>();
+  const form = MantineForm.useForm({
+    mode: "uncontrolled",
+    initialValues: {
+      password: "",
+      password_confirmation: "",
+    },
+    validate: {
+      password: MantineForm.hasLength(
+        { min: 6 },
+        "パスワードは6文字以上で入力してください"
+      ),
+      password_confirmation: MantineForm.matchesField(
+        "password",
+        "パスワードが一致しません"
+      ),
+    },
+  });
 
-  const onSubmit: SubmitHandler<IFormInputs> = async (data) => {
+  const handleSubmit = async () => {
+    const { password, password_confirmation } = form.getValues();
     // TODO : パスワード再設定処理
     setModalOpen(true);
     setModalTitle(t_Auth("resetPasswordSuccess"));
@@ -42,57 +54,34 @@ export default function ResetPasswordPage() {
             <p>{t_Auth("resetPasswordDescription")}</p>
             <form
               className="flex flex-col gap-4 w-full"
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleSubmit}
             >
-              <input
-                type="text"
-                name="username"
-                style={{ display: "none" }}
-                autoComplete="username"
-              />
-              <InputText
-                control={control}
-                name="password"
+              <Mantine.TextInput
                 label={t_Auth("password")}
                 type="password"
-                rules={{
-                  required: { value: true, message: t_Auth("required") },
-                  minLength: {
-                    value: 6,
-                    message: t_Auth("invalidPassword"),
-                  },
-                }}
                 autoComplete="new-password"
+                key={form.key("password")}
+                {...form.getInputProps("password")}
               />
-              <InputText
-                control={control}
-                name="passwordConfirmation"
-                label={t_Auth("password_confirmation")}
+              <Mantine.TextInput
                 type="password"
-                rules={{
-                  required: { value: true, message: t_Auth("required") },
-                  validate: (value: string) =>
-                    value === getValues("password") ||
-                    t_Auth("invalidPasswordConfirmation"),
-                  minLength: {
-                    value: 6,
-                    message: t_Auth("invalidPassword"),
-                  },
-                }}
+                label={t_Auth("password_confirmation")}
                 autoComplete="new-password"
+                key={form.key("password_confirmation")}
+                {...form.getInputProps("password_confirmation")}
               />
-              <Button type="submit" variant="outlined">
+              <Mantine.Button variant="outlined" type="submit">
                 {t_Auth("resetting")}
-              </Button>
+              </Mantine.Button>
             </form>
           </div>
         </section>
       </article>
       <UI.TransitionsModal>
         <div className="flex gap-4 justify-center items-center h-20 mt-4 w-68 m-auto">
-          <Button type="submit" variant="outlined" onClick={handleBackHome}>
+          <Mantine.Button variant="outlined" onClick={handleBackHome}>
             {t_General("backHome")}
-          </Button>
+          </Mantine.Button>
         </div>
       </UI.TransitionsModal>
     </>
