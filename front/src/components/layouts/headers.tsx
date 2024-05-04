@@ -3,7 +3,7 @@ import { Link, useRouter } from "@/lib";
 import * as RecoilState from "@/recoilState";
 import { useTranslations } from "next-intl";
 import React, { useState } from "react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import Image from "next/image";
 import { RequiredLoginModal } from "@/components/ui";
 import { IoMdSearch, IoMdSettings } from "react-icons/io";
@@ -14,6 +14,7 @@ import { MdLogout } from "react-icons/md";
 import { IconContext } from "react-icons/lib";
 
 export default function Headers() {
+  const user = useRecoilValue(RecoilState.userState);
   const t_Header = useTranslations("Header");
   const [search, setSearch] = useState("");
   const router = useRouter();
@@ -54,7 +55,7 @@ export default function Headers() {
               className="md:flex md:justify-center md:items-center gap-2"
               onSubmit={handleSearch}
             >
-              <label className="bg-green-100 rounded md:text-sm md:flex md:justify-center md:items-center text-gray-400">
+              <label className="bg-green-100 rounded md:text-sm md:flex md:justify-center md:items-center text-gray-400 pl-2">
                 <IconContext.Provider value={{ size: "1.5rem" }}>
                   <IoMdSearch />
                 </IconContext.Provider>
@@ -77,13 +78,22 @@ export default function Headers() {
               </Mantine.Button>
             </form>
           </div>
-          <Mantine.Button
-            variant="contained"
-            onClick={handlePost}
-            className="hidden md:block bg-orange-200 hover:bg-orange-400 text-black  transition-all"
-          >
-            {t_Header("postButton")}
-          </Mantine.Button>
+          {user.name ? (
+            <Mantine.Button
+              variant="contained"
+              onClick={handlePost}
+              className="hidden md:block bg-orange-200 hover:bg-orange-400 text-black  transition-all"
+            >
+              {t_Header("postButton")}
+            </Mantine.Button>
+          ) : (
+            <Mantine.Button
+              variant="contained"
+              className="hidden md:block bg-orange-200 hover:bg-orange-400 text-black  transition-all"
+            >
+              {t_Header("signUpOrLogin")}
+            </Mantine.Button>
+          )}
           {AccountMenu()}
         </div>
       </header>

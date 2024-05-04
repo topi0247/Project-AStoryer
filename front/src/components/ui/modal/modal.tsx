@@ -2,18 +2,7 @@
 
 import { useRecoilState, useRecoilValue } from "recoil";
 import * as ModalState from "@/recoilState";
-import { Button, Modal } from "@mantine/core";
-
-const style = {
-  position: "absolute" as "absolute",
-  top: "35%",
-  left: "50%",
-  transform: "translate(-50%, -65%)",
-  width: 400,
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  p: 4,
-};
+import { Modal } from "@mantine/core";
 
 export default function TransitionsModal({
   children,
@@ -25,11 +14,7 @@ export default function TransitionsModal({
 
   return (
     <>
-      <Modal
-        opened={open}
-        onClose={() => setOpen(false)}
-        title="Authentication"
-      >
+      <Modal opened={open} onClose={() => setOpen(false)} title={title}>
         {children}
       </Modal>
     </>

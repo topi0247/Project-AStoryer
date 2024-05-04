@@ -11,7 +11,8 @@
   "Header": {
     "searchPlaceholder": "タグやシナリオ名で検索",
     "searchButton": "検索",
-    "postButton": "作品を投稿"
+    "postButton": "作品を投稿",
+    "signUpOrLogin": "新規登録 / ログイン"
   },
   "Footer": {
     "about": "AStoryerとは",
