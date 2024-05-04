@@ -17,7 +17,7 @@ const illusts = Array.from({ length: 10 }).map((_, i) => ({
 export default function Home() {
   const t_General = useTranslations("General");
   return (
-    <div className="w-full flex flex-col gap-16">
+    <div className="w-full flex flex-col gap-16 my-8">
       <article>
         <h2 className="text-xl text-start my-4 ml-8">
           {t_General("followedNewPosts")}
@@ -27,12 +27,12 @@ export default function Home() {
         </section>
       </article>
       <article>
-        <h2 className="text-2xl text-start mb-4 ml-8 font-semibold">
+        <h2 className="text-xl text-start mb-4 ml-8">
           {t_General("newPosts")}
         </h2>
-        <section>
+        <div>
           <IllustCarousel illustsData={illusts} />
-        </section>
+        </div>
       </article>
     </div>
   );

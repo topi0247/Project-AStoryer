@@ -108,12 +108,12 @@ function Tabs({ noticeStates }: { noticeStates: NoticeStates }) {
     setValue(newValue);
   };
 
-  const a11yProps = (index: number) => {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    };
-  };
+  // const a11yProps = (index: number) => {
+  //   return {
+  //     id: `simple-tab-${index}`,
+  //     "aria-controls": `simple-tabpanel-${index}`,
+  //   };
+  // };
 
   return (
     <Mantine.Box>
@@ -147,11 +147,12 @@ function Tabs({ noticeStates }: { noticeStates: NoticeStates }) {
 
 function CustomTabPanel(props: TabPanelProps) {
   const { value, noticeState, index, ...other } = props;
-  if (value === null) return null;
 
   const [newNoticeState, setNewNoticeState] =
     useState<NoticeState>(noticeState);
   const t_AccountSettings = useTranslations("AccountSettings");
+
+  if (value === null) return null;
 
   return (
     <div

@@ -19,7 +19,7 @@ export default function Pagination({
     const element = document.querySelector(elementName);
     if (element === null) return;
     setTopPosY(element.getBoundingClientRect().top);
-  }, []);
+  }, [elementName]);
 
   const handleChange = (value: number) => {
     setPage(value);

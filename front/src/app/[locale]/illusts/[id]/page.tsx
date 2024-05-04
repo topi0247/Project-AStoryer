@@ -9,6 +9,7 @@ import * as Mantine from "@mantine/core";
 import { FixedIconButtonList, IconButtonList } from "@/components/ui";
 import { useTranslations } from "next-intl";
 import { MdCollections, MdHighlightOff } from "react-icons/md";
+import Image from "next/image";
 
 export default function IllustPage({
   params: { id },
@@ -54,7 +55,9 @@ export default function IllustPage({
                 className="h-full cursor-pointer transition-all hover:opacity-75"
                 onClick={() => setExpansionMode(true)}
               >
-                <img
+                <Image
+                  width={900} // TODO : 画像のサイズ
+                  height={1600} // TODO : 画像のサイズ
                   src="/assets/900x1600.png"
                   alt="タイトル"
                   className="w-full h-full object-contain"
@@ -284,7 +287,9 @@ export default function IllustPage({
             <MdHighlightOff />
           </Mantine.Button>
           <section className="w-11/12 h-auto md:h-[95vh]">
-            <img
+            <Image
+              width={900} // TODO : 画像のサイズ
+              height={1600} // TODO : 画像のサイズ
               src="/assets/900x1600.png"
               alt="タイトル"
               className="h-full m-auto object-cover"
