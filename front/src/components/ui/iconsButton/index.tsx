@@ -29,7 +29,7 @@ const FavoriteButton = ({ state }: { state: boolean }) => {
           variant="transparent"
           color="pink"
         >
-          <MdFavorite />
+          <MdFavorite size={30} />
         </Button>
       ) : (
         <Button
@@ -37,7 +37,7 @@ const FavoriteButton = ({ state }: { state: boolean }) => {
           variant="transparent"
           color="gray"
         >
-          <MdOutlineFavoriteBorder />
+          <MdOutlineFavoriteBorder size={30} />
         </Button>
       )}
     </>
@@ -60,16 +60,16 @@ const BookmarkButton = ({ state }: { state: boolean }) => {
   return (
     <>
       {bookmark ? (
-        <Button onClick={() => setBookmark(false)} variant="transparent">
-          <FaBookmark />
+        <Button onClick={() => handleBookmark(false)} variant="transparent">
+          <FaBookmark size={25} />
         </Button>
       ) : (
         <Button
-          onClick={() => setBookmark(true)}
+          onClick={() => handleBookmark(true)}
           variant="transparent"
           color="gray"
         >
-          <FaRegBookmark />
+          <FaRegBookmark size={25} />
         </Button>
       )}
     </>
@@ -83,7 +83,7 @@ const ShareButton = () => {
 
   return (
     <Button onClick={handleShare} variant="transparent">
-      <MdShare />
+      <MdShare size={25} />
     </Button>
   );
 };
