@@ -68,6 +68,7 @@ export default function Headers() {
                 />
               </label>
               <Mantine.Button
+                type="submit"
                 variant="contained"
                 size="small"
                 className="bg-green-200 hover:bg-green-400 text-black transition-all"

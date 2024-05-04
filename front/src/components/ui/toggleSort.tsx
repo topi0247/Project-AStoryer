@@ -26,32 +26,23 @@ export default function ToggleSort({ searchWords }: { searchWords: string[] }) {
     <div>
       <ButtonGroup>
         <Button
-          color={sortBy === SortBy.New ? "bg-green-100" : "bg-slate-300"}
+          className={`text-black font-normal transition-all hover:bg-green-300 hover:text-black ${
+            sortBy === SortBy.New ? "bg-green-300" : "bg-slate-300"
+          }`}
           onClick={() => handleSort(SortBy.New)}
         >
           {t_General("newPosts")}
         </Button>
 
         <Button
-          color={sortBy === SortBy.Old ? "bg-green-100" : "bg-slate-300"}
+          className={`text-black font-normal transition-all hover:bg-green-300 hover:text-black ${
+            sortBy === SortBy.Old ? "bg-green-300" : "bg-slate-300"
+          }`}
           onClick={() => handleSort(SortBy.Old)}
         >
-          {t_General("newPosts")}
+          {t_General("oldPosts")}
         </Button>
       </ButtonGroup>
-      {/* <StyledToggleButtonGroup
-        value={sortBy}
-        exclusive
-        onChange={handleSort}
-        aria-label={t_General("sortBy")}
-      >
-        <ToggleButton value={SortBy.New} aria-label={t_General("newPosts")}>
-          {t_General("newPosts")}
-        </ToggleButton>
-        <ToggleButton value={SortBy.Old} aria-label={t_General("oldPosts")}>
-          {t_General("oldPosts")}
-        </ToggleButton>
-      </StyledToggleButtonGroup> */}
     </div>
   );
 }

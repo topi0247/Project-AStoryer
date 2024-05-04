@@ -6,7 +6,6 @@ import { useState } from "react";
 import { useRouter } from "@/lib";
 import * as Mantine from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IoMdCloseCircle } from "react-icons/io";
 
 // 仮データをハードコーディング
 const Tags = Array.from({ length: 10 }).map((_, i) => ({
@@ -25,8 +24,8 @@ const Synalios = Array.from({ length: 50 }).map((_, i) => ({
 }));
 
 enum SearchType {
-  AND = 0,
-  OR = 1,
+  AND = "AND",
+  OR = "OR",
 }
 
 const style = {
@@ -53,7 +52,7 @@ export default function SearchModal() {
   const [synalioName, setSynalioName] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [userName, setUserName] = useState("");
-  const [searchType, setSearchType] = useState(SearchType.AND);
+  const [searchType, setSearchType] = useState<string>("");
   const router = useRouter();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -96,27 +95,21 @@ export default function SearchModal() {
     <>
       <Mantine.Button
         variant="contained"
-        className="bg-orange-200 hover:bg-orange-400 text-black"
+        className="bg-orange-200 hover:bg-orange-400 text-black transition-all"
         onClick={open}
       >
         {t_Search("detailsSearch")}
       </Mantine.Button>
-      <Mantine.Modal opened={opened} onClose={close}>
-        <Mantine.Button onClick={close}>
-          <IoMdCloseCircle />
-        </Mantine.Button>
-        <UI.H2>{t_Search("detailsSearch")}</UI.H2>
-
+      <Mantine.Modal
+        opened={opened}
+        onClose={close}
+        size="md"
+        title={t_Search("detailsSearch")}
+      >
         <form className="flex flex-col gap-4" onSubmit={handleSearch}>
           <Mantine.TextInput
             label={t_SearchOption("postTitle")}
-            variant="filled"
             onChange={(e) => setPostTitle(e.target.value)}
-          />
-          <Mantine.Select
-            data={[]}
-            value={gameSystem}
-            onChange={setGameSystem}
           />
           <Mantine.Select
             label={t_SearchOption("gameSystem")}
@@ -126,7 +119,7 @@ export default function SearchModal() {
           />
 
           <Mantine.Autocomplete
-            label={t_SearchOption("synalioName")}
+            label={t_SearchOption("synalio")}
             value={synalioName}
             onChange={setSynalioName}
             data={Synalios.map((synalio) => synalio.title)}
@@ -146,15 +139,13 @@ export default function SearchModal() {
             onChange={(e) => setUserName(e.target.value)}
           />
 
-          <Mantine.Radio.Group>
-            <Mantine.Group>
+          <Mantine.Radio.Group value={searchType} onChange={setSearchType}>
+            <Mantine.Group className="flex justify-center items-center">
               <Mantine.Radio
-                checked
                 label={t_SearchOption("andSearch")}
                 value={SearchType.AND}
               />
               <Mantine.Radio
-                checked
                 label={t_SearchOption("orSearch")}
                 value={SearchType.OR}
               />

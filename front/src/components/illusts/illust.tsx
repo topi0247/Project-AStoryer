@@ -1,7 +1,14 @@
 import { Link } from "@/lib";
 import { IndexIllustData } from "@/types";
 import { Image } from "@mantine/core";
-import { MdCollections } from "react-icons/md";
+import dynamic from "next/dynamic";
+
+// aタグの中にsvgを入れるとHydrationエラーになるので動的読み込みを行う
+// SSRはしない
+const MdCollections = dynamic(
+  () => import("react-icons/md").then((mod) => mod.MdCollections),
+  { ssr: false }
+);
 
 export default function Illust({
   illust,

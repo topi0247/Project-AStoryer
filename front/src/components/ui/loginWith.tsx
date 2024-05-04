@@ -1,6 +1,16 @@
 import { Button } from "@mantine/core";
 import { useTranslations } from "next-intl";
-import { DiscordIcon, GoogleIcon } from "./iconsButton";
+import dynamic from "next/dynamic";
+
+// const GoogleIcon = dynamic(
+//   () => import("./iconsButton").then((mod) => mod.GoogleIcon),
+//   { ssr: false }
+// );
+
+// const DiscordIcon = dynamic(
+//   () => import("./iconsButton").then((mod) => mod.DiscordIcon),
+//   { ssr: false }
+// );
 
 export default function LoginWith({ state }: { state: string }) {
   const t_Auth = useTranslations("Auth");
@@ -19,7 +29,7 @@ export default function LoginWith({ state }: { state: string }) {
       <Button variant="outline" className="gsi-material-button">
         <div className="gsi-material-button-content-wrapper">
           <div className="gsi-material-button-icon">
-            <GoogleIcon />
+            {/* <GoogleIcon /> */}
             <span>{t_Auth(`${state}WithGoogle`)}</span>
           </div>
         </div>
@@ -29,7 +39,7 @@ export default function LoginWith({ state }: { state: string }) {
         onClick={loginWithDiscord}
         color="rgba(120, 120, 120, 1)"
       >
-        <DiscordIcon />
+        {/* <DiscordIcon /> */}
         {t_Auth(`${state}WithDiscord`)}
       </Button>
     </div>

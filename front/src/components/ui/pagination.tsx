@@ -31,7 +31,7 @@ export default function Pagination({
   };
 
   return (
-    <article className="w-full m-auto text-center">
+    <article className="w-full flex justify-center items-center">
       <Mantine.Pagination
         total={total}
         siblings={1}
@@ -41,29 +41,6 @@ export default function Pagination({
         boundaries={1}
         color="green"
       />
-      {/* SP */}
-      {/* <div className="md:hidden">
-        <MUI.Pagination
-          count={11}
-          defaultPage={1}
-          size="medium"
-          className="inline-block"
-          onChange={handleChange}
-          page={page}
-        />
-      </div> */}
-
-      {/* PC */}
-      {/* <div className="hidden md:block">
-        <MUI.Pagination
-          count={11}
-          defaultPage={1}
-          size="large"
-          className="inline-block"
-          onChange={handleChange}
-          page={page}
-        />
-      </div> */}
     </article>
   );
 }

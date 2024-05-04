@@ -66,16 +66,16 @@ export default function IllustsPage({
         <div className="w-full mb-8 text-end">
           <ToggleSort searchWords={searchWords} />
         </div>
-        <div className="grid grid-cols-2 mx-4 md:mx-auto md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 mx-4 md:mx-auto md:grid-cols-4 gap-2">
           {illusts.map((illust: IndexIllustData) => (
             <div key={illust.id} className="mb-8">
-              <Illust illust={illust} />
+              <Illust illust={illust} isUserPage={false} />
             </div>
           ))}
         </div>
       </article>
 
-      <article className="w-full m-auto text-center mb-8">
+      <article className="w-full mb-8">
         <Pagination adjust={0} />
       </article>
     </>
