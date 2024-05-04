@@ -1,6 +1,4 @@
 "use client";
-import * as MUI_LAB from "@mui/lab";
-import * as MUI from "@mui/material";
 import { useState } from "react";
 
 enum Tab {

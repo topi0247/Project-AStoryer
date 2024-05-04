@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
-import { NextIntlClientProvider, useMessages } from "next-intl";
-import AppProvider from "@/providers/index";
+import AppProviders from "@/providers";
 import { MainLayout } from "@/components/layouts";
+import { ColorSchemeScript } from "@mantine/core";
 
 export const metadata: Metadata = {
   title: "AStoryer - あすとりや -",
@@ -15,16 +15,16 @@ export default function RootLayout({
   children: React.ReactNode;
   params: { locale: string };
 }>) {
-  const messages = useMessages();
   return (
     <html lang="ja">
-      <AppProvider>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <body>
-            <MainLayout>{children}</MainLayout>
-          </body>
-        </NextIntlClientProvider>
-      </AppProvider>
+      <head>
+        <ColorSchemeScript />
+      </head>
+      <body>
+        <AppProviders params={{ locale }}>
+          <MainLayout>{children}</MainLayout>
+        </AppProviders>
+      </body>
     </html>
   );
 }

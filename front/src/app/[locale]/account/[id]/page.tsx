@@ -1,6 +1,5 @@
 "use client";
 
-import * as MUI from "@mui/material";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 

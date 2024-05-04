@@ -1,6 +1,5 @@
 "use client";
 
-import * as MUI from "@mui/material";
 import { useRecoilState, useRecoilValue } from "recoil";
 import * as ModalState from "@/recoilState";
 

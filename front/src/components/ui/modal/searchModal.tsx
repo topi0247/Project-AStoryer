@@ -1,10 +1,8 @@
 "use client";
 
 import * as UI from "@/components/ui";
-import * as MUI from "@mui/material";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { useRouter } from "@/lib";
 
 // 仮データをハードコーディング

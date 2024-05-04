@@ -1,9 +1,6 @@
 "use client";
 import { Link, useRouter } from "@/lib";
 import * as RecoilState from "@/recoilState";
-import * as MUI_ICONS from "@mui/icons-material";
-import MenuIcon from "@mui/icons-material/Menu";
-import * as MUI from "@mui/material";
 import { useTranslations } from "next-intl";
 import React, { useState } from "react";
 import { useSetRecoilState } from "recoil";

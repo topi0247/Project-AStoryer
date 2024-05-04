@@ -1,7 +1,6 @@
 import { Link } from "@/lib";
 import { IndexIllustData } from "@/types";
 import Image from "next/image";
-import CollectionsIcon from "@mui/icons-material/Collections";
 
 export default function Illust({
   illust,

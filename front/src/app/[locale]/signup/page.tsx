@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@mui/material";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/lib";

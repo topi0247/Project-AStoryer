@@ -4,8 +4,6 @@ import { FormEvent, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import * as RecoilState from "@/recoilState";
 import Style from "@/styles/index.module.css";
-import { Avatar, Button, IconButton, TextareaAutosize } from "@mui/material";
-import * as MUI_ICON from "@mui/icons-material";
 import { Link } from "@/lib";
 import { FixedIconButtonList, IconButtonList } from "@/components/ui";
 import { useTranslations } from "next-intl";

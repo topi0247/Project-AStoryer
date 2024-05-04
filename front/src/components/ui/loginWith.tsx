@@ -1,4 +1,3 @@
-import { Button } from "@mui/material";
 import { useTranslations } from "next-intl";
 
 export default function LoginWith({ state }: { state: string }) {

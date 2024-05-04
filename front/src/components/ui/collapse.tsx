@@ -2,9 +2,6 @@
 
 import { useState } from "react";
 import Style from "@/styles/index.module.css";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import * as MUI from "@mui/material";
 
 export default function Collapse({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState<boolean>(false);

@@ -4,7 +4,6 @@ import { IndexIllustData } from "@/types";
 import { useTranslations } from "next-intl";
 import { SearchModal, ToggleSort } from "@/components/ui";
 import { Illust } from "@/components/illusts";
-import { Pagination } from "@mui/material";
 
 // 仮データをハードコーディング
 const illusts = Array.from({ length: 20 }).map((_, i) => ({

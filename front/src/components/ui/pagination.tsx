@@ -1,6 +1,5 @@
 "use client";
 
-import * as MUI from "@mui/material";
 import { useEffect, useState } from "react";
 
 export default function Pagination({

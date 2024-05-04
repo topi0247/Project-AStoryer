@@ -1,11 +1,5 @@
 "use client";
 
-import { Autoplay, Navigation } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import "@/styles/globals.css"; // swiperの上書き
 import { IndexIllustData } from "@/types";
 import Illust from "./illust";
 

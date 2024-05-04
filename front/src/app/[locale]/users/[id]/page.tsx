@@ -1,5 +1,4 @@
 import Image from "next/image";
-import * as MUI from "@mui/material";
 import * as UI from "@/components/ui";
 import { IndexIllustData } from "@/types";
 import { Illust } from "@/components/illusts";
