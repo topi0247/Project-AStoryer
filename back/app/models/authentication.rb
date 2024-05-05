@@ -9,7 +9,7 @@
 #  updated_at :datetime         not null
 #  user_id    :bigint
 #
-class Authentiction < ActiveRecord::Base
+class Authentication < ActiveRecord::Base
   belongs_to :user
   validates :provider, :uid, presence: true
 

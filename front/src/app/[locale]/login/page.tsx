@@ -6,7 +6,7 @@ import * as MantineForm from "@mantine/form";
 import * as Mantine from "@mantine/core";
 import * as UI from "@/components/ui";
 import { RouterPath } from "@/settings";
-import { useAuth } from "@/api/auth";
+import { useAuth } from "@/api";
 import { useSetRecoilState } from "recoil";
 import { userState } from "@/recoilState";
 import { useState } from "react";
