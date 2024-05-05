@@ -94,7 +94,7 @@ export default function LoginPage() {
               <span className="bg-white px-6">{t_Auth("or")}</span>
             </p>
           </div>
-          <LoginWith />
+          <LoginWith state="login" />
         </div>
       </section>
     </article>

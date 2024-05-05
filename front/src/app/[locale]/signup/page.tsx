@@ -10,6 +10,7 @@ import { RouterPath } from "@/settings";
 import { useSetRecoilState } from "recoil";
 import { userState } from "@/recoilState";
 import { useState } from "react";
+import { LoginWith } from "@/components/features/auth";
 
 export default function SignUpPage() {
   const { signUp } = useAuth();
@@ -111,7 +112,7 @@ export default function SignUpPage() {
               <span className="bg-white px-6">{t_Auth("or")}</span>
             </p>
           </div>
-          <UI.LoginWith state="signup" />
+          <LoginWith state="signup" />
         </div>
       </section>
     </article>
