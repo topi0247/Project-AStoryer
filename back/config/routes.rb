@@ -8,7 +8,7 @@ Rails.application.routes.draw do
         sessions:           'api/v1/auth/sessions',
         registrations:       'api/v1/auth/registrations'
       }
-      resource :account, only: %i[show]
+      resource :account, only: %i[show update]
       resource :notice, only: %i[update]
     end
   end

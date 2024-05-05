@@ -28,4 +28,33 @@ class Api::V1::AccountsController < Api::V1::BasesController
 
     render json: {account: account,notices: notices}, status: :ok
   end
+
+  def update
+    begin
+      user = current_api_v1_user
+      if account_params[:email].present?
+        # 認証情報の更新
+        authentication = current_api_v1_user.authentications.find_by(provider: 'email')
+        authentication.update!(uid: account_params[:email])
+        # ユーザーが持っているuidの更新
+        # TODO : 将来的にメールアドレスではなくuuidを使うようにしたい
+        user.uid = account_params[:email]
+        user.email = account_params[:email]
+      end
+
+      if account_params[:name].present?
+        user.name = account_params[:name]
+      end
+      user.save!
+      head :ok
+    rescue
+      head :bad_request
+    end
+  end
+
+  private
+
+  def account_params
+    params.permit(:name, :email)
+  end
 end
