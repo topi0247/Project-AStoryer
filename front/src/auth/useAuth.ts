@@ -17,11 +17,12 @@ export const useAuth = () => {
       clearAccessTokens();
       return { success: false, message: data.message };
     }
+    console.log(response.headers.get("Access-Token"));
     setAccessTokens(
-      response.headers.get("access-token") || "",
-      response.headers.get("client") || "",
-      response.headers.get("uid") || "",
-      response.headers.get("expiry") || ""
+      response.headers.get("Access-Token") || "",
+      response.headers.get("Client") || "",
+      response.headers.get("Uid") || "",
+      response.headers.get("Expiry") || ""
     );
 
     return {
@@ -56,10 +57,10 @@ export const useAuth = () => {
     }
 
     setAccessTokens(
-      response.headers.get("access-token") || "",
-      response.headers.get("client") || "",
-      response.headers.get("uid") || "",
-      response.headers.get("expiry") || ""
+      response.headers.get("Access-Token") || "",
+      response.headers.get("Client") || "",
+      response.headers.get("Uid") || "",
+      response.headers.get("Expiry") || ""
     );
     return {
       success: true,
@@ -73,17 +74,17 @@ export const useAuth = () => {
     uid: string,
     expiry: string
   ) => {
-    localStorage.setItem("access-token", accessToken);
-    localStorage.setItem("client", client);
-    localStorage.setItem("uid", uid);
-    localStorage.setItem("expiry", expiry);
+    localStorage.setItem("Access-Token", accessToken);
+    localStorage.setItem("Client", client);
+    localStorage.setItem("Uid", uid);
+    localStorage.setItem("Expiry", expiry);
   };
 
   const clearAccessTokens = () => {
-    localStorage.removeItem("access-token");
-    localStorage.removeItem("client");
-    localStorage.removeItem("uid");
-    localStorage.removeItem("expiry");
+    localStorage.removeItem("Access-Token");
+    localStorage.removeItem("Client");
+    localStorage.removeItem("Uid");
+    localStorage.removeItem("Expiry");
   };
 
   return { login, signUp };

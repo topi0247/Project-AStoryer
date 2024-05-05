@@ -58,7 +58,8 @@
     "newPosts": "新着順",
     "oldPosts": "投稿順",
     "sortBy": "表示順",
-    "edit": "編集"
+    "edit": "編集",
+    "save": "保存"
   },
   "Search": {
     "searchResult": "検索結果",

@@ -13,11 +13,13 @@ class Api::V1::AccountsController < Api::V1::BasesController
     account = current_api_v1_user.authentications.map do |authentication|
       if(authentication.provider == 'email')
         {
+          "name"=> current_api_v1_user.name,
           # プロバイダーをキーとしてメールアドレスをマージ
           authentication.provider => authentication.uid
         }
       else
         {
+          "name"=> current_api_v1_user.name,
           # メールアドレス以外はuidが不要なのでenabledをマージ
           authentication.provider => "enabled"
         }

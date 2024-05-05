@@ -31,10 +31,10 @@ class Api::V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsCon
 
             resource.save!
 
-            response.headers['uid'] = resource.uid
-            response.headers['client'] = client_id
-            response.headers['expiry'] = expiry
-            response.headers['access-token'] = token
+            response.headers['Uid'] = resource.uid
+            response.headers['Client'] = client_id
+            response.headers['Expiry'] = expiry
+            response.headers['Access-Token'] = token
 
             # 認証トークンとユーザー情報を含むJSONを返す
             render json: {
