@@ -55,7 +55,6 @@ class Api::V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsCon
         end
       rescue => e
         # エラーが発生した場合
-        Rails.logger.error(e.backtrace.join("\n"))
         render json: { success: false, message: e.message } and return
       end
     end
