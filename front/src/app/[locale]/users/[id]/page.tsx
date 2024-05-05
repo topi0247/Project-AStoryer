@@ -1,9 +1,9 @@
 import * as Mantine from "@mantine/core";
 import * as UI from "@/components/ui";
 import { IndexIllustData } from "@/types";
-import { Illust } from "@/components/illusts";
+import { Illust } from "@/components/features/illusts";
 import { useTranslations } from "next-intl";
-import { UserEdit, UserTabs } from "@/components/users";
+import { UserEdit, UserTabs } from "@/components/features/users";
 
 // 仮データをハードコーディング
 const illusts = Array.from({ length: 20 }).map((_, i) => ({
