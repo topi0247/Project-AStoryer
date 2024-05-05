@@ -1,4 +1,4 @@
-import { IllustCarousel } from "@/components/illusts";
+import { IllustCarousel } from "@/components/features/illusts";
 import { useTranslations } from "next-intl";
 
 // 仮データをハードコーディング

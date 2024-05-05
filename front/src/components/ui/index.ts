@@ -1,7 +1,6 @@
 "use client";
 import { TransitionsModal, SearchModal, RequiredLoginModal } from "./modal";
 import H2 from "./headTag";
-import LoginWith from "./loginWith";
 import ToggleSort from "./toggleSort";
 import {
   IconButtonList,
@@ -12,7 +11,6 @@ import Pagination from "./pagination";
 
 export {
   TransitionsModal,
-  LoginWith,
   H2,
   ToggleSort,
   SearchModal,

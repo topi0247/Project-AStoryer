@@ -10,6 +10,7 @@ import { useAuth } from "@/api/auth";
 import { useSetRecoilState } from "recoil";
 import { userState } from "@/recoilState";
 import { useState } from "react";
+import { LoginWith } from "@/components/features/auth";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -93,7 +94,7 @@ export default function LoginPage() {
               <span className="bg-white px-6">{t_Auth("or")}</span>
             </p>
           </div>
-          <UI.LoginWith state="login" />
+          <LoginWith />
         </div>
       </section>
     </article>
