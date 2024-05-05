@@ -10,18 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_28_064238) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_05_021607) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "authentictions", force: :cascade do |t|
+  create_table "authentications", force: :cascade do |t|
     t.string "provider", null: false
     t.string "uid", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
-    t.index ["uid", "provider"], name: "index_authentictions_on_uid_and_provider", unique: true
-    t.index ["user_id"], name: "index_authentictions_on_user_id"
+    t.index ["uid", "provider"], name: "index_authentications_on_uid_and_provider", unique: true
+    t.index ["user_id"], name: "index_authentications_on_user_id"
+  end
+
+  create_table "notices", force: :cascade do |t|
+    t.boolean "favorite", default: false, null: false
+    t.boolean "bookmark", default: false, null: false
+    t.boolean "comment", default: false, null: false
+    t.boolean "follower", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "profiles", force: :cascade do |t|
@@ -43,6 +52,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_28_064238) do
     t.index ["follower_id"], name: "index_relationships_on_follower_id"
   end
 
+  create_table "user_notices", force: :cascade do |t|
+    t.integer "notice_kind", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.bigint "notice_id"
+    t.index ["notice_id"], name: "index_user_notices_on_notice_id"
+    t.index ["user_id"], name: "index_user_notices_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "provider", null: false
     t.string "uid", default: "", null: false
@@ -57,8 +76,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_28_064238) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
-  add_foreign_key "authentictions", "users"
+  add_foreign_key "authentications", "users"
   add_foreign_key "profiles", "users"
   add_foreign_key "relationships", "users", column: "followed_id"
   add_foreign_key "relationships", "users", column: "follower_id"
+  add_foreign_key "user_notices", "notices"
+  add_foreign_key "user_notices", "users"
 end

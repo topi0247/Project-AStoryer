@@ -23,6 +23,8 @@ class User < ActiveRecord::Base
   include DeviseTokenAuth::Concerns::User
   has_many :authentications, dependent: :destroy
   has_one :profile, dependent: :destroy
+  has_many :user_notices, dependent: :destroy
+  has_many :notices, through: :user_notices
 
   # フォローしている人とフォローされている人を取得するためのアソシエーション
   has_many :following_relationships, class_name: 'Relationship', foreign_key: 'follower_id', dependent: :destroy, inverse_of: :follower
