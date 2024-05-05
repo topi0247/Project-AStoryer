@@ -31,10 +31,10 @@ class Api::V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsCon
 
             resource.save!
 
-            response.headers['uid'] = resource.uid
-            response.headers['client'] = client_id
-            response.headers['expiry'] = expiry
-            response.headers['access-token'] = token
+            response.headers['Uid'] = resource.uid
+            response.headers['Client'] = client_id
+            response.headers['Expiry'] = expiry
+            response.headers['Access-Token'] = token
 
             # 認証トークンとユーザー情報を含むJSONを返す
             render json: {
@@ -47,7 +47,7 @@ class Api::V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsCon
             } and return
           else
             # アカウントがまだ有効でない場合の処理
-            render json: { success: false, message: "アカウントが有効ではありません。" } and return
+            render json: { success: false, message: "アカウントが有効ではありません。" }  and return
           end
         else
           # ユーザーの保存に失敗した場合

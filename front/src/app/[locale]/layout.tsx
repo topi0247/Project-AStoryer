@@ -16,7 +16,7 @@ export default function RootLayout({
   params: { locale: string };
 }>) {
   return (
-    <html lang="ja">
+    <html lang={locale}>
       <head>
         <ColorSchemeScript />
       </head>

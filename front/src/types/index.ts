@@ -26,3 +26,15 @@ export enum PublicState {
   PUBLIC = 2, // 全体公開
   ONLY_URL = 3, // URLを知ってる人のみ
 }
+
+export interface NoticeState {
+  favorite: boolean;
+  bookmark: boolean;
+  comment: boolean;
+  follower: boolean;
+}
+
+export interface NoticeStates {
+  app: NoticeState;
+  email: NoticeState;
+}

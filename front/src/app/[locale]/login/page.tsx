@@ -6,7 +6,7 @@ import * as MantineForm from "@mantine/form";
 import * as Mantine from "@mantine/core";
 import * as UI from "@/components/ui";
 import { RouterPath } from "@/settings";
-import { useAuth } from "@/api";
+import { useAuth } from "@/auth";
 import { useSetRecoilState } from "recoil";
 import { userState } from "@/recoilState";
 import { useState } from "react";
@@ -31,7 +31,8 @@ export default function LoginPage() {
     },
   });
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const { email, password } = form.getValues();
     const result = await login(email, password);
 
