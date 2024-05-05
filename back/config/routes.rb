@@ -9,6 +9,7 @@ Rails.application.routes.draw do
         registrations:       'api/v1/auth/registrations'
       }
       resource :account, only: %i[show]
+      resource :notice, only: %i[update]
     end
   end
 end
