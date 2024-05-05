@@ -1,7 +1,14 @@
 import { Link } from "@/lib";
 import { IndexIllustData } from "@/types";
-import Image from "next/image";
-import CollectionsIcon from "@mui/icons-material/Collections";
+import { Image } from "@mantine/core";
+import dynamic from "next/dynamic";
+
+// aタグの中にsvgを入れるとHydrationエラーになるので動的読み込みを行う
+// SSRはしない
+const MdCollections = dynamic(
+  () => import("react-icons/md").then((mod) => mod.MdCollections),
+  { ssr: false }
+);
 
 export default function Illust({
   illust,
@@ -16,24 +23,20 @@ export default function Illust({
         <Image
           src={illust.image}
           loading="lazy"
-          width={400}
-          height={400}
-          alt="Slider Image"
+          alt="タイトル" // TODO : 画像タイトル
           className="aspect-square object-cover z-10"
         />
         {illust.count > 1 && (
-          <CollectionsIcon className="absolute bottom-2 right-2 text-white" />
+          <MdCollections className="absolute bottom-2 right-2 text-white" />
         )}
       </Link>
-      {isUserPage && (
-        <div className="mt-2 flex justify-start items-center gap-3">
+      {!isUserPage && (
+        <div className="mt-2 flex ml-4 justify-start items-center gap-3">
           <Link href={`/users/${illust.user.id}`}>
             <Image
               src={illust.user.avatar}
-              width={40}
-              height={40}
               alt={illust.user.name}
-              className="rounded-full aspect-square object-cover"
+              className="rounded-full aspect-square object-cover w-9"
             />
           </Link>
           <h4>

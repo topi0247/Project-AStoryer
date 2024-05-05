@@ -1,3 +1,4 @@
+import "@mantine/core/styles.css";
 import Footers from "./footers";
 import Headers from "./headers";
 

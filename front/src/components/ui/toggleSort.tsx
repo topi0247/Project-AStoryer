@@ -1,22 +1,8 @@
 "use client";
 import { useRouter } from "@/lib";
-import { styled } from "@mui/material/styles";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup, {
-  toggleButtonGroupClasses,
-} from "@mui/material/ToggleButtonGroup";
+import { Button, ButtonGroup } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
-  [`& .${toggleButtonGroupClasses.grouped}`]: {
-    margin: "0px 2px",
-    border: 0,
-    borderRadius: theme.shape.borderRadius,
-    letterSpacing: "2px",
-    textAlign: "center",
-  },
-}));
 
 enum SortBy {
   New = 0,
@@ -28,10 +14,7 @@ export default function ToggleSort({ searchWords }: { searchWords: string[] }) {
   const router = useRouter();
   const t_General = useTranslations("General");
 
-  const handleSort = (
-    event: React.MouseEvent<HTMLElement>,
-    newSortBy: SortBy
-  ) => {
+  const handleSort = (newSortBy: SortBy) => {
     setSortBy(newSortBy);
     const query =
       ((searchWords?.length ?? 0) > 0 && `search=${searchWords.join(",")}`) +
@@ -41,19 +24,25 @@ export default function ToggleSort({ searchWords }: { searchWords: string[] }) {
 
   return (
     <div>
-      <StyledToggleButtonGroup
-        value={sortBy}
-        exclusive
-        onChange={handleSort}
-        aria-label={t_General("sortBy")}
-      >
-        <ToggleButton value={SortBy.New} aria-label={t_General("newPosts")}>
+      <ButtonGroup>
+        <Button
+          className={`text-black font-normal transition-all hover:bg-green-300 hover:text-black ${
+            sortBy === SortBy.New ? "bg-green-300" : "bg-slate-300"
+          }`}
+          onClick={() => handleSort(SortBy.New)}
+        >
           {t_General("newPosts")}
-        </ToggleButton>
-        <ToggleButton value={SortBy.Old} aria-label={t_General("oldPosts")}>
+        </Button>
+
+        <Button
+          className={`text-black font-normal transition-all hover:bg-green-300 hover:text-black ${
+            sortBy === SortBy.Old ? "bg-green-300" : "bg-slate-300"
+          }`}
+          onClick={() => handleSort(SortBy.Old)}
+        >
           {t_General("oldPosts")}
-        </ToggleButton>
-      </StyledToggleButtonGroup>
+        </Button>
+      </ButtonGroup>
     </div>
   );
 }

@@ -1,10 +1,18 @@
-"use client";
-import { RecoilRoot } from "recoil";
+import ClientProvider from "./clientProvider";
+import ServerProvider from "./serverProvider";
 
-export default function AppProvider({
+export default function AppProviders({
   children,
-}: {
+  params,
+}: Readonly<{
   children: React.ReactNode;
-}) {
-  return <RecoilRoot>{children}</RecoilRoot>;
+  params: { locale: string };
+}>) {
+  return (
+    <>
+      <ClientProvider>
+        <ServerProvider params={params}>{children}</ServerProvider>
+      </ClientProvider>
+    </>
+  );
 }

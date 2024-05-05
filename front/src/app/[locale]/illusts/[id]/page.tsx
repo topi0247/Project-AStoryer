@@ -4,11 +4,12 @@ import { FormEvent, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import * as RecoilState from "@/recoilState";
 import Style from "@/styles/index.module.css";
-import { Avatar, Button, IconButton, TextareaAutosize } from "@mui/material";
-import * as MUI_ICON from "@mui/icons-material";
 import { Link } from "@/lib";
+import * as Mantine from "@mantine/core";
 import { FixedIconButtonList, IconButtonList } from "@/components/ui";
 import { useTranslations } from "next-intl";
+import { MdCollections, MdHighlightOff } from "react-icons/md";
+import { useMediaQuery } from "@mantine/hooks";
 
 export default function IllustPage({
   params: { id },
@@ -20,6 +21,8 @@ export default function IllustPage({
   const [follow, setFollow] = useState(false);
   const setModalOpen = useSetRecoilState(RecoilState.modalOpenState);
   const t_ShowPost = useTranslations("ShowPost");
+  const theme = Mantine.useMantineTheme();
+  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
 
   const handleOpenUser = () => {
     // TODO : 投稿者の情報モーダルの表示
@@ -46,21 +49,45 @@ export default function IllustPage({
   return (
     <article className="max-w-[1200px] w-11/12 m-auto">
       <div className="flex flex-col md:flex-row justify-start items-start md:gap-6 container my-8 px-4 m-auto">
-        <div className="flex flex-col gap-8 md:w-2/3">
-          <article>
-            <section className="bg-gray-400 h-[90vh] w-full md:h-auto md:max-h-[50rem] flex justify-center items-center mb-4 overflow-hidden">
-              <button
+        <div className="flex flex-col gap-8 md:w-full">
+          <div>
+            <section className="bg-gray-400 max-h-[90vh] w-full flex justify-center items-center mb-4 overflow-hidden">
+              <Mantine.Button
+                variant={mobile ? "transparent" : "filled"}
+                color={mobile ? "transparent" : "gray"}
                 type="button"
-                className="h-full cursor-pointer transition-all hover:opacity-75"
+                className="block h-full cursor-pointer transition-all hover:opacity-75 relative"
                 onClick={() => setExpansionMode(true)}
+                style={{ width: "100%", height: "auto", padding: 0 }}
               >
-                <img
+                <Mantine.Image
                   src="/assets/900x1600.png"
                   alt="タイトル"
-                  className="w-full h-full object-contain"
+                  fit="contain"
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "90vh",
+                    height: "auto",
+                  }}
                 />
-                <MUI_ICON.Collections className="absolute top-2 left-2 text-white" />
-              </button>
+                <MdCollections className="absolute top-2 right-2 text-white" />
+              </Mantine.Button>
+              <Mantine.Modal
+                opened={expansionMode}
+                onClose={() => setExpansionMode(false)}
+                size="100%"
+                padding="sm"
+              >
+                <Mantine.Image
+                  src="/assets/900x1600.png"
+                  alt="拡大表示"
+                  fit="contain"
+                  style={{
+                    maxHeight: "80vh",
+                    height: "auto",
+                  }}
+                />
+              </Mantine.Modal>
             </section>
             <section className="bg-white p-4 rounded flex flex-col gap-3">
               <div className="flex flex-col gap-3">
@@ -73,18 +100,21 @@ export default function IllustPage({
                   <h3 className="text-2xl font-semibold">
                     タイトルタイトルタイトルタイトルタイトルタイトルタイトル
                   </h3>
-                  <Button
+                  <Mantine.Button
+                    variant="transparent"
                     onClick={handleOpenUser}
-                    className="flex justify-start items-center gap-2 md:hidden"
+                    className="flex justify-center items-center h-12 md:hidden"
                   >
-                    <Avatar
+                    <Mantine.Avatar
+                      variant="default"
+                      radius="xl"
+                      size="md"
                       alt="icon"
                       src="/assets/900x1600.png"
-                      sx={{ width: 40, height: 40 }}
                     />
-                    <span className="text-black">ユーザー名</span>
-                  </Button>
-                  <div className="text-sm flex gap-2">
+                    <span className="ml-2 text-black">ユーザー名</span>
+                  </Mantine.Button>
+                  <div className="text-sm flex justify-center items-center gap-2">
                     <Link
                       href="/illusts/gameSystem=1"
                       className="bg-blue-200 rounded-lg px-2 py-1 hover:opacity-60 transition-all"
@@ -139,7 +169,7 @@ export default function IllustPage({
                 </button>
               </div>
             </section>
-          </article>
+          </div>
           <article className="flex flex-col gap-4">
             <section className="bg-slate-100 rounded p-3 flex flex-col gap-2 relative">
               <h3 className="text-xl font-semibold">
@@ -147,32 +177,32 @@ export default function IllustPage({
               </h3>
               <form onSubmit={handleSendComment}>
                 <div className="flex items-start gap-4">
-                  <Avatar
+                  <Mantine.Avatar
                     alt="icon"
                     src="https://placehold.jp/300x300.png"
-                    sx={{ width: 40, height: 40 }}
                   />
                   <div className="flex flex-col gap-2 w-full">
                     <span className="p-0 m-0 font-semibold">ユーザー名</span>
-                    <TextareaAutosize
+                    <Mantine.Textarea
                       aria-label="コメント"
                       minRows={3}
                       placeholder="コメント"
                       className="w-full bg-gray-200 rounded p-2 focus:outline-none resize-none"
+                      autosize
                     />
                     <div className="w-full text-center">
-                      <Button
+                      <Mantine.Button
                         type="submit"
                         variant="contained"
                         className="bg-orange-100 text-black hover:bg-orange-400"
                       >
                         {t_ShowPost("send")}
-                      </Button>
+                      </Mantine.Button>
                     </div>
                   </div>
                 </div>
               </form>
-              <div className="w-full h-full absolute top-0 left-0 bg-gray-500 bg-opacity-80 text-white font-semibold text-3xl flex justify-center items-center rounded">
+              <div className="w-full h-full absolute top-0 left-0 bg-gray-500 bg-opacity-80 text-white font-semibold md:text-3xl flex justify-center items-center rounded">
                 <p>コメント機能はログインで使えます</p>
               </div>
             </section>
@@ -185,10 +215,9 @@ export default function IllustPage({
                     className="flex gap-4 items-start py-4 border-b border-slate-200 last-of-type:border-none"
                   >
                     <Link href="/users/1">
-                      <Avatar
+                      <Mantine.Avatar
                         alt="icon"
                         src="https://placehold.jp/300x300.png"
-                        sx={{ width: 40, height: 40 }}
                       />
                     </Link>
                     <div className="flex flex-col gap-1">
@@ -213,37 +242,36 @@ export default function IllustPage({
 
         <article className="hidden md:w-1/3 md:block md:sticky md:top-4">
           <section className="bg-white p-4 rounded flex flex-col gap-4">
-            <h3 className="text-xl font-semibold">投稿者</h3>
+            <h3 className="text-xl">投稿者</h3>
             <div className="flex gap-4 justify-start items-center">
               <Link href="/users/1">
-                <Avatar
+                <Mantine.Avatar
                   alt="icon"
                   src="https://placehold.jp/300x300.png"
-                  sx={{ width: 60, height: 60 }}
                 />
               </Link>
               <div className="w-full flex flex-col gap-2">
-                <Link href="/users/1" className="font-semibold text-xl">
+                <Link href="/users/1" className="text-xl">
                   ユーザー名
                 </Link>
                 {follow ? (
-                  <Button
+                  <Mantine.Button
                     variant="outlined"
                     size="small"
                     onClick={handleFollow}
                     className="w-32"
                   >
                     フォロー解除
-                  </Button>
+                  </Mantine.Button>
                 ) : (
-                  <Button
+                  <Mantine.Button
                     variant="contained"
                     size="small"
                     onClick={handleFollow}
                     className="w-32"
                   >
                     フォロー
-                  </Button>
+                  </Mantine.Button>
                 )}
               </div>
             </div>
@@ -278,25 +306,6 @@ export default function IllustPage({
         buttonState={{ favorite: false, bookmark: false }} // TODO : いいね・ブックマークの状態
         publicState={2} // TODO : 投稿の公開範囲
       />
-
-      {expansionMode && (
-        <article className="fixed top-0 left-0 bg-black bg-opacity-80 w-full min-h-screen flex justify-center items-center">
-          <IconButton
-            aria-label="close"
-            className="absolute right-0 top-0 text-white text-3xl"
-            onClick={() => setExpansionMode(false)}
-          >
-            <MUI_ICON.HighlightOff />
-          </IconButton>
-          <section className="w-11/12 h-auto md:h-[95vh]">
-            <img
-              src="/assets/900x1600.png"
-              alt="タイトル"
-              className="h-full m-auto object-cover"
-            />
-          </section>
-        </article>
-      )}
     </article>
   );
 }

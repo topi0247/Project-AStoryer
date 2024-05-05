@@ -1,3 +1,4 @@
+import UserTabs from "./userTabs";
 import UserEdit from "./edit";
 
-export { UserEdit };
+export { UserTabs, UserEdit };

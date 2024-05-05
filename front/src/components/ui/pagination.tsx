@@ -1,7 +1,7 @@
 "use client";
 
-import * as MUI from "@mui/material";
 import { useEffect, useState } from "react";
+import * as Mantine from "@mantine/core";
 
 export default function Pagination({
   elementName,
@@ -10,6 +10,7 @@ export default function Pagination({
   elementName?: string;
   adjust: number;
 }) {
+  const [total, setTotal] = useState<number>(20);
   const [page, setPage] = useState(1);
   const [topPosY, setTopPosY] = useState<number>(0);
 
@@ -18,9 +19,9 @@ export default function Pagination({
     const element = document.querySelector(elementName);
     if (element === null) return;
     setTopPosY(element.getBoundingClientRect().top);
-  }, []);
+  }, [elementName]);
 
-  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handleChange = (value: number) => {
     setPage(value);
     // TODO : プロフィール文章を表示しているとずれる
     window.scrollTo({
@@ -30,30 +31,16 @@ export default function Pagination({
   };
 
   return (
-    <article className="w-full m-auto text-center">
-      {/* SP */}
-      <div className="md:hidden">
-        <MUI.Pagination
-          count={11}
-          defaultPage={1}
-          size="medium"
-          className="inline-block"
-          onChange={handleChange}
-          page={page}
-        />
-      </div>
-
-      {/* PC */}
-      <div className="hidden md:block">
-        <MUI.Pagination
-          count={11}
-          defaultPage={1}
-          size="large"
-          className="inline-block"
-          onChange={handleChange}
-          page={page}
-        />
-      </div>
+    <article className="w-full flex justify-center items-center">
+      <Mantine.Pagination
+        total={total}
+        siblings={1}
+        defaultValue={10}
+        value={page}
+        onChange={handleChange}
+        boundaries={1}
+        color="green"
+      />
     </article>
   );
 }

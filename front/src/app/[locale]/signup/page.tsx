@@ -1,23 +1,15 @@
 "use client";
 
-import { Button } from "@mui/material";
-import { SubmitHandler, useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/lib";
-import { InputText } from "@/components/form";
+import * as MantineForm from "@mantine/form";
+import * as Mantine from "@mantine/core";
 import * as UI from "@/components/ui";
 import { useAuth } from "@/api/auth";
 import { RouterPath } from "@/settings";
 import { useSetRecoilState } from "recoil";
 import { userState } from "@/recoilState";
 import { useState } from "react";
-
-interface IFormInputs {
-  name: string;
-  email: string;
-  password: string;
-  passwordConfirmation: string;
-}
 
 export default function SignUpPage() {
   const { signUp } = useAuth();
@@ -26,15 +18,31 @@ export default function SignUpPage() {
   const setUser = useSetRecoilState(userState);
   const [error, setError] = useState<string>("");
 
-  const { handleSubmit, control, getValues } = useForm<IFormInputs>();
+  const form = MantineForm.useForm({
+    mode: "uncontrolled",
+    initialValues: {
+      name: "",
+      email: "",
+      password: "",
+      password_confirmation: "",
+    },
+    validate: {
+      name: MantineForm.isNotEmpty("名前を入力してください"),
+      email: MantineForm.isEmail("有効なメールアドレスを入力してください"),
+      password: MantineForm.hasLength(
+        { min: 6 },
+        "パスワードは6文字以上で入力してください"
+      ),
+      password_confirmation: MantineForm.matchesField(
+        "password",
+        "パスワードが一致しません"
+      ),
+    },
+  });
 
-  const onSubmit: SubmitHandler<IFormInputs> = async (data) => {
-    const result = await signUp(
-      data.name,
-      data.email,
-      data.password,
-      data.passwordConfirmation
-    );
+  const handleSubmit = async () => {
+    const { name, email, password, password_confirmation } = form.getValues();
+    const result = await signUp(name, email, password, password_confirmation);
 
     if (result.success && result.user) {
       setUser(result.user);
@@ -50,71 +58,44 @@ export default function SignUpPage() {
       <section className="flex flex-col justify-center items-center max-w-[448px] w-full px-8">
         <UI.H2>{t_Auth("signup")}</UI.H2>
         <div className="flex flex-col gap-2 justify-center items-center w-full bg-white p-4 px-6 rounded">
-          <form
-            className="flex flex-col gap-4 w-full"
-            onSubmit={handleSubmit(onSubmit)}
-          >
+          <form className="flex flex-col gap-4 w-full" onSubmit={handleSubmit}>
             {error && (
               <div className="bg-red-600 bg-opacity-30 border border-red-600 p-2 rounded text-slate-600">
                 <p>{error}</p>
               </div>
             )}
-            <InputText
-              control={control}
-              name="name"
+            <Mantine.TextInput
+              withAsterisk
               label={t_Auth("name")}
-              rules={{
-                required: { value: true, message: t_Auth("required") },
-              }}
               autoComplete="name"
+              key={form.key("name")}
+              {...form.getInputProps("name")}
             />
-            <InputText
-              control={control}
-              name="email"
+            <Mantine.TextInput
+              withAsterisk
+              type="email"
               label={t_Auth("email")}
-              rules={{
-                required: { value: true, message: t_Auth("required") },
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                  message: t_Auth("invalidEmail"),
-                },
-              }}
               autoComplete="email"
+              key={form.key("email")}
+              {...form.getInputProps("email")}
             />
-            <InputText
-              control={control}
-              name="password"
+            <Mantine.TextInput
               label={t_Auth("password")}
               type="password"
-              rules={{
-                required: { value: true, message: t_Auth("required") },
-                minLength: {
-                  value: 6,
-                  message: t_Auth("invalidPassword"),
-                },
-              }}
               autoComplete="new-password"
+              key={form.key("password")}
+              {...form.getInputProps("password")}
             />
-            <InputText
-              control={control}
-              name="passwordConfirmation"
-              label={t_Auth("password_confirmation")}
+            <Mantine.TextInput
               type="password"
-              rules={{
-                required: { value: true, message: t_Auth("required") },
-                validate: (value: string) =>
-                  value === getValues("password") ||
-                  t_Auth("invalidPasswordConfirmation"),
-                minLength: {
-                  value: 6,
-                  message: t_Auth("invalidPassword"),
-                },
-              }}
+              label={t_Auth("password_confirmation")}
               autoComplete="new-password"
+              key={form.key("password_confirmation")}
+              {...form.getInputProps("password_confirmation")}
             />
-            <Button variant="outlined" type="submit">
+            <Mantine.Button variant="outlined" type="submit">
               {t_Auth("signup")}
-            </Button>
+            </Mantine.Button>
           </form>
           <div className="text-center">
             <Link

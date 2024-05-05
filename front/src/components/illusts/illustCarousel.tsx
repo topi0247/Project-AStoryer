@@ -1,48 +1,39 @@
 "use client";
 
-import { Autoplay, Navigation } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import "@/styles/globals.css"; // swiperの上書き
 import { IndexIllustData } from "@/types";
+import { useMediaQuery } from "@mantine/hooks";
+import { useMantineTheme } from "@mantine/core";
+import { Carousel } from "@mantine/carousel";
 import Illust from "./illust";
+import "@mantine/carousel/styles.css";
 
 export default function IllustCarousel({
   illustsData,
 }: {
   illustsData: IndexIllustData[];
 }) {
-  // ブレイクポイントに応じた表示枚数
-  const slideSettings = {
-    0: {
-      slidesPerView: 1.4,
-      spaceBetween: 5,
-    },
-    450: {
-      slidesPerView: 4,
-      spaceBetween: 5,
-    },
-    1024: {
-      slidesPerView: 8,
-      spaceBetween: 5,
-    },
-  };
+  const theme = useMantineTheme();
+  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
+  const align = mobile ? "center" : "start";
+  const slideSize = mobile ? "95%" : "12.5%";
+  const slidesToScroll = mobile ? 1 : 2;
 
   return (
-    <Swiper
-      modules={[Navigation, Autoplay]}
-      breakpoints={slideSettings}
-      speed={5000}
-      navigation
-      className="w-full"
-    >
-      {illustsData.map((illust: IndexIllustData) => (
-        <SwiperSlide key={illust.id}>
-          <Illust illust={illust} />
-        </SwiperSlide>
-      ))}
-    </Swiper>
+    <div className="w-full">
+      <Carousel
+        slideSize={slideSize}
+        slideGap="xs"
+        loop
+        align={align}
+        slidesToScroll={slidesToScroll}
+        className="h-full"
+      >
+        {illustsData.map((illust: IndexIllustData) => (
+          <Carousel.Slide key={illust.id} className="flex justify-center">
+            <Illust illust={illust} isUserPage={false} />
+          </Carousel.Slide>
+        ))}
+      </Carousel>
+    </div>
   );
 }

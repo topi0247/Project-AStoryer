@@ -1,16 +1,20 @@
 "use client";
 import { Link, useRouter } from "@/lib";
 import * as RecoilState from "@/recoilState";
-import * as MUI_ICONS from "@mui/icons-material";
-import MenuIcon from "@mui/icons-material/Menu";
-import * as MUI from "@mui/material";
 import { useTranslations } from "next-intl";
 import React, { useState } from "react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import Image from "next/image";
 import { RequiredLoginModal } from "@/components/ui";
+import { IoMdSearch, IoMdSettings } from "react-icons/io";
+import { VscAccount } from "react-icons/vsc";
+import * as Mantine from "@mantine/core";
+import { FaRegBookmark } from "react-icons/fa";
+import { MdLogout } from "react-icons/md";
+import { IconContext } from "react-icons/lib";
 
 export default function Headers() {
+  const user = useRecoilValue(RecoilState.userState);
   const t_Header = useTranslations("Header");
   const [search, setSearch] = useState("");
   const router = useRouter();
@@ -51,32 +55,45 @@ export default function Headers() {
               className="md:flex md:justify-center md:items-center gap-2"
               onSubmit={handleSearch}
             >
-              <label className="bg-green-100 md:p-1 rounded md:text-sm md:flex md:justify-center md:items-center text-gray-400">
-                <MUI_ICONS.Search style={{ margin: "0 2px" }} />
-                <input
-                  type="text"
+              <label className="bg-green-100 rounded md:text-sm md:flex md:justify-center md:items-center text-gray-400 pl-2">
+                <IconContext.Provider value={{ size: "1.5rem" }}>
+                  <IoMdSearch />
+                </IconContext.Provider>
+                <Mantine.TextInput
                   className="bg-green-100 focus:outline-none w-60 text-black"
                   placeholder={t_Header("searchPlaceholder")}
-                  onChange={(e) => setSearch(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setSearch(e.target.value)
+                  }
+                  variant="transparent"
                 />
               </label>
-              <MUI.Button
-                variant="contained"
+              <Mantine.Button
                 type="submit"
+                variant="contained"
                 size="small"
-                className="bg-green-200 hover:bg-green-400 text-black"
+                className="bg-green-200 hover:bg-green-400 text-black transition-all"
               >
                 {t_Header("searchButton")}
-              </MUI.Button>
+              </Mantine.Button>
             </form>
           </div>
-          <MUI.Button
-            variant="contained"
-            onClick={handlePost}
-            className="hidden md:block bg-orange-200 hover:bg-orange-400 text-black"
-          >
-            {t_Header("postButton")}
-          </MUI.Button>
+          {user.name ? (
+            <Mantine.Button
+              variant="contained"
+              onClick={handlePost}
+              className="hidden md:block bg-orange-200 hover:bg-orange-400 text-black  transition-all"
+            >
+              {t_Header("postButton")}
+            </Mantine.Button>
+          ) : (
+            <Link
+              href="/login"
+              className="p-2 px-3 rounded hidden md:block bg-orange-200 hover:bg-orange-400 text-black  transition-all hover:text-white"
+            >
+              {t_Header("signUpOrLogin")}
+            </Link>
+          )}
           {AccountMenu()}
         </div>
       </header>
@@ -87,116 +104,77 @@ export default function Headers() {
 
 function AccountMenu() {
   const t_Menu = useTranslations("MyMenu");
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
   const router = useRouter();
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   const handleLink = (path: string) => {
-    handleClose();
     router.push(`/${path}`);
   };
 
   const handleLogout = async () => {
-    handleClose();
     // TODO : ログアウト処理をここに書く
   };
 
   return (
-    <>
-      <MUI.Box
-        sx={{ display: "flex", alignItems: "center", textAlign: "center" }}
-      >
-        <MUI.Tooltip title={t_Menu("toolTipTitle")}>
-          <MUI.IconButton
-            onClick={handleClick}
-            size="small"
-            aria-controls={open ? "account-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-          >
-            <div className="hidden md:block">
-              <MUI.Avatar
-                alt="icon"
-                src="https://placehold.jp/300x300.png"
-                sx={{ width: 56, height: 56 }}
-              />
-            </div>
-            <div className="md:hidden m-4">
-              <MenuIcon sx={{ width: 32, height: 32 }} />
-            </div>
-          </MUI.IconButton>
-        </MUI.Tooltip>
-      </MUI.Box>
-      <MUI.Menu
-        anchorEl={anchorEl}
-        id="account-menu"
-        open={open}
-        onClose={handleClose}
-        onClick={handleClose}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-      >
-        <MUI.MenuItem onClick={() => handleLink("users/1")}>
-          <MUI.Avatar
-            alt="icon"
-            src="https://placehold.jp/300x300.png"
-            sx={{ width: 56, height: 56 }}
-          />{" "}
-          <span className="ml-4">ユーザー名</span>
-        </MUI.MenuItem>
+    <Mantine.Menu shadow="md" width={200}>
+      <Mantine.Menu.Target>
+        <Mantine.Avatar
+          alt="icon"
+          variant="light"
+          src="https://placehold.jp/300x300.png"
+          className="cursor-pointer"
+          radius="xl"
+          size="lg"
+        />
+      </Mantine.Menu.Target>
+      <Mantine.Menu.Dropdown>
+        <Mantine.Menu.Item onClick={() => handleLink("users/1")}>
+          <div className="flex justify-center items-center">
+            <Mantine.Avatar
+              alt="icon"
+              src="https://placehold.jp/300x300.png"
+              variant="light"
+              radius="xl"
+              size="lg"
+            />
+            <span className="ml-4">ユーザー名</span>
+          </div>
+        </Mantine.Menu.Item>
         <div className="flex justify-center items-center">
-          <MUI.MenuItem onClick={() => handleLink("#")}>
-            <Link
-              href="#"
-              className="flex flex-col justify-center items-center"
-            >
-              <span>{t_Menu("follow")}</span>
+          <Mantine.Menu.Item onClick={() => handleLink("#")}>
+            <div className="flex flex-col justify-center items-center">
+              <span className="text-center">{t_Menu("follow")}</span>
               <span>10</span>
-            </Link>
-          </MUI.MenuItem>
-          <MUI.MenuItem onClick={() => handleLink("#")}>
-            <Link
-              href="#"
-              className="flex flex-col justify-center items-center"
-            >
+            </div>
+          </Mantine.Menu.Item>
+          <Mantine.Menu.Item onClick={() => handleLink("#")}>
+            <div className="flex flex-col justify-center items-center">
               <span>{t_Menu("follower")}</span>
               <span>10</span>
-            </Link>
-          </MUI.MenuItem>
+            </div>
+          </Mantine.Menu.Item>
         </div>
-        <MUI.MenuItem onClick={() => handleLink("users/1")}>
-          <MUI.ListItemIcon>
-            <MUI_ICONS.AccountCircle fontSize="small" />
-          </MUI.ListItemIcon>
+        <Mantine.Menu.Item
+          onClick={() => handleLink("users/1")}
+          leftSection={<VscAccount />}
+        >
           {t_Menu("myPage")}
-        </MUI.MenuItem>
-        <MUI.MenuItem onClick={() => handleLink("users/1/bookmarks")}>
-          <MUI.ListItemIcon>
-            <MUI_ICONS.Bookmark fontSize="small" />
-          </MUI.ListItemIcon>
+        </Mantine.Menu.Item>
+        <Mantine.Menu.Item
+          onClick={() => handleLink("users/1/bookmarks")}
+          leftSection={<FaRegBookmark />}
+        >
           {t_Menu("bookmark")}
-        </MUI.MenuItem>
-        <MUI.MenuItem onClick={() => handleLink("account/1")}>
-          <MUI.ListItemIcon>
-            <MUI_ICONS.Settings fontSize="small" />
-          </MUI.ListItemIcon>
+        </Mantine.Menu.Item>
+        <Mantine.Menu.Item
+          onClick={() => handleLink("account/1")}
+          leftSection={<IoMdSettings />}
+        >
           {t_Menu("setting")}
-        </MUI.MenuItem>
-        <MUI.MenuItem onClick={handleLogout}>
-          <MUI.ListItemIcon>
-            <MUI_ICONS.Logout fontSize="small" />
-          </MUI.ListItemIcon>
+        </Mantine.Menu.Item>
+        <Mantine.Menu.Item onClick={handleLogout} leftSection={<MdLogout />}>
           {t_Menu("logout")}
-        </MUI.MenuItem>
-      </MUI.Menu>
-    </>
+        </Mantine.Menu.Item>
+      </Mantine.Menu.Dropdown>
+    </Mantine.Menu>
   );
 }
