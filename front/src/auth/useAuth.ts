@@ -12,20 +12,22 @@ export const useAuth = () => {
     });
 
     const data = await response.json();
-    if (response.ok && data.success) {
-      setAccessTokens(
-        response.headers.get("access-token") || "",
-        response.headers.get("client") || "",
-        response.headers.get("uid") || "",
-        response.headers.get("expiry") || ""
-      );
-      return {
-        success: true,
-        user: { id: data.user.id, name: data.user.name } as IUser,
-      };
-    }
 
-    return { success: false, message: data.message };
+    if (!response.ok || !data.success) {
+      clearAccessTokens();
+      return { success: false, message: data.message };
+    }
+    setAccessTokens(
+      response.headers.get("access-token") || "",
+      response.headers.get("client") || "",
+      response.headers.get("uid") || "",
+      response.headers.get("expiry") || ""
+    );
+
+    return {
+      success: true,
+      user: { id: data.user.id, name: data.user.name } as IUser,
+    };
   };
 
   const signUp = async (
@@ -48,20 +50,21 @@ export const useAuth = () => {
     });
 
     const data = await response.json();
-    if (response.ok) {
-      setAccessTokens(
-        response.headers.get("access-token") || "",
-        response.headers.get("client") || "",
-        response.headers.get("uid") || "",
-        response.headers.get("expiry") || ""
-      );
-      return {
-        success: true,
-        user: { id: data.user.id, name: data.user.name } as IUser,
-      };
+    if (!response.ok || !data.success) {
+      clearAccessTokens();
+      return { success: false, message: data.message };
     }
 
-    return { success: false, message: data.message };
+    setAccessTokens(
+      response.headers.get("access-token") || "",
+      response.headers.get("client") || "",
+      response.headers.get("uid") || "",
+      response.headers.get("expiry") || ""
+    );
+    return {
+      success: true,
+      user: { id: data.user.id, name: data.user.name } as IUser,
+    };
   };
 
   const setAccessTokens = (

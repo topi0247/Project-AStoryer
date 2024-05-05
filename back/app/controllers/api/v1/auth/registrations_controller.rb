@@ -47,7 +47,7 @@ class Api::V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsCon
             } and return
           else
             # アカウントがまだ有効でない場合の処理
-            render json: { success: false, message: "アカウントが有効ではありません。" } and return
+            render json: { success: false, message: "アカウントが有効ではありません。" }  and return
           end
         else
           # ユーザーの保存に失敗した場合

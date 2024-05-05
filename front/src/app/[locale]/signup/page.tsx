@@ -5,7 +5,7 @@ import { Link, useRouter } from "@/lib";
 import * as MantineForm from "@mantine/form";
 import * as Mantine from "@mantine/core";
 import * as UI from "@/components/ui";
-import { useAuth } from "@/api";
+import { useAuth } from "@/auth";
 import { RouterPath } from "@/settings";
 import { useSetRecoilState } from "recoil";
 import { userState } from "@/recoilState";
@@ -41,7 +41,8 @@ export default function SignUpPage() {
     },
   });
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const { name, email, password, password_confirmation } = form.getValues();
     const result = await signUp(name, email, password, password_confirmation);
 

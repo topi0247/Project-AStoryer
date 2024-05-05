@@ -1,5 +1,7 @@
 "use client";
 
+import { client } from "@/auth";
+import useSWR from "swr";
 import * as Mantine from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -19,7 +21,11 @@ const noticeStatesDummy = {
   },
 };
 
+const fetcher = (url: string) => client.get(url).then((res) => res.data);
+
 export default function AccountPage() {
+  const { data, error } = useSWR("/account", fetcher);
+  console.log(data, error);
   const t_AccountSettings = useTranslations("AccountSettings");
   const [noticeStates, setNoticeStates] =
     useState<NoticeStates>(noticeStatesDummy);
