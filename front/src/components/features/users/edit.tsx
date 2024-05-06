@@ -76,8 +76,7 @@ export default function UserEdit({
     }
 
     close();
-    setHeaderImageBlob(userProfile.headerImage);
-    setAvatarBlob(userProfile.avatar);
+    handleClear();
   };
 
   const handleSubmit = () => {
@@ -92,13 +91,13 @@ export default function UserEdit({
 
     // TODO : 更新処理
     alert("更新しました");
+    close();
+    handleClear();
   };
 
   const hasChanges = () => {
     const { twitter, pixiv, fusetter, privatter, other, profile } =
       form.getValues();
-
-    console.log(headerImageBlob);
 
     const data = [
       headerImageBlob === userProfile.headerImage,
@@ -111,7 +110,7 @@ export default function UserEdit({
       profile === userProfile.profile,
     ];
 
-    return data.filter((v) => v === true).length < data.length;
+    return data.filter((v) => v === false).length > 0;
   };
 
   const handleDrop = (
@@ -124,6 +123,21 @@ export default function UserEdit({
       setBlob(fileBlob);
     };
     reader.readAsDataURL(files[0]);
+  };
+
+  const handleClear = () => {
+    setHeaderImageBlob(userProfile.headerImage);
+    setAvatarBlob(userProfile.avatar);
+    form.setValues({
+      headerImage: headerImageBlob,
+      avatar: avatarBlob,
+      twitter: userProfile.link.twitter,
+      pixiv: userProfile.link.pixiv,
+      fusetter: userProfile.link.fusetter,
+      privatter: userProfile.link.privatter,
+      other: userProfile.link.other,
+      profile: userProfile.profile,
+    });
   };
 
   return (
@@ -143,6 +157,7 @@ export default function UserEdit({
       >
         <MantineCore.Drawer.Body>
           <form
+            id="editForm"
             className="flex flex-col justify-center items-start gap-5 w-full md:container md:m-auto"
             onSubmit={form.onSubmit(handleSubmit)}
           >
