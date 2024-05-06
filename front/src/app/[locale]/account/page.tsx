@@ -1,19 +1,19 @@
 "use client";
 
-import { client } from "@/auth";
 import useSWR from "swr";
 import * as Mantine from "@mantine/core";
 import { useTranslations } from "next-intl";
-import { NoticeTabs } from "@/components/features/users";
+import { NoticeTabs } from "@/components/features/account";
+import { useGet } from "@/hook";
 
-const fetcher = (url: string) => client.get(url).then((res) => res.data);
+const fetcher = (url: string) => useGet(url);
 
 export default function AccountPage() {
   const { data, error } = useSWR("/account", fetcher);
   const t_AccountSettings = useTranslations("AccountSettings");
-  const t_General = useTranslations("General");
-  // TODO : ローディング画面
-  if (error || data === undefined) return <div>Now Loading</div>;
+  // TODO : ローディング・エラー画面
+  if (error) return <div>error</div>;
+  if (data === undefined) return <div>Now Loading</div>;
 
   return (
     <article className="my-8 m-auto w-full px-4">
@@ -58,9 +58,6 @@ export default function AccountPage() {
             {t_AccountSettings("notificationSettings")}
           </h3>
           <NoticeTabs noticeStates={data.notices} />
-          <div className="text-center">
-            <Mantine.Button>{t_General("save")}</Mantine.Button>
-          </div>
         </section>
       </div>
     </article>

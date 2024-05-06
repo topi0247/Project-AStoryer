@@ -5,7 +5,8 @@ class Api::V1::NoticesController < Api::V1::BasesController
       notice = current_api_v1_user.notices.find(notice_param["id"])
       begin
         notice.update!(notice_param.except("id"))
-      rescue
+      rescue => e
+        Rails.logger.error(e)
         success = false
       end
     end
@@ -20,10 +21,6 @@ class Api::V1::NoticesController < Api::V1::BasesController
   private
 
   def notice_params
-    # 配列が来るので_jsonを使う
-    # リクエストボディがapplication/jsonのときRailsが自動でパースしてくれる、その時使うのが_json
-    params.require(:_json).map do |param|
-      param.permit(:favorite, :bookmark, :comment, :follower, :id)
-    end
+    params.permit(app: [:favorite, :bookmark, :comment, :follower, :id], email: [:favorite, :bookmark, :comment, :follower, :id]).to_h.values.flatten
   end
 end

@@ -3,6 +3,7 @@
 import { NoticeState, NoticeStates } from "@/types";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { usePut } from "@/hook";
 import * as Mantine from "@mantine/core";
 
 enum NoticeType {
@@ -27,6 +28,7 @@ export default function NoticeTabs({
   const t_AccountSettings = useTranslations("AccountSettings");
   const [newNoticeState, setNewNoticeState] =
     useState<NoticeStates>(noticeStates);
+  const t_General = useTranslations("General");
 
   const handleChange = (newValue: string | null) => {
     if (newValue === value) return;
@@ -36,6 +38,15 @@ export default function NoticeTabs({
       return;
     }
     setValue(newValue);
+  };
+
+  const handleSave = async () => {
+    const response = await usePut("/notice", JSON.stringify(newNoticeState));
+    if (response.status !== 200) {
+      alert("更新に失敗しました");
+      return;
+    }
+    alert("更新しました");
   };
 
   return (
@@ -68,6 +79,11 @@ export default function NoticeTabs({
           />
         </Mantine.Tabs.Panel>
       </Mantine.Tabs>
+      <div className="text-center">
+        <Mantine.Button type="button" onClick={handleSave}>
+          {t_General("save")}
+        </Mantine.Button>
+      </div>
     </Mantine.Box>
   );
 }
@@ -114,9 +130,9 @@ function NoticePanel(props: TabPanelProps) {
             onChange={() => handleChange("comment", !noticeState.comment)}
           />
           <Mantine.Switch
-            label={t_AccountSettings("follow")}
+            label={t_AccountSettings("follower")}
             checked={noticeState.follower}
-            onChange={() => handleChange("follow", !noticeState.follower)}
+            onChange={() => handleChange("follower", !noticeState.follower)}
           />
         </>
       )}

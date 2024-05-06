@@ -12,6 +12,7 @@ import * as Mantine from "@mantine/core";
 import { FaRegBookmark } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import { IconContext } from "react-icons/lib";
+import { RouterPath } from "@/settings";
 
 export default function Headers() {
   const user = useRecoilValue(RecoilState.userState);
@@ -38,7 +39,7 @@ export default function Headers() {
     <>
       <header className="flex justify-between items-center ml-2 md:mx-8 md:my-2">
         <h1>
-          <Link href="/">
+          <Link href={RouterPath.home}>
             <Image
               src="/logo.png"
               width={150}
@@ -127,7 +128,7 @@ function AccountMenu() {
         />
       </Mantine.Menu.Target>
       <Mantine.Menu.Dropdown>
-        <Mantine.Menu.Item onClick={() => handleLink("users/1")}>
+        <Mantine.Menu.Item onClick={() => handleLink(RouterPath.users(1))}>
           <div className="flex justify-center items-center">
             <Mantine.Avatar
               alt="icon"
@@ -154,7 +155,7 @@ function AccountMenu() {
           </Mantine.Menu.Item>
         </div>
         <Mantine.Menu.Item
-          onClick={() => handleLink("users/1")}
+          onClick={() => handleLink(RouterPath.users(1))}
           leftSection={<VscAccount />}
         >
           {t_Menu("myPage")}
@@ -166,7 +167,7 @@ function AccountMenu() {
           {t_Menu("bookmark")}
         </Mantine.Menu.Item>
         <Mantine.Menu.Item
-          onClick={() => handleLink("account/1")}
+          onClick={() => handleLink(RouterPath.account)}
           leftSection={<IoMdSettings />}
         >
           {t_Menu("setting")}

@@ -99,7 +99,7 @@
     "favorite": "いいねされたとき",
     "bookmark": "ブックマークされたとき",
     "comment": "コメントされたとき",
-    "follow": "フォローされたとき"
+    "follower": "フォローされたとき"
   },
   "UserPage": {
     "post": "投稿一覧",
