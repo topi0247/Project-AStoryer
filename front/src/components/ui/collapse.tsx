@@ -1,7 +1,7 @@
 "use client";
 
 import Style from "@/styles/index.module.css";
-import { MdKeyboardArrowUp, MdKeyboardArrowDown } from "react-icons/md";
+import { MdKeyboardArrowUp, MdKeyboardArrowDown } from "rocketicons/md";
 import { useDisclosure } from "@mantine/hooks";
 import * as Mantine from "@mantine/core";
 

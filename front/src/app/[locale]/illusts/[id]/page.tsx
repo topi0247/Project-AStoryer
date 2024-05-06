@@ -8,8 +8,8 @@ import { Link } from "@/lib";
 import * as Mantine from "@mantine/core";
 import { FixedIconButtonList, IconButtonList } from "@/components/ui";
 import { useTranslations } from "next-intl";
-import { MdCollections, MdHighlightOff } from "react-icons/md";
 import { useMediaQuery } from "@mantine/hooks";
+import { MdCollections } from "rocketicons/md";
 
 export default function IllustPage({
   params: { id },

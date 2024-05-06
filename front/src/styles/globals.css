@@ -114,3 +114,15 @@
   background-color: #001d35;
   opacity: 8%;
 }
+
+/* 画像投稿部分 */
+.mantine-Dropzone-root {
+  background-color: rgba(83, 90, 100, 0.5);
+  border: none;
+  transition: all 0.3s;
+  padding: 0;
+}
+
+.mantine-Dropzone-root:hover {
+  background-color: rgb(83, 90, 100);
+}

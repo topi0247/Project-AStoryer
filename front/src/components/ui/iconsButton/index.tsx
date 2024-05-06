@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useSetRecoilState } from "recoil";
 import * as RecoilState from "@/recoilState";
 import { IconButtonList, FixedIconButtonList } from "./iconButtonList";
-import { MdFavorite, MdOutlineFavoriteBorder, MdShare } from "react-icons/md";
-import { FaBookmark, FaRegBookmark } from "react-icons/fa";
+import { MdFavorite, MdOutlineFavoriteBorder, MdShare } from "rocketicons/md";
+import { FaBookmark, FaRegBookmark } from "rocketicons/fa";
 import { Button } from "@mantine/core";
 
 const FavoriteButton = ({ state }: { state: boolean }) => {
@@ -29,7 +29,7 @@ const FavoriteButton = ({ state }: { state: boolean }) => {
           variant="transparent"
           color="pink"
         >
-          <MdFavorite size={30} />
+          <MdFavorite className="w-[30px]" />
         </Button>
       ) : (
         <Button
@@ -37,7 +37,7 @@ const FavoriteButton = ({ state }: { state: boolean }) => {
           variant="transparent"
           color="gray"
         >
-          <MdOutlineFavoriteBorder size={30} />
+          <MdOutlineFavoriteBorder className="w-[30px]" />
         </Button>
       )}
     </>
@@ -61,7 +61,7 @@ const BookmarkButton = ({ state }: { state: boolean }) => {
     <>
       {bookmark ? (
         <Button onClick={() => handleBookmark(false)} variant="transparent">
-          <FaBookmark size={25} />
+          <FaBookmark className="w-[25px]" />
         </Button>
       ) : (
         <Button
@@ -69,7 +69,7 @@ const BookmarkButton = ({ state }: { state: boolean }) => {
           variant="transparent"
           color="gray"
         >
-          <FaRegBookmark size={25} />
+          <FaRegBookmark className="w-[25px]" />
         </Button>
       )}
     </>
@@ -83,7 +83,7 @@ const ShareButton = () => {
 
   return (
     <Button onClick={handleShare} variant="transparent">
-      <MdShare size={25} />
+      <MdShare className="w-[25px]" />
     </Button>
   );
 };

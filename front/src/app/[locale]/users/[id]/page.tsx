@@ -1,6 +1,6 @@
 import * as Mantine from "@mantine/core";
 import * as UI from "@/components/ui";
-import { IndexIllustData } from "@/types";
+import { IndexIllustData, UserPageEdit } from "@/types";
 import { Illust } from "@/components/features/illusts";
 import { useTranslations } from "next-intl";
 import { UserEdit, UserTabs } from "@/components/features/users";
@@ -20,8 +20,19 @@ const illusts = Array.from({ length: 20 }).map((_, i) => ({
 
 export default function UserPage() {
   const imgUrl = ""; // TODO : ユーザーヘッダーのURLを取得
-  const t_General = useTranslations("General");
   const t_UserPage = useTranslations("UserPage");
+  const userProfile = {
+    headerImage: "",
+    avatar: "",
+    link: {
+      twitter: "",
+      pixiv: "",
+      fusetter: "",
+      privatter: "",
+      other: "",
+    },
+    profile: "",
+  } as UserPageEdit;
 
   return (
     <>
@@ -51,9 +62,8 @@ export default function UserPage() {
                 />
 
                 <div className="w-full flex flex-col justify-start items-end md:items-start md:justify-start md:relative">
-                  <button className="bg-gray-500 text-white text-sm rounded px-2 py-1 md:absolute md:bottom-0 md:right-0">
-                    {t_General("edit")}
-                  </button>
+                  {/* ユーザー編集 */}
+                  <UserEdit userProfile={userProfile} />
                   <div className="hidden md:block md:h-1/3">
                     <h2 className="text-3xl">
                       <span className="pb-2 border-b-2 border-green-300 px-1 pr-3">
@@ -148,9 +158,6 @@ export default function UserPage() {
           <UI.Pagination elementName="#tabs" adjust={-20} />
         </section>
       </article>
-
-      {/* 編集ドロワー */}
-      <UserEdit />
     </>
   );
 }
