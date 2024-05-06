@@ -3,7 +3,7 @@
 import * as MantineCore from "@mantine/core";
 import * as MantineDropzone from "@mantine/dropzone";
 import { useTranslations } from "next-intl";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import "@mantine/dropzone/styles.css";
 import { UserPageEdit } from "@/types";
 import { useState } from "react";
@@ -21,6 +21,8 @@ export default function UserEdit({
     userProfile.headerImage
   );
   const [avatarBlob, setAvatarBlob] = useState(userProfile.avatar);
+  const theme = MantineCore.useMantineTheme();
+  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
 
   const form = useForm({
     mode: "uncontrolled",
@@ -104,7 +106,7 @@ export default function UserEdit({
     <>
       <button
         onClick={open}
-        className="bg-gray-500 text-white text-sm rounded px-2 py-1 md:absolute md:bottom-0 md:right-0"
+        className="bg-gray-500 text-white text-sm rounded px-2 py-1 hover:bg-gray-700 transition-all md:absolute md:bottom-0 md:right-0"
       >
         {t_General("edit")}
       </button>
@@ -113,7 +115,7 @@ export default function UserEdit({
         onClose={handleClose}
         position="bottom"
         offset={8}
-        size="xl"
+        size={mobile ? "md" : "lg"}
       >
         <MantineCore.Drawer.Body>
           <form
@@ -132,23 +134,15 @@ export default function UserEdit({
                 maxSize={5 * 1024 ** 2}
                 accept={MantineDropzone.IMAGE_MIME_TYPE}
                 style={{
-                  height: "8rem",
+                  height: mobile ? "8rem" : "15rem",
                   margin: "0 auto",
-                  width: "100%",
                 }}
               >
-                <MantineDropzone.Dropzone.Accept>
-                  アップロードアイコン
-                </MantineDropzone.Dropzone.Accept>
-                <MantineDropzone.Dropzone.Reject>
-                  Xアイコン
-                </MantineDropzone.Dropzone.Reject>
                 <MantineDropzone.Dropzone.Idle>
                   {headerImageBlob.length > 0 && (
                     <MantineCore.Image
                       src={headerImageBlob}
-                      h="8rem"
-                      w="auto"
+                      h={mobile ? "8rem" : "15rem"}
                       fit="cover"
                       className="opacity-50"
                     />
@@ -181,35 +175,22 @@ export default function UserEdit({
                     margin: "0 auto",
                   }}
                 >
-                  <MantineCore.Group
-                    justify="center"
-                    gap="xl"
-                    mih={220}
-                    style={{ pointerEvents: "none" }}
-                  >
-                    <MantineDropzone.Dropzone.Accept>
-                      アップロードアイコン
-                    </MantineDropzone.Dropzone.Accept>
-                    <MantineDropzone.Dropzone.Reject>
-                      Xアイコン
-                    </MantineDropzone.Dropzone.Reject>
-                    <MantineDropzone.Dropzone.Idle>
-                      {avatarBlob.length > 0 && (
-                        <MantineCore.Image
-                          src={avatarBlob}
-                          fit="cover"
-                          className="opacity-50"
-                        />
-                      )}
-                      <FaImage
-                        className="icon-black opacity-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                        style={{
-                          width: "3rem",
-                          height: "3rem",
-                        }}
+                  <MantineDropzone.Dropzone.Idle>
+                    {avatarBlob.length > 0 && (
+                      <MantineCore.Image
+                        src={avatarBlob}
+                        fit="cover"
+                        className="opacity-50"
                       />
-                    </MantineDropzone.Dropzone.Idle>
-                  </MantineCore.Group>
+                    )}
+                    <FaImage
+                      className="icon-black opacity-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                      style={{
+                        width: "3rem",
+                        height: "3rem",
+                      }}
+                    />
+                  </MantineDropzone.Dropzone.Idle>
                 </MantineDropzone.Dropzone>
               </section>
               <section className="w-full">

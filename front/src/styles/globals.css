@@ -116,13 +116,28 @@
 }
 
 /* 画像投稿部分 */
-.mantine-Dropzone-root {
+div.mantine-Dropzone-root {
   background-color: rgba(83, 90, 100, 0.5);
   border: none;
   transition: all 0.3s;
   padding: 0;
+  max-width: 500px;
 }
 
 .mantine-Dropzone-root:hover {
   background-color: rgb(83, 90, 100);
+}
+
+/* 文字グラデーション */
+.gradientText {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
 }
