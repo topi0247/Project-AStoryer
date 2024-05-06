@@ -115,13 +115,20 @@
   opacity: 8%;
 }
 
+/* ドロワー */
+.mantine-Drawer-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 /* 画像投稿部分 */
 div.mantine-Dropzone-root {
   background-color: rgba(83, 90, 100, 0.5);
   border: none;
   transition: all 0.3s;
   padding: 0;
-  max-width: 500px;
 }
 
 .mantine-Dropzone-root:hover {

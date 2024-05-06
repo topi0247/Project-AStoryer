@@ -71,16 +71,35 @@ export default function UserEdit({
   });
 
   const handleClose = () => {
+    if (hasChanges() && !confirm("変更を破棄しますか？")) {
+      return;
+    }
+
     close();
     setHeaderImageBlob(userProfile.headerImage);
     setAvatarBlob(userProfile.avatar);
   };
 
   const handleSubmit = () => {
+    // 変更点があるか確認
+    if (!hasChanges()) {
+      alert("変更がありません");
+      return;
+    }
+
     const { twitter, pixiv, fusetter, privatter, other, profile } =
       form.getValues();
 
-    // 変更点があるか確認
+    // TODO : 更新処理
+    alert("更新しました");
+  };
+
+  const hasChanges = () => {
+    const { twitter, pixiv, fusetter, privatter, other, profile } =
+      form.getValues();
+
+    console.log(headerImageBlob);
+
     const data = [
       headerImageBlob === userProfile.headerImage,
       avatarBlob === userProfile.avatar,
@@ -92,14 +111,19 @@ export default function UserEdit({
       profile === userProfile.profile,
     ];
 
-    const hasChanges = data.filter((v) => console.log(v)).length > 0;
-    if (!hasChanges) {
-      alert("変更がありません");
-      return;
-    }
+    return data.filter((v) => v === true).length < data.length;
+  };
 
-    // TODO : 更新処理
-    alert("更新しました");
+  const handleDrop = (
+    files: File[],
+    setBlob: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const fileBlob = reader.result as string;
+      setBlob(fileBlob);
+    };
+    reader.readAsDataURL(files[0]);
   };
 
   return (
@@ -115,7 +139,7 @@ export default function UserEdit({
         onClose={handleClose}
         position="bottom"
         offset={8}
-        size={mobile ? "md" : "lg"}
+        size={mobile ? "md" : "100%"}
       >
         <MantineCore.Drawer.Body>
           <form
@@ -126,15 +150,13 @@ export default function UserEdit({
               <label htmlFor="headerImage">ヘッダー画像</label>
               <MantineDropzone.Dropzone
                 name="headerImage"
-                onDrop={(files) => {
-                  const fileBlob = URL.createObjectURL(files[0]);
-                  setHeaderImageBlob(fileBlob);
-                }}
-                onReject={() => setHeaderImageBlob("")}
+                onDrop={(files) => handleDrop(files, setHeaderImageBlob)}
+                onReject={() => console.log("reject")}
                 maxSize={5 * 1024 ** 2}
                 accept={MantineDropzone.IMAGE_MIME_TYPE}
                 style={{
                   height: mobile ? "8rem" : "15rem",
+                  width: "100%",
                   margin: "0 auto",
                 }}
               >
@@ -143,6 +165,7 @@ export default function UserEdit({
                     <MantineCore.Image
                       src={headerImageBlob}
                       h={mobile ? "8rem" : "15rem"}
+                      w="100%"
                       fit="cover"
                       className="opacity-50"
                     />
@@ -162,10 +185,7 @@ export default function UserEdit({
                 <label htmlFor="headerImage">アイコン画像</label>
                 <MantineDropzone.Dropzone
                   name="avatarImage"
-                  onDrop={(files) => {
-                    const fileBlob = URL.createObjectURL(files[0]);
-                    setAvatarBlob(fileBlob);
-                  }}
+                  onDrop={(files) => handleDrop(files, setAvatarBlob)}
                   onReject={() => setAvatarBlob("")}
                   maxSize={5 * 1024 ** 2}
                   accept={MantineDropzone.IMAGE_MIME_TYPE}
