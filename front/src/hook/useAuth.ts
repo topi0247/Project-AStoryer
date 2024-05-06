@@ -17,7 +17,6 @@ export const useAuth = () => {
       clearAccessTokens();
       return { success: false, message: data.message };
     }
-    console.log(response.headers.get("Access-Token"));
     setAccessTokens(
       response.headers.get("Access-Token") || "",
       response.headers.get("Client") || "",
