@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 // aタグの中にsvgを入れるとHydrationエラーになるので動的読み込みを行う
 // SSRはしない
 const MdCollections = dynamic(
-  () => import("react-icons/md").then((mod) => mod.MdCollections),
+  () => import("rocketicons/md").then((mod) => mod.MdCollections),
   { ssr: false }
 );
 

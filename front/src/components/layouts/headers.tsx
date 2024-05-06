@@ -6,12 +6,11 @@ import React, { useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import Image from "next/image";
 import { RequiredLoginModal } from "@/components/ui";
-import { IoMdSearch, IoMdSettings } from "react-icons/io";
-import { VscAccount } from "react-icons/vsc";
+import { IoMdSearch, IoMdSettings } from "rocketicons/io";
+import { VscAccount } from "rocketicons/vsc";
 import * as Mantine from "@mantine/core";
-import { FaRegBookmark } from "react-icons/fa";
-import { MdLogout } from "react-icons/md";
-import { IconContext } from "react-icons/lib";
+import { FaRegBookmark } from "rocketicons/fa";
+import { MdLogout } from "rocketicons/md";
 import { RouterPath } from "@/settings";
 
 export default function Headers() {
@@ -57,9 +56,7 @@ export default function Headers() {
               onSubmit={handleSearch}
             >
               <label className="bg-green-100 rounded md:text-sm md:flex md:justify-center md:items-center text-gray-400 pl-2">
-                <IconContext.Provider value={{ size: "1.5rem" }}>
-                  <IoMdSearch />
-                </IconContext.Provider>
+                <IoMdSearch />
                 <Mantine.TextInput
                   className="bg-green-100 focus:outline-none w-60 text-black"
                   placeholder={t_Header("searchPlaceholder")}

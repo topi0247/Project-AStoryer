@@ -38,3 +38,16 @@ export interface NoticeStates {
   app: NoticeState;
   email: NoticeState;
 }
+
+export interface UserPageEdit {
+  headerImage: string;
+  avatar: string;
+  link: {
+    twitter: string;
+    pixiv: string;
+    fusetter: string;
+    privatter: string;
+    other: string;
+  };
+  profile: string;
+}

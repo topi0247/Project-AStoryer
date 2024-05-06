@@ -8,8 +8,8 @@ import { Link } from "@/lib";
 import * as Mantine from "@mantine/core";
 import { FixedIconButtonList, IconButtonList } from "@/components/ui";
 import { useTranslations } from "next-intl";
-import { MdCollections, MdHighlightOff } from "react-icons/md";
 import { useMediaQuery } from "@mantine/hooks";
+import { MdCollections } from "rocketicons/md";
 
 export default function IllustPage({
   params: { id },
@@ -147,9 +147,7 @@ export default function IllustPage({
               <div className="relative w-full">
                 <p
                   className={`overflow-y-hidden
-                ${
-                  openCaption ? "max-h-auto" : `${Style.gradientText} max-h-32`
-                }`}
+                ${openCaption ? "max-h-auto" : `gradientText max-h-32`}`}
                 >
                   キャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプション
                 </p>
