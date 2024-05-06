@@ -3,8 +3,8 @@
 import { NoticeState, NoticeStates } from "@/types";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { usePut } from "@/hook";
 import * as Mantine from "@mantine/core";
+import { Put2API } from "@/lib";
 
 enum NoticeType {
   app = "app",
@@ -41,7 +41,7 @@ export default function NoticeTabs({
   };
 
   const handleSave = async () => {
-    const response = await usePut("/notice", JSON.stringify(newNoticeState));
+    const response = await Put2API("/notice", JSON.stringify(newNoticeState));
     if (response.status !== 200) {
       alert("更新に失敗しました");
       return;

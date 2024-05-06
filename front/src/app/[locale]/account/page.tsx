@@ -1,15 +1,22 @@
 "use client";
 
 import useSWR from "swr";
-import * as Mantine from "@mantine/core";
 import { useTranslations } from "next-intl";
-import { NoticeTabs } from "@/components/features/account";
-import { useGet } from "@/hook";
+import { Email, Name, NoticeTabs } from "@/components/features/account";
+import { GetFromAPI } from "@/lib";
 
-const fetcher = (url: string) => useGet(url);
+interface AccountProps {
+  name: string;
+  email?: string;
+  google?: string;
+  discord?: string;
+}
+
+const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 export default function AccountPage() {
   const { data, error } = useSWR("/account", fetcher);
+  const account = data?.account as AccountProps;
   const t_AccountSettings = useTranslations("AccountSettings");
   // TODO : ローディング・エラー画面
   if (error) return <div>error</div>;
@@ -27,22 +34,38 @@ export default function AccountPage() {
               {t_AccountSettings("accountName")}
             </dt>
             <dd className="ml-4 md:ml-0 border-b border-slate-300 pb-2">
-              {data.account.name}
+              <Name accountName={account.name} />
             </dd>
             <dt className="md:border-b md:border-slate-300 md:pb-2">
               {t_AccountSettings("email")}
             </dt>
-            <dd className="flex flex-col ml-4 md:ml-0 border-b border-slate-300 pb-2">
-              {data.account.email ?? data.account.google | data.account.discord}
-              <div>
-                <Mantine.Button
-                  variant="contained"
-                  size="small"
-                  className="text-xs inline-block"
-                >
-                  {t_AccountSettings("changeEmail")}
-                </Mantine.Button>
-              </div>
+            <dd className="flex flex-col justify-center ml-4 md:ml-0 border-b border-slate-300 pb-2">
+              {account.email ? (
+                <Email email={account.email} />
+              ) : (
+                <span className="text-xs">SNS連携でログインしています</span>
+              )}
+            </dd>
+            <dt className="md:border-b md:border-slate-300 md:pb-2">SNS連携</dt>
+            <dd className="ml-4 md:ml-0 border-b border-slate-300 pb-2 flex justify-start items-start flex-wrap gap-2">
+              <span
+                className={`border rounded text-xs px-2 py-1  ${
+                  account.google
+                    ? "border-red-500 text-red-500"
+                    : "border-gray-500 text-gray-500"
+                }`}
+              >
+                Google{account.google ? "連携中" : "未連携"}
+              </span>
+              <span
+                className={`border rounded text-xs px-2 py-1  ${
+                  account.discord
+                    ? "border-red-500 text-red-500"
+                    : "border-gray-500 text-gray-500"
+                }`}
+              >
+                Discord{data.account.discord ? "連携中" : "未連携"}
+              </span>
             </dd>
             <dt className="md:border-b md:border-slate-300 md:pb-2">
               {t_AccountSettings("password")}

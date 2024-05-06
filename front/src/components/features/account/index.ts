@@ -1,3 +1,5 @@
 import NoticeTabs from "./notice";
+import Email from "./email";
+import Name from "./name";
 
-export { NoticeTabs };
+export { NoticeTabs, Email, Name };

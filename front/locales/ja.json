@@ -90,7 +90,7 @@
     "settings": "設定",
     "accountName": "アカウント名",
     "email": "メールアドレス",
-    "changeEmail": "変更する",
+    "change": "変更する",
     "password": "パスワード",
     "changePassword": "パスワード変更",
     "notificationSettings": "通知設定",
