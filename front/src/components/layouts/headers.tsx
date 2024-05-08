@@ -3,35 +3,31 @@ import { Link, useRouter } from "@/lib";
 import * as RecoilState from "@/recoilState";
 import { useTranslations } from "next-intl";
 import React, { useState } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import Image from "next/image";
-import { RequiredLoginModal } from "@/components/ui";
 import { IoMdSearch, IoMdSettings } from "rocketicons/io";
 import { VscAccount } from "rocketicons/vsc";
 import * as Mantine from "@mantine/core";
 import { FaRegBookmark } from "rocketicons/fa";
 import { MdLogout } from "rocketicons/md";
 import { RouterPath } from "@/settings";
+import { IUser } from "@/types";
 
 export default function Headers() {
   const user = useRecoilValue(RecoilState.userState);
   const t_Header = useTranslations("Header");
   const [search, setSearch] = useState("");
   const router = useRouter();
-  const setModalOpen = useSetRecoilState(RecoilState.modalOpenState);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!search) return;
     const searchWords = search.split(/\s|　/).join(",");
-    router.push(`/illusts?search=${searchWords}`);
+    router.push(RouterPath.illustSearch(searchWords));
   };
 
   const handlePost = () => {
-    // TODO : ログインユーザーであれば画面遷移する
-    // router.push("/illusts/post");
-    // TODO : ログインユーザーでなければログインや登録を促す
-    setModalOpen(true);
+    router.push("/illusts/post");
   };
 
   return (
@@ -77,13 +73,16 @@ export default function Headers() {
             </form>
           </div>
           {user.name ? (
-            <Mantine.Button
-              variant="contained"
-              onClick={handlePost}
-              className="hidden md:block bg-orange-200 hover:bg-orange-400 text-black  transition-all"
-            >
-              {t_Header("postButton")}
-            </Mantine.Button>
+            <>
+              <Mantine.Button
+                variant="contained"
+                onClick={handlePost}
+                className="hidden md:block bg-orange-200 hover:bg-orange-400 text-black  transition-all"
+              >
+                {t_Header("postButton")}
+              </Mantine.Button>
+              {AccountMenu(user)}
+            </>
           ) : (
             <Link
               href="/login"
@@ -92,15 +91,13 @@ export default function Headers() {
               {t_Header("signUpOrLogin")}
             </Link>
           )}
-          {AccountMenu()}
         </div>
       </header>
-      <RequiredLoginModal />
     </>
   );
 }
 
-function AccountMenu() {
+function AccountMenu(user: IUser) {
   const t_Menu = useTranslations("MyMenu");
   const router = useRouter();
 
@@ -118,7 +115,7 @@ function AccountMenu() {
         <Mantine.Avatar
           alt="icon"
           variant="light"
-          src="https://placehold.jp/300x300.png"
+          src={user.avatar ? user.avatar : "https://placehold.jp/300x300.png"}
           className="cursor-pointer"
           radius="xl"
           size="lg"
@@ -129,36 +126,42 @@ function AccountMenu() {
           <div className="flex justify-center items-center">
             <Mantine.Avatar
               alt="icon"
-              src="https://placehold.jp/300x300.png"
+              src={
+                user.avatar ? user.avatar : "https://placehold.jp/300x300.png"
+              }
               variant="light"
               radius="xl"
               size="lg"
             />
-            <span className="ml-4">ユーザー名</span>
+            <span className="ml-4">{user.name}</span>
           </div>
         </Mantine.Menu.Item>
         <div className="flex justify-center items-center">
-          <Mantine.Menu.Item onClick={() => handleLink("#")}>
+          <Mantine.Menu.Item
+            onClick={() => handleLink(RouterPath.users(user.id))}
+          >
             <div className="flex flex-col justify-center items-center">
               <span className="text-center">{t_Menu("follow")}</span>
-              <span>10</span>
+              <span>{user.follow}</span>
             </div>
           </Mantine.Menu.Item>
-          <Mantine.Menu.Item onClick={() => handleLink("#")}>
+          <Mantine.Menu.Item
+            onClick={() => handleLink(RouterPath.users(user.id))}
+          >
             <div className="flex flex-col justify-center items-center">
               <span>{t_Menu("follower")}</span>
-              <span>10</span>
+              <span>{user.follower}</span>
             </div>
           </Mantine.Menu.Item>
         </div>
         <Mantine.Menu.Item
-          onClick={() => handleLink(RouterPath.users(1))}
+          onClick={() => handleLink(RouterPath.users(user.id))}
           leftSection={<VscAccount />}
         >
           {t_Menu("myPage")}
         </Mantine.Menu.Item>
         <Mantine.Menu.Item
-          onClick={() => handleLink("users/1/bookmarks")}
+          onClick={() => handleLink(RouterPath.bookmark(user.id))}
           leftSection={<FaRegBookmark />}
         >
           {t_Menu("bookmark")}

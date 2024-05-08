@@ -7,6 +7,8 @@ export const RouterPath = {
   signUp: "/signup",
   login: "/login",
   illustIndex: "/",
+  illustSearch: (searchWord: string) => `/illusts?search=${searchWord}`,
   users: (id: number) => `/users/${id}`,
   account: "/account",
+  bookmark: (id: number) => `/users/${id}?bookmark=true`,
 };

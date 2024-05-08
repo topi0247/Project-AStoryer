@@ -18,6 +18,9 @@ export interface ButtonState {
 export interface IUser {
   id: number;
   name: string;
+  avatar: string;
+  follow: number;
+  follower: number;
 }
 
 export enum PublicState {

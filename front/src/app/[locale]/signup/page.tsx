@@ -75,13 +75,13 @@ export default function SignUpPage() {
             />
             <Mantine.TextInput
               withAsterisk
-              type="email"
               label={t_Auth("email")}
               autoComplete="email"
               key={form.key("email")}
               {...form.getInputProps("email")}
             />
             <Mantine.TextInput
+              withAsterisk
               label={t_Auth("password")}
               type="password"
               autoComplete="new-password"
@@ -89,6 +89,7 @@ export default function SignUpPage() {
               {...form.getInputProps("password")}
             />
             <Mantine.TextInput
+              withAsterisk
               type="password"
               label={t_Auth("password_confirmation")}
               autoComplete="new-password"
