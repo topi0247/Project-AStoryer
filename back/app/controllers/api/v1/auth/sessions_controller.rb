@@ -11,7 +11,7 @@ class Api::V1::Auth::SessionsController < DeviseTokenAuth::SessionsController
   def render_create_success
     render json: {
       success: true,
-      user: { name: @resource.name, id: @resource.id },
+      user: @resource.as_header_json,
     }
   end
 
