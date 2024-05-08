@@ -39,10 +39,7 @@ class Api::V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsCon
             # 認証トークンとユーザー情報を含むJSONを返す
             render json: {
               success: true,
-              user:   {
-                id: resource.id,
-                name: resource.name,
-              },
+              user: resource.as_header_json,
               message: "登録が完了しました。", # カスタムメッセージ等
             } and return
           else

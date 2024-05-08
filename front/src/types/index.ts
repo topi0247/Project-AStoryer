@@ -19,8 +19,8 @@ export interface IUser {
   id: number;
   name: string;
   avatar: string;
-  follow: number;
-  follower: number;
+  following_count: number;
+  follower_count: number;
 }
 
 export enum PublicState {

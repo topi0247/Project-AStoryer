@@ -1,9 +1,11 @@
 "use client";
+import { useRecoilState } from "recoil";
+import { useAuth } from "@/hook";
+import { IUser } from "@/types";
 import { Link, useRouter } from "@/lib";
 import * as RecoilState from "@/recoilState";
 import { useTranslations } from "next-intl";
-import React, { useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { IoMdSearch, IoMdSettings } from "rocketicons/io";
 import { VscAccount } from "rocketicons/vsc";
@@ -11,13 +13,26 @@ import * as Mantine from "@mantine/core";
 import { FaRegBookmark } from "rocketicons/fa";
 import { MdLogout } from "rocketicons/md";
 import { RouterPath } from "@/settings";
-import { IUser } from "@/types";
 
 export default function Headers() {
-  const user = useRecoilValue(RecoilState.userState);
+  const [user, setUser] = useRecoilState(RecoilState.userState);
+  const { autoLogin } = useAuth();
   const t_Header = useTranslations("Header");
   const [search, setSearch] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    if (user.name !== "") return;
+    const fetchData = async () => {
+      const result = await autoLogin();
+      if (result.success && result.user) {
+        setUser(result.user);
+        router.push(RouterPath.illustIndex);
+        return;
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,7 +96,7 @@ export default function Headers() {
               >
                 {t_Header("postButton")}
               </Mantine.Button>
-              {AccountMenu(user)}
+              <AccountMenu user={user} />
             </>
           ) : (
             <Link
@@ -97,7 +112,7 @@ export default function Headers() {
   );
 }
 
-function AccountMenu(user: IUser) {
+export function AccountMenu({ user }: { user: IUser }) {
   const t_Menu = useTranslations("MyMenu");
   const router = useRouter();
 
@@ -123,7 +138,7 @@ function AccountMenu(user: IUser) {
       </Mantine.Menu.Target>
       <Mantine.Menu.Dropdown>
         <Mantine.Menu.Item onClick={() => handleLink(RouterPath.users(1))}>
-          <div className="flex justify-center items-center">
+          <div className="flex justify-start items-center">
             <Mantine.Avatar
               alt="icon"
               src={
@@ -142,7 +157,7 @@ function AccountMenu(user: IUser) {
           >
             <div className="flex flex-col justify-center items-center">
               <span className="text-center">{t_Menu("follow")}</span>
-              <span>{user.follow}</span>
+              <span>{user.following_count}</span>
             </div>
           </Mantine.Menu.Item>
           <Mantine.Menu.Item
@@ -150,7 +165,7 @@ function AccountMenu(user: IUser) {
           >
             <div className="flex flex-col justify-center items-center">
               <span>{t_Menu("follower")}</span>
-              <span>{user.follower}</span>
+              <span>{user.follower_count}</span>
             </div>
           </Mantine.Menu.Item>
         </div>

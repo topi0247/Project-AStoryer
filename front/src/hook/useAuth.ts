@@ -1,6 +1,7 @@
 import { Settings } from "@/settings";
 import { IUser } from "@/types";
 
+// TODO : axiosに置き換える
 export const useAuth = () => {
   const login = async (email: string, password: string) => {
     const response = await fetch(`${Settings.API_URL}/auth/sign_in`, {
@@ -26,7 +27,7 @@ export const useAuth = () => {
 
     return {
       success: true,
-      user: { id: data.user.id, name: data.user.name } as IUser,
+      user: data.user as IUser,
     };
   };
 
@@ -63,7 +64,41 @@ export const useAuth = () => {
     );
     return {
       success: true,
-      user: { id: data.user.id, name: data.user.name } as IUser,
+      user: data.user as IUser,
+    };
+  };
+
+  const autoLogin = async () => {
+    const accessToken = localStorage.getItem("Access-Token");
+    const client = localStorage.getItem("Client");
+    const uid = localStorage.getItem("Uid");
+    const expiry = localStorage.getItem("Expiry");
+
+    if (!accessToken || !client || !uid || !expiry) {
+      clearAccessTokens();
+      return { success: false };
+    }
+
+    const response = await fetch(`${Settings.API_URL}/auth/validate_token`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Token": accessToken,
+        Client: client,
+        Uid: uid,
+        Expiry: expiry,
+      },
+    });
+
+    const data = await response.json();
+    if (!response.ok || !data.success) {
+      clearAccessTokens();
+      return { success: false };
+    }
+
+    return {
+      success: true,
+      user: data.user as IUser,
     };
   };
 
@@ -86,5 +121,5 @@ export const useAuth = () => {
     localStorage.removeItem("Expiry");
   };
 
-  return { login, signUp };
+  return { login, signUp, autoLogin };
 };
