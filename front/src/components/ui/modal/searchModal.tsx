@@ -28,21 +28,6 @@ enum SearchType {
   OR = "OR",
 }
 
-const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  bgcolor: "background.paper",
-  width: "100%",
-  maxWidth: "600px",
-  boxShadow: 24,
-  p: 4,
-  borderRadius: 1,
-  display: "flex",
-  flexDirection: "column",
-};
-
 export default function SearchModal() {
   const t_Search = useTranslations("Search");
   const t_SearchOption = useTranslations("SearchOption");
