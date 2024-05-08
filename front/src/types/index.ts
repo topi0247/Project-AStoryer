@@ -23,13 +23,6 @@ export interface IUser {
   follower_count: number;
 }
 
-export enum PublicState {
-  DRAFT = 0, // 下書き
-  PRIVATE = 1, // 非公開
-  PUBLIC = 2, // 全体公開
-  ONLY_URL = 3, // URLを知ってる人のみ
-}
-
 export interface NoticeState {
   favorite: boolean;
   bookmark: boolean;
