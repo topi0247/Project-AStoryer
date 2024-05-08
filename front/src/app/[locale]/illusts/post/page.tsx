@@ -227,6 +227,9 @@ export default function IllustPostPage() {
                     />
                   </Mantine.Group>
                 </Mantine.Radio.Group>
+                <p className="text-sm my-4">
+                  ※「全体公開」と「URLを知っている人」はログインユーザーでなくても見れます
+                </p>
               </section>
               <section className="my-8">
                 <Mantine.Group className="flex justify-center items-center">
