@@ -42,6 +42,7 @@ export default function IllustPostPage() {
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const [postIllust, setPostIllust] = useState<string[]>([] as string[]);
   const [tags, setTags] = useState<string[]>([] as string[]);
+  const [postId, setPostId] = useState<number>(0);
   const setOpenModal = useSetRecoilState(modalOpenState);
   const router = useRouter();
   const user = useRecoilValue(userState);
@@ -74,6 +75,8 @@ export default function IllustPostPage() {
   const handleSubmit = () => {
     // TODO : 投稿処理
 
+    setPostId(1);
+
     // 投稿・下書きしたらモーダル表示
     setOpenModal(true);
   };
@@ -89,11 +92,10 @@ export default function IllustPostPage() {
   };
 
   const handleModalClose = () => {
-    if (form.values.publishRange === PublishRange.Draft) {
-      setOpenModal(false);
-    } else {
+    if (form.values.publishRange !== PublishRange.Draft) {
       router.push(RouterPath.users(user.id));
     }
+    setOpenModal(false);
   };
 
   return (
@@ -276,7 +278,10 @@ export default function IllustPostPage() {
             </>
           ) : (
             <>
-              <Mantine.Button className="bg-green-300 text-black">
+              <Mantine.Button
+                className="bg-green-300 text-black"
+                onClick={() => router.push(RouterPath.illust(postId))}
+              >
                 作品を見に行く
               </Mantine.Button>
               <Mantine.Button className="bg-black text-white">

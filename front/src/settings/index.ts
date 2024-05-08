@@ -7,6 +7,7 @@ export const RouterPath = {
   signUp: "/signup",
   login: "/login",
   illustIndex: "/",
+  illust: (id: number) => `/illusts/${id}`,
   illustSearch: (searchWord: string) => `/illusts?search=${searchWord}`,
   users: (id: number) => `/users/${id}`,
   account: "/account",
