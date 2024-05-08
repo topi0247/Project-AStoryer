@@ -44,7 +44,14 @@ class User < ActiveRecord::Base
     end
   end
 
-  def getAuthInfo
-    
+  def as_header_json
+    {
+      id: id,
+      name: name,
+      avatar: profile&.avatar&.url,
+      header_image: profile&.header_image&.url,
+      following_count: following.count || 0,
+      follower_count: followers.count || 0,
+    }
   end
 end

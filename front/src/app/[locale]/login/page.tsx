@@ -58,13 +58,13 @@ export default function LoginPage() {
             )}
             <Mantine.TextInput
               withAsterisk
-              type="email"
               label={t_Auth("email")}
               autoComplete="email"
               key={form.key("email")}
               {...form.getInputProps("email")}
             />
             <Mantine.TextInput
+              withAsterisk
               label={t_Auth("password")}
               type="password"
               autoComplete="current-password"

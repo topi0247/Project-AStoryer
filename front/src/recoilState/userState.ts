@@ -7,5 +7,8 @@ export const userState = atom<IUser>({
   default: {
     id: -1,
     name: "",
+    avatar: "",
+    following_count: 0,
+    follower_count: 0,
   },
 });
