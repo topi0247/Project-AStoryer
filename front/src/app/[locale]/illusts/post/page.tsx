@@ -124,19 +124,16 @@ export default function IllustPostPage() {
                   {...form.getInputProps("postIllust")}
                 >
                   <Dropzone.Idle>
-                    {
-                      postIllust.length > 0 && (
-                        <Mantine.Image
-                          src={postIllust[0]}
-                          h={mobile ? "15rem" : "30rem"}
-                          w="auto"
-                          m="auto"
-                          fit="cover"
-                          className="opacity-50"
-                        />
-                      )
-                      // ))
-                    }
+                    {postIllust.length > 0 && (
+                      <Mantine.Image
+                        src={postIllust[0]}
+                        h={mobile ? "15rem" : "30rem"}
+                        w="auto"
+                        m="auto"
+                        fit="cover"
+                        className="opacity-50"
+                      />
+                    )}
                     <FaImage
                       className="icon-black opacity-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
                       style={{
@@ -236,7 +233,7 @@ export default function IllustPostPage() {
                 <Mantine.Group className="flex justify-center items-center">
                   <Mantine.Button
                     type="submit"
-                    className="bg-green-300 text-black hover:bg-green-500 hover:text-black"
+                    className="bg-green-300 text-black hover:bg-green-500 hover:text-black transition-all"
                   >
                     {t_PostGeneral("post")}
                   </Mantine.Button>
@@ -245,7 +242,7 @@ export default function IllustPostPage() {
                     onClick={() =>
                       form.setValues({ publishRange: PublicState.Draft })
                     }
-                    className="bg-slate-500 hover:bg-slate-800"
+                    className="bg-slate-500 hover:bg-slate-800 transition-all"
                   >
                     {t_PostGeneral("draftSave")}
                   </Mantine.Button>

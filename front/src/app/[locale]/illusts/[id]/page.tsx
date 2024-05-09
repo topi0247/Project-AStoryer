@@ -3,7 +3,6 @@
 import { FormEvent, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import * as RecoilState from "@/recoilState";
-import Style from "@/styles/index.module.css";
 import { Link } from "@/lib";
 import * as Mantine from "@mantine/core";
 import { FixedIconButtonList, IconButtonList } from "@/components/ui";

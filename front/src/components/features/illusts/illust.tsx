@@ -2,6 +2,7 @@ import { Link } from "@/lib";
 import { RouterPath } from "@/settings";
 import { IndexIllustData } from "@/types";
 import { Image } from "@mantine/core";
+import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 
 // aタグの中にsvgを入れるとHydrationエラーになるので動的読み込みを行う
@@ -18,8 +19,9 @@ export default function Illust({
   illust: IndexIllustData;
   isUserPage?: boolean;
 }) {
+  const t_General = useTranslations("General");
   return (
-    <section>
+    <section className="relative overflow-hidden">
       <Link href={RouterPath.illust(illust.id)} className="relative z-0">
         <Image
           src={illust.image}
@@ -28,10 +30,19 @@ export default function Illust({
           className="aspect-square object-cover z-10"
         />
         {illust.count > 1 && (
-          <MdCollections className="absolute bottom-2 right-2 text-white" />
+          <MdCollections className="absolute top-2 right-2 text-white" />
         )}
       </Link>
-      {!isUserPage && (
+      {isUserPage ? (
+        <div className="absolute bottom-0 right-0 text-sm text-end">
+          <Link
+            href={RouterPath.illustEdit(illust.id)}
+            className="px-2 py-1 bg-slate-600 text-white rounded-l"
+          >
+            {t_General("edit")}
+          </Link>
+        </div>
+      ) : (
         <div className="mt-2 flex ml-4 justify-start items-center gap-3">
           <Link href={`/users/${illust.user.id}`}>
             <Image
