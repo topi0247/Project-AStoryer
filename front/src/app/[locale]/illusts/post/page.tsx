@@ -77,13 +77,12 @@ export default function IllustPostPage() {
   };
 
   const handleDrop = (files: File[]) => {
-    files.map((file) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setPostIllust([...postIllust, reader.result as string]);
-      };
-      reader.readAsDataURL(file);
-    });
+    // TODO : 一枚のみ対応、後々複数枚対応する
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPostIllust([reader.result as string]);
+    };
+    reader.readAsDataURL(files[0]);
   };
 
   const handleModalClose = () => {
@@ -112,7 +111,6 @@ export default function IllustPostPage() {
                 </label>
                 <Dropzone
                   name="postIllust"
-                  /*multiple*/ // TODO : 複数投稿は後にする
                   onDrop={(files) => handleDrop(files)}
                   maxSize={5 * 1024 ** 2}
                   accept={IMAGE_MIME_TYPE}
@@ -126,17 +124,19 @@ export default function IllustPostPage() {
                   {...form.getInputProps("postIllust")}
                 >
                   <Dropzone.Idle>
-                    {postIllust.length > 0 &&
-                      postIllust.map((illust, index) => (
+                    {
+                      postIllust.length > 0 && (
                         <Mantine.Image
-                          key={index}
-                          src={illust}
+                          src={postIllust[0]}
                           h={mobile ? "15rem" : "30rem"}
-                          w="100%"
+                          w="auto"
+                          m="auto"
                           fit="cover"
                           className="opacity-50"
                         />
-                      ))}
+                      )
+                      // ))
+                    }
                     <FaImage
                       className="icon-black opacity-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
                       style={{
