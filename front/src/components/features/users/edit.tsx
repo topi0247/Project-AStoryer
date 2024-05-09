@@ -166,7 +166,6 @@ export default function UserEdit({
               <MantineDropzone.Dropzone
                 name="headerImage"
                 onDrop={(files) => handleDrop(files, setHeaderImageBlob)}
-                onReject={() => console.log("reject")}
                 maxSize={5 * 1024 ** 2}
                 accept={MantineDropzone.IMAGE_MIME_TYPE}
                 style={{
@@ -201,7 +200,6 @@ export default function UserEdit({
                 <MantineDropzone.Dropzone
                   name="avatarImage"
                   onDrop={(files) => handleDrop(files, setAvatarBlob)}
-                  onReject={() => setAvatarBlob("")}
                   maxSize={5 * 1024 ** 2}
                   accept={MantineDropzone.IMAGE_MIME_TYPE}
                   style={{

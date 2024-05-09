@@ -1,4 +1,5 @@
 import { Link } from "@/lib";
+import { RouterPath } from "@/settings";
 import { IndexIllustData } from "@/types";
 import { Image } from "@mantine/core";
 import dynamic from "next/dynamic";
@@ -19,7 +20,7 @@ export default function Illust({
 }) {
   return (
     <section>
-      <Link href={`/illusts/${illust.id}`} className="relative z-0">
+      <Link href={RouterPath.illust(illust.id)} className="relative z-0">
         <Image
           src={illust.image}
           loading="lazy"
