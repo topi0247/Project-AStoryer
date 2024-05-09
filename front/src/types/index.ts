@@ -47,3 +47,11 @@ export interface UserPageEdit {
   };
   profile: string;
 }
+
+export enum PublicState {
+  All = "All",
+  Draft = "Draft",
+  URL = "URL",
+  Follower = "Follower",
+  Private = "Private",
+}

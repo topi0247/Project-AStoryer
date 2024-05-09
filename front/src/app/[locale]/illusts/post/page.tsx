@@ -8,6 +8,7 @@ import * as Mantine from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { FaImage } from "rocketicons/fa";
@@ -29,7 +30,6 @@ const Synalios = Array.from({ length: 50 }).map((_, i) => ({
 }));
 
 enum PublishRange {
-  hidden = "hidden",
   All = "All",
   Draft = "Draft",
   URL = "URL",
@@ -46,27 +46,29 @@ export default function IllustPostPage() {
   const setOpenModal = useSetRecoilState(modalOpenState);
   const router = useRouter();
   const user = useRecoilValue(userState);
+  const t_PostIllust = useTranslations("PostIllust");
+  const t_PostGeneral = useTranslations("PostGeneral");
 
   const form = useForm({
     initialValues: {
       postIllust: postIllust,
       title: "",
-      publishRange: PublishRange.hidden,
+      publishRange: "" as PublishRange,
     },
     validate: {
       postIllust: () => {
         if (postIllust.length === 0) {
-          return "イラストをアップロードしてください";
+          return t_PostIllust("uploadValid");
         }
       },
       title: (value) => {
         if (!value) {
-          return "タイトルを入力してください";
+          return t_PostGeneral("titleValid");
         }
       },
       publishRange: (value) => {
-        if (!value || value === PublishRange.hidden) {
-          return "公開範囲を選択してください";
+        if (!value) {
+          return t_PostGeneral("publishValid");
         }
       },
     },
@@ -103,14 +105,17 @@ export default function IllustPostPage() {
       <article className="mt-8 mb-12">
         <Mantine.Container size={"sm"}>
           <Mantine.Box className="bg-white p-4 px-8 rounded">
-            <h1 className="text-center font-semibold my-4">イラスト投稿</h1>
+            <h1 className="text-center font-semibold my-4">
+              {t_PostIllust("title")}
+            </h1>
             <form
               className="flex flex-col gap-5"
               onSubmit={form.onSubmit(handleSubmit)}
             >
               <section>
                 <label htmlFor="postIllust">
-                  イラストアップロード<span className="text-red-600">*</span>
+                  {t_PostIllust("upload")}
+                  <span className="text-red-600">*</span>
                 </label>
                 <Dropzone
                   name="postIllust"
@@ -157,7 +162,7 @@ export default function IllustPostPage() {
               <section>
                 <Mantine.TextInput
                   withAsterisk
-                  label="タイトル"
+                  label={t_PostGeneral("title")}
                   name="title"
                   {...form.getInputProps("title")}
                 />
@@ -165,16 +170,17 @@ export default function IllustPostPage() {
               <section>
                 <Mantine.Textarea
                   name="caption"
-                  label="キャプション"
-                  size="lg"
+                  label={t_PostGeneral("caption")}
+                  size="sm"
                   radius="xs"
+                  rows={5}
                   {...form.getInputProps("caption")}
                 />
               </section>
               <section>
                 <Mantine.TagsInput
                   name="tags"
-                  label="タグ"
+                  label={t_PostGeneral("tag")}
                   splitChars={[" ", "|"]}
                   data={Tags.map((tag) => tag.title)}
                   onChange={setTags}
@@ -185,7 +191,7 @@ export default function IllustPostPage() {
                 <div className="md:w-1/3">
                   <Mantine.Select
                     name="gameSystem"
-                    label="システム"
+                    label={t_PostGeneral("gameSystem")}
                     data={GameSystems.map((system) => system.name)}
                     {...form.getInputProps("gameSystem")}
                   />
@@ -193,7 +199,7 @@ export default function IllustPostPage() {
                 <div className="md:w-2/3">
                   <Mantine.Autocomplete
                     name="synalioTitle"
-                    label="シナリオ"
+                    label={t_PostGeneral("synalioTitle")}
                     data={Synalios.map((synalio) => synalio.title)}
                     {...form.getInputProps("synalioTitle")}
                   />
@@ -201,48 +207,45 @@ export default function IllustPostPage() {
               </section>
               <section>
                 <Mantine.Radio.Group
-                  name="PublishRange"
-                  label="公開範囲"
+                  name="publishRange"
+                  label={t_PostGeneral("publishRange")}
                   withAsterisk
                   {...form.getInputProps("publishRange")}
                 >
                   <Mantine.Group>
                     <Mantine.Radio
-                      label="全体公開"
+                      label={t_PostGeneral("allPublish")}
                       value={PublishRange.All}
                       style={{ cursor: "pointer" }}
                     />
                     <Mantine.Radio
-                      label="URLを知ってる人"
+                      label={t_PostGeneral("urlPublish")}
                       value={PublishRange.URL}
                       style={{ cursor: "pointer" }}
                     />
                     <Mantine.Radio
-                      label="フォロワー"
+                      label={t_PostGeneral("followerPublish")}
                       value={PublishRange.Follower}
                       style={{ cursor: "pointer" }}
                     />
                     <Mantine.Radio
-                      label="非公開"
+                      label={t_PostGeneral("private")}
                       value={PublishRange.Private}
                       style={{ cursor: "pointer" }}
                     />
                   </Mantine.Group>
                 </Mantine.Radio.Group>
                 <p className="text-sm my-4">
-                  ※「全体公開」と「URLを知っている人」はログインユーザーでなくても見れます
+                  {t_PostGeneral("publishAttention")}
                 </p>
               </section>
               <section className="my-8">
                 <Mantine.Group className="flex justify-center items-center">
                   <Mantine.Button
                     type="submit"
-                    onClick={() =>
-                      form.setValues({ publishRange: PublishRange.All })
-                    }
                     className="bg-green-300 text-black hover:bg-green-500 hover:text-black"
                   >
-                    投稿
+                    {t_PostGeneral("post")}
                   </Mantine.Button>
                   <Mantine.Button
                     type="submit"
@@ -251,7 +254,7 @@ export default function IllustPostPage() {
                     }
                     className="bg-slate-500 hover:bg-slate-800"
                   >
-                    下書き保存
+                    {t_PostGeneral("draftSave")}
                   </Mantine.Button>
                 </Mantine.Group>
               </section>
@@ -263,8 +266,8 @@ export default function IllustPostPage() {
       <TransitionsModal onClose={handleModalClose}>
         <h3 className="text-xl text-center my-4">
           {form.values.publishRange === PublishRange.Draft
-            ? "下書き保存しました"
-            : "作品を投稿しました"}
+            ? t_PostGeneral("draftSaved")
+            : t_PostGeneral("posted")}
         </h3>
         <Mantine.Group justify="center" gap={8}>
           {form.values.publishRange === PublishRange.Draft ? (
@@ -273,7 +276,7 @@ export default function IllustPostPage() {
                 className="bg-green-300 text-black"
                 onClick={handleModalClose}
               >
-                閉じる
+                {t_PostGeneral("close")}
               </Mantine.Button>
             </>
           ) : (
@@ -282,10 +285,10 @@ export default function IllustPostPage() {
                 className="bg-green-300 text-black"
                 onClick={() => router.push(RouterPath.illust(postId))}
               >
-                作品を見に行く
+                {t_PostGeneral("showPost")}
               </Mantine.Button>
               <Mantine.Button className="bg-black text-white">
-                Xに投稿する
+                {t_PostGeneral("XShare")}
               </Mantine.Button>
             </>
           )}

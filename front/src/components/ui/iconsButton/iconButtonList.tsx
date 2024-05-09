@@ -23,7 +23,7 @@ export function IconButtonList({
           <BookmarkButton state={buttonState.bookmark} />
         </li>
         {/* 公開範囲が全体のときのみシェア可能 */}
-        {publicState.valueOf() === PublicState.PUBLIC && (
+        {publicState.valueOf() === PublicState.All && (
           <li className="w-1/3 h-full text-center">
             <ShareButton />
           </li>
@@ -55,7 +55,7 @@ export function FixedIconButtonList({
           <BookmarkButton state={buttonState.bookmark} />
         </li>
         {/* 公開範囲が全体のときのみシェア可能 */}
-        {publicState.valueOf() === PublicState.PUBLIC && (
+        {publicState.valueOf() === PublicState.Private && (
           <li className="w-1/3 h-full text-center">
             <ShareButton />
           </li>

@@ -108,5 +108,32 @@
     "other": "その他",
     "headerImage": "ヘッダー画像",
     "avatar": "ユーザーアイコン"
+  },
+  "PostIllust": {
+    "title": "イラスト投稿",
+    "upload": "イラストアップロード",
+    "uploadValid": "イラストをアップロードしてください"
+  },
+  "PostGeneral": {
+    "title": "タイトル",
+    "caption": "キャプション",
+    "tag": "タグ",
+    "gameSystem": "システム",
+    "synalioTitle": "シナリオ名",
+    "publishRange": "公開範囲",
+    "allPublish": "全体公開",
+    "urlPublish": "URLを知ってる人",
+    "followerPublish": "フォロワー",
+    "private": "非公開",
+    "publishAttention": "※「全体公開」と「URLを知っている人」はログインユーザーでなくても見れます",
+    "post": "投稿",
+    "draftSave": "下書き保存",
+    "posted": "作品を投稿しました",
+    "draftSaved": "下書きを保存しました",
+    "close": "閉じる",
+    "showPost": "作品を見に行く",
+    "XShare": "Xに投稿する",
+    "titleValid": "タイトルを入力してください",
+    "publishValid": "公開範囲を選択してください"
   }
 }
