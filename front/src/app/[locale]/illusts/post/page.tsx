@@ -4,6 +4,7 @@ import { TransitionsModal } from "@/components/ui";
 import { useRouter } from "@/lib";
 import { modalOpenState, userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
+import { PublicState } from "@/types";
 import * as Mantine from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
@@ -29,14 +30,6 @@ const Synalios = Array.from({ length: 50 }).map((_, i) => ({
   title: `シナリオ${i}`,
 }));
 
-enum PublishRange {
-  All = "All",
-  Draft = "Draft",
-  URL = "URL",
-  Follower = "Follower",
-  Private = "Private",
-}
-
 export default function IllustPostPage() {
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
@@ -53,7 +46,7 @@ export default function IllustPostPage() {
     initialValues: {
       postIllust: postIllust,
       title: "",
-      publishRange: "" as PublishRange,
+      publishRange: "" as PublicState,
     },
     validate: {
       postIllust: () => {
@@ -94,7 +87,7 @@ export default function IllustPostPage() {
   };
 
   const handleModalClose = () => {
-    if (form.values.publishRange !== PublishRange.Draft) {
+    if (form.values.publishRange !== PublicState.Draft) {
       router.push(RouterPath.users(user.id));
     }
     setOpenModal(false);
@@ -215,22 +208,22 @@ export default function IllustPostPage() {
                   <Mantine.Group>
                     <Mantine.Radio
                       label={t_PostGeneral("allPublish")}
-                      value={PublishRange.All}
+                      value={PublicState.All}
                       style={{ cursor: "pointer" }}
                     />
                     <Mantine.Radio
                       label={t_PostGeneral("urlPublish")}
-                      value={PublishRange.URL}
+                      value={PublicState.URL}
                       style={{ cursor: "pointer" }}
                     />
                     <Mantine.Radio
                       label={t_PostGeneral("followerPublish")}
-                      value={PublishRange.Follower}
+                      value={PublicState.Follower}
                       style={{ cursor: "pointer" }}
                     />
                     <Mantine.Radio
                       label={t_PostGeneral("private")}
-                      value={PublishRange.Private}
+                      value={PublicState.Private}
                       style={{ cursor: "pointer" }}
                     />
                   </Mantine.Group>
@@ -250,7 +243,7 @@ export default function IllustPostPage() {
                   <Mantine.Button
                     type="submit"
                     onClick={() =>
-                      form.setValues({ publishRange: PublishRange.Draft })
+                      form.setValues({ publishRange: PublicState.Draft })
                     }
                     className="bg-slate-500 hover:bg-slate-800"
                   >
@@ -265,12 +258,12 @@ export default function IllustPostPage() {
 
       <TransitionsModal onClose={handleModalClose}>
         <h3 className="text-xl text-center my-4">
-          {form.values.publishRange === PublishRange.Draft
+          {form.values.publishRange === PublicState.Draft
             ? t_PostGeneral("draftSaved")
             : t_PostGeneral("posted")}
         </h3>
         <Mantine.Group justify="center" gap={8}>
-          {form.values.publishRange === PublishRange.Draft ? (
+          {form.values.publishRange === PublicState.Draft ? (
             <>
               <Mantine.Button
                 className="bg-green-300 text-black"

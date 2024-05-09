@@ -42,7 +42,7 @@ export default function Headers() {
   };
 
   const handlePost = () => {
-    router.push("/illusts/post");
+    router.push(RouterPath.illustPost);
   };
 
   return (
@@ -61,7 +61,7 @@ export default function Headers() {
           </Link>
         </h1>
         <div className="md:flex md:items-center md:justify-center md:gap-8">
-          <div className="hidden  md:flex md:flex-col md:justify-end md:items-start">
+          <div className="md:flex md:flex-col md:justify-end md:items-start">
             <form
               className="md:flex md:justify-center md:items-center gap-2"
               onSubmit={handleSearch}
@@ -92,7 +92,7 @@ export default function Headers() {
               <Mantine.Button
                 variant="contained"
                 onClick={handlePost}
-                className="hidden md:block bg-orange-200 hover:bg-orange-400 text-black  transition-all"
+                className="md:block bg-orange-200 hover:bg-orange-400 text-black  transition-all"
               >
                 {t_Header("postButton")}
               </Mantine.Button>
