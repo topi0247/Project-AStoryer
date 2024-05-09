@@ -51,6 +51,8 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
   const user = useRecoilValue(userState);
   const t_PostIllustEdit = useTranslations("PostIllustEdit");
   const t_PostGeneral = useTranslations("PostGeneral");
+  const t_General = useTranslations("General");
+  const t_EditGeneral = useTranslations("EditGeneral");
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const [isDeleteConfirmation, setIsDeleteConfirmation] =
     useState<boolean>(false);
@@ -94,7 +96,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
 
   const handleDeleteSubmit = () => {
     if (!isDeleteConfirmation) {
-      setDeleteConfirmationError("削除するにはチェックを入れてください");
+      setDeleteConfirmationError(t_EditGeneral("checkDeleteValid"));
       return;
     }
   };
@@ -133,7 +135,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
                 color="transparent"
                 className="text-blue-500 hover:text-blue-300 transition-all hover:bg-transparent"
               >
-                戻る
+                {t_General("back")}
               </Mantine.Button>
             </div>
             <h1 className="text-center font-semibold my-4">
@@ -324,16 +326,14 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
         {isDelete ? (
           <>
             <h3 className="text-xl text-center my-4">
-              作品を削除します。
-              <br className="block md:hidden" />
-              よろしいですか？
+              {t_EditGeneral("deleteModalTItle")}
             </h3>
             <p className="text-center text-sm">
-              ※作品を削除したらもとに戻せません
+              {t_EditGeneral("deleteModalAttention")}
             </p>
             <div className="my-4 flex flex-col justify-center items-center">
               <Mantine.Checkbox
-                label="作品を削除する"
+                label={t_EditGeneral("deleteCheckLabel")}
                 size="md"
                 radius="xl"
                 color="red"
@@ -359,7 +359,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
                   setOpenModal(false);
                 }}
               >
-                戻る
+                {t_General("back")}
               </Mantine.Button>
             </div>
           </>
