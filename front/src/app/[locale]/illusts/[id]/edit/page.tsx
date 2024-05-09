@@ -123,6 +123,19 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
       <article className="mt-8 mb-12">
         <Mantine.Container size={"sm"}>
           <Mantine.Box className="bg-white p-4 px-8 rounded">
+            <div className="text-end">
+              <Mantine.Button
+                type="button"
+                onClick={() => {
+                  router.back();
+                }}
+                size="xs"
+                color="transparent"
+                className="text-blue-500 hover:text-blue-300 transition-all hover:bg-transparent"
+              >
+                戻る
+              </Mantine.Button>
+            </div>
             <h1 className="text-center font-semibold my-4">
               {t_PostIllustEdit("title")}
             </h1>
