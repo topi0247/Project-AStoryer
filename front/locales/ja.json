@@ -114,6 +114,12 @@
     "upload": "イラストアップロード",
     "uploadValid": "イラストをアップロードしてください"
   },
+  "PostIllustEdit": {
+    "title": "イラスト編集",
+    "illustPostAttention": "一度公開したイラストは変更できません",
+    "upload": "イラストアップロード",
+    "uploadValid": "イラストをアップロードしてください"
+  },
   "PostGeneral": {
     "title": "タイトル",
     "caption": "キャプション",
@@ -134,6 +140,8 @@
     "showPost": "作品を見に行く",
     "XShare": "Xに投稿する",
     "titleValid": "タイトルを入力してください",
-    "publishValid": "公開範囲を選択してください"
+    "publishValid": "公開範囲を選択してください",
+    "overwrite": "上書き保存",
+    "delete": "作品を削除する"
   }
 }
