@@ -7,9 +7,11 @@ import { Modal } from "@mantine/core";
 export default function TransitionsModal({
   children,
   onClose,
+  centered,
 }: {
   children: React.ReactNode;
   onClose?: () => void;
+  centered?: boolean;
 }) {
   const [open, setOpen] = useRecoilState(ModalState.modalOpenState);
   const title = useRecoilValue(ModalState.modalTitleState);
@@ -21,7 +23,12 @@ export default function TransitionsModal({
 
   return (
     <>
-      <Modal opened={open} onClose={handleClose} title={title}>
+      <Modal
+        opened={open}
+        onClose={handleClose}
+        title={title}
+        centered={centered}
+      >
         {children}
       </Modal>
     </>

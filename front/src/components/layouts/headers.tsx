@@ -51,7 +51,7 @@ export default function Headers() {
 
   return (
     <>
-      <header className="p-2 flex justify-between items-center ml-2 md:mx-8 md:my-2">
+      <header className="p-2 flex justify-center md:justify-between items-center ml-2 md:mx-8 md:my-2">
         <h1>
           <Link href={RouterPath.home}>
             <Image

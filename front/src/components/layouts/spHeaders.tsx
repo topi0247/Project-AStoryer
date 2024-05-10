@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as Mantine from "@mantine/core";
+import * as UI from "@/components/ui";
 import { IoMdSearch, IoMdSettings } from "rocketicons/io";
 import { LayoutGroup, motion } from "framer-motion";
 import { MdLogout } from "rocketicons/md";
@@ -9,6 +10,9 @@ import { VscAccount } from "rocketicons/vsc";
 import { IUser } from "@/types";
 import { useRouter } from "@/lib";
 import { RouterPath } from "@/settings";
+import { useSetRecoilState } from "recoil";
+import { modalOpenState } from "@/recoilState";
+import { useTranslations } from "use-intl";
 
 export default function SpHeaders({
   user,
@@ -23,7 +27,10 @@ export default function SpHeaders({
   const [avatarIconPos, setAvatarIconPos] = useState({ x: 0, y: 0 });
   const [settingIconPos, setSettingIconPos] = useState({ x: 0, y: 0 });
   const [logoutIconPos, setLogoutIconPos] = useState({ x: 0, y: 0 });
+  const [search, setSearch] = useState("");
   const router = useRouter();
+  const setModalOpen = useSetRecoilState(modalOpenState);
+  const t_Header = useTranslations("Header");
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -62,9 +69,30 @@ export default function SpHeaders({
     }
   }, [open]);
 
+  const handleMenuOpen = () => {
+    const nextOpen = !open;
+    setOpen(nextOpen);
+    if (!nextOpen) {
+      setModalOpen(false);
+    }
+  };
+
   const handleLink = (path: string) => {
     setOpen(false);
     router.push(path);
+  };
+
+  const handleSearchModal = (isOpen: boolean) => {
+    setModalOpen(isOpen);
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!search) return;
+    const searchWords = search.split(/\s|　/).join(",");
+    router.push(RouterPath.illustSearch(searchWords));
+    setOpen(false);
+    setModalOpen(false);
   };
 
   return (
@@ -90,6 +118,7 @@ export default function SpHeaders({
             className="absolute top-0 left-0 w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
             animate={{ x: searchIconPos.x, y: searchIconPos.y }}
             transition={{ type: "spring" }}
+            onClick={() => handleSearchModal(true)}
           >
             <IoMdSearch className="w-full h-full text-white" />
           </motion.button>
@@ -125,13 +154,40 @@ export default function SpHeaders({
         >
           <Mantine.Button
             color="transparent"
-            onClick={() => setOpen(!open)}
+            onClick={handleMenuOpen}
             className="bg-transparent hover:bg-transparent p-0"
           >
             <MenuIconAnim open={open} />
           </Mantine.Button>
         </div>
       </div>
+      <UI.TransitionsModal centered>
+        <h2 className="text-center text-xl mb-4">検索</h2>
+        <form
+          className="flex flex-col justify-center items-center gap-2"
+          onSubmit={handleSearch}
+        >
+          <label className="bg-green-100 rounded text-sm flex justify-center items-center text-gray-400 pl-2">
+            <IoMdSearch />
+            <Mantine.TextInput
+              className="bg-green-100 focus:outline-none w-60 text-black"
+              placeholder={t_Header("searchPlaceholder")}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setSearch(e.target.value)
+              }
+              variant="transparent"
+            />
+          </label>
+          <Mantine.Button
+            type="submit"
+            variant="contained"
+            size="small"
+            className="bg-green-200 hover:bg-green-400 text-black transition-all"
+          >
+            {t_Header("searchButton")}
+          </Mantine.Button>
+        </form>
+      </UI.TransitionsModal>
     </>
   );
 }
