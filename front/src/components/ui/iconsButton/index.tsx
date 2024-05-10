@@ -10,7 +10,7 @@ import { Button } from "@mantine/core";
 
 const FavoriteButton = ({ state }: { state: boolean }) => {
   const [favorite, setFavorite] = useState(state);
-  const setModalOpen = useSetRecoilState(RecoilState.modalOpenState);
+  const setModalOpen = useSetRecoilState(RecoilState.requireModalOpenState);
 
   const handleFavorite = (value: boolean) => {
     // TODO : ログインユーザーでなければログインや登録を促す
@@ -29,15 +29,15 @@ const FavoriteButton = ({ state }: { state: boolean }) => {
           variant="transparent"
           color="pink"
         >
-          <MdFavorite className="w-[30px]" />
+          <MdFavorite className="icon-red-400" />
         </Button>
       ) : (
         <Button
           onClick={() => handleFavorite(true)}
           variant="transparent"
-          color="gray"
+          className="p-0"
         >
-          <MdOutlineFavoriteBorder className="w-[30px]" />
+          <MdOutlineFavoriteBorder className="icon-gray-500" />
         </Button>
       )}
     </>
@@ -46,7 +46,7 @@ const FavoriteButton = ({ state }: { state: boolean }) => {
 
 const BookmarkButton = ({ state }: { state: boolean }) => {
   const [bookmark, setBookmark] = useState(state);
-  const setModalOpen = useSetRecoilState(RecoilState.modalOpenState);
+  const setModalOpen = useSetRecoilState(RecoilState.requireModalOpenState);
 
   const handleBookmark = (value: boolean) => {
     // TODO : ログインユーザーでなければログインや登録を促す
@@ -61,7 +61,7 @@ const BookmarkButton = ({ state }: { state: boolean }) => {
     <>
       {bookmark ? (
         <Button onClick={() => handleBookmark(false)} variant="transparent">
-          <FaBookmark className="w-[25px]" />
+          <FaBookmark className="icon-sky-500" />
         </Button>
       ) : (
         <Button
@@ -69,7 +69,7 @@ const BookmarkButton = ({ state }: { state: boolean }) => {
           variant="transparent"
           color="gray"
         >
-          <FaRegBookmark className="w-[25px]" />
+          <FaRegBookmark className="icon-gray-500" />
         </Button>
       )}
     </>

@@ -1,4 +1,8 @@
-import { modalOpenState, modalTitleState } from "./modalState";
+import {
+  modalOpenState,
+  requireModalOpenState,
+  modalTitleState,
+} from "./modalState";
 import { userState } from "./userState";
 
-export { modalOpenState, modalTitleState, userState };
+export { modalOpenState, requireModalOpenState, modalTitleState, userState };

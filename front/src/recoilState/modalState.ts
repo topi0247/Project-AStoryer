@@ -10,3 +10,8 @@ export const modalTitleState = atom({
   key: "modalTitleState",
   default: "",
 });
+
+export const requireModalOpenState = atom({
+  key: "requireModalOpenState",
+  default: false,
+});

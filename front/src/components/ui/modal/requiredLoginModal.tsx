@@ -1,14 +1,16 @@
 import { useTranslations } from "next-intl";
 import * as RecoilState from "@/recoilState";
 import { useRouter } from "@/lib";
-import { useSetRecoilState } from "recoil";
-import { TransitionsModal } from ".";
+import { useRecoilState } from "recoil";
 import { RouterPath } from "@/settings";
+import * as Mantine from "@mantine/core";
 
 export default function RequiredLoginModal() {
   const t_Auth = useTranslations("Auth");
   const router = useRouter();
-  const setModalOpen = useSetRecoilState(RecoilState.modalOpenState);
+  const [modalOpen, setModalOpen] = useRecoilState(
+    RecoilState.requireModalOpenState
+  );
 
   const handleRequired = (path: string) => {
     setModalOpen(false);
@@ -16,7 +18,7 @@ export default function RequiredLoginModal() {
   };
 
   return (
-    <TransitionsModal>
+    <Mantine.Modal opened={modalOpen} onClose={() => setModalOpen(false)}>
       <div className="text-center">{t_Auth("requiredAuth")}</div>
       <div className="flex gap-4 justify-center items-center mt-4 w-68 m-auto">
         <button
@@ -32,6 +34,6 @@ export default function RequiredLoginModal() {
           {t_Auth("toLogin")}
         </button>
       </div>
-    </TransitionsModal>
+    </Mantine.Modal>
   );
 }
