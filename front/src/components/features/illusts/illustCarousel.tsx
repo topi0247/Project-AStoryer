@@ -23,7 +23,6 @@ export default function IllustCarousel({
       <Carousel
         slideSize={slideSize}
         slideGap="xs"
-        loop
         align={align}
         slidesToScroll={slidesToScroll}
         className="h-full"

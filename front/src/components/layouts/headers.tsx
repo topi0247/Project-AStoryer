@@ -13,6 +13,7 @@ import * as Mantine from "@mantine/core";
 import { FaRegBookmark } from "rocketicons/fa";
 import { MdLogout } from "rocketicons/md";
 import { RouterPath } from "@/settings";
+import SpHeaders from "./spHeaders";
 
 export default function Headers() {
   const [user, setUser] = useRecoilState(RecoilState.userState);
@@ -20,7 +21,6 @@ export default function Headers() {
   const t_Header = useTranslations("Header");
   const [search, setSearch] = useState("");
   const router = useRouter();
-
   useEffect(() => {
     if (user.name !== "") return;
     const fetchData = async () => {
@@ -45,9 +45,13 @@ export default function Headers() {
     router.push(RouterPath.illustPost);
   };
 
+  const handleLogout = async () => {
+    // TODO : ログアウト処理をここに書く
+  };
+
   return (
     <>
-      <header className="flex justify-between items-center ml-2 md:mx-8 md:my-2">
+      <header className="p-2 flex justify-center md:justify-between items-center ml-2 md:mx-8 md:my-2">
         <h1>
           <Link href={RouterPath.home}>
             <Image
@@ -61,13 +65,13 @@ export default function Headers() {
           </Link>
         </h1>
         <div className="md:flex md:items-center md:justify-center md:gap-8">
-          <div className="md:flex md:flex-col md:justify-end md:items-start">
+          <div className="hidden md:flex md:flex-col md:justify-end md:items-start">
             <form
               className="md:flex md:justify-center md:items-center gap-2"
               onSubmit={handleSearch}
             >
               <label className="bg-green-100 rounded md:text-sm md:flex md:justify-center md:items-center text-gray-400 pl-2">
-                <IoMdSearch />
+                <IoMdSearch className="icon-gray-500" />
                 <Mantine.TextInput
                   className="bg-green-100 focus:outline-none w-60 text-black"
                   placeholder={t_Header("searchPlaceholder")}
@@ -92,36 +96,43 @@ export default function Headers() {
               <Mantine.Button
                 variant="contained"
                 onClick={handlePost}
-                className="md:block bg-orange-200 hover:bg-orange-400 text-black  transition-all"
+                className="hidden md:block bg-orange-200 hover:bg-orange-400 text-black  transition-all"
               >
                 {t_Header("postButton")}
               </Mantine.Button>
-              <AccountMenu user={user} />
+              <div className="hidden md:block">
+                <AccountMenu user={user} handleLogout={handleLogout} />
+              </div>
             </>
           ) : (
             <Link
               href="/login"
-              className="p-2 px-3 rounded hidden md:block bg-orange-200 hover:bg-orange-400 text-black  transition-all hover:text-white"
+              className="text-sm md:text-normal p-2 px-3 rounded bg-orange-200 hover:bg-orange-400 text-black  transition-all hover:text-white"
             >
               {t_Header("signUpOrLogin")}
             </Link>
           )}
         </div>
       </header>
+
+      {/* SP */}
+      <SpHeaders user={user} handleLogout={handleLogout} />
     </>
   );
 }
 
-export function AccountMenu({ user }: { user: IUser }) {
+export function AccountMenu({
+  user,
+  handleLogout,
+}: {
+  user: IUser;
+  handleLogout: () => void;
+}) {
   const t_Menu = useTranslations("MyMenu");
   const router = useRouter();
 
   const handleLink = (path: string) => {
     router.push(`/${path}`);
-  };
-
-  const handleLogout = async () => {
-    // TODO : ログアウト処理をここに書く
   };
 
   return (

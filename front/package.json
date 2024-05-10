@@ -21,6 +21,7 @@
     "@mantine/spotlight": "^7.8.1",
     "axios": "^1.6.8",
     "embla-carousel-react": "^8.0.2",
+    "framer-motion": "^11.1.9",
     "next": "14.2.1",
     "next-intl": "^3.11.1",
     "react": "^18",
