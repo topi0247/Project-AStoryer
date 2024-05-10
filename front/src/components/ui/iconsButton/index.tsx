@@ -68,6 +68,7 @@ const BookmarkButton = ({ state }: { state: boolean }) => {
           onClick={() => handleBookmark(true)}
           variant="transparent"
           color="gray"
+          className="p-0"
         >
           <FaRegBookmark className="icon-gray-500" />
         </Button>
@@ -82,8 +83,8 @@ const ShareButton = () => {
   };
 
   return (
-    <Button onClick={handleShare} variant="transparent">
-      <MdShare className="w-[25px]" />
+    <Button onClick={handleShare} variant="transparent" className="p-0">
+      <MdShare className="icon-blue-500 p-0" />
     </Button>
   );
 };

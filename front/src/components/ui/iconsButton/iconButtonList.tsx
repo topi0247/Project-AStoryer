@@ -17,16 +17,16 @@ export function IconButtonList({
   return (
     <>
       <div className="hidden md:flex gap-2 justify-end items-center">
-        <ul className="flex justify-between items-center">
-          <li className="w-1/3 h-full text-center">
+        <ul className="flex justify-center items-center">
+          <li className="mx-2 h-full text-center">
             <FavoriteButton state={buttonState.favorite} />
           </li>
-          <li className="w-1/3 h-full text-center">
+          <li className="mx-2 h-full text-center">
             <BookmarkButton state={buttonState.bookmark} />
           </li>
           {/* 公開範囲が全体のときのみシェア可能 */}
           {publicState.valueOf() === PublicState.All && (
-            <li className="w-1/3 h-full text-center">
+            <li className="mx-2 h-full text-center">
               <ShareButton />
             </li>
           )}
@@ -53,15 +53,15 @@ export function FixedIconButtonList({
     <>
       <article className="fixed bottom-0 left-0 w-full md:hidden">
         <ul className="bg-white flex justify-center items-center py-3">
-          <li className="w-1/3 h-full text-center border-r border-slate-200">
+          <li className="h-full mx-2 text-center">
             <FavoriteButton state={buttonState.favorite} />
           </li>
-          <li className="w-1/3 h-full text-center">
+          <li className="h-full mx-2 text-center">
             <BookmarkButton state={buttonState.bookmark} />
           </li>
           {/* 公開範囲が全体のときのみシェア可能 */}
           {publicState.valueOf() === PublicState.Private && (
-            <li className="w-1/3 h-full text-center border-l border-slate-200">
+            <li className="h-full mx-2 text-center">
               <ShareButton />
             </li>
           )}
