@@ -4,9 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import * as Mantine from "@mantine/core";
 import * as UI from "@/components/ui";
 import { IoMdSearch, IoMdSettings } from "rocketicons/io";
-import { LayoutGroup, motion } from "framer-motion";
-import { MdLogout } from "rocketicons/md";
+import { ImPencil } from "rocketicons/im";
 import { VscAccount } from "rocketicons/vsc";
+import { MdLogout } from "rocketicons/md";
+import { LayoutGroup, motion } from "framer-motion";
 import { IUser } from "@/types";
 import { useRouter } from "@/lib";
 import { RouterPath } from "@/settings";
@@ -23,8 +24,9 @@ export default function SpHeaders({
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
-  const [searchIconPos, setSearchIconPos] = useState({ x: 0, y: 0 });
   const [avatarIconPos, setAvatarIconPos] = useState({ x: 0, y: 0 });
+  const [searchIconPos, setSearchIconPos] = useState({ x: 0, y: 0 });
+  const [pencilIconPos, setPencilIconPos] = useState({ x: 0, y: 0 });
   const [settingIconPos, setSettingIconPos] = useState({ x: 0, y: 0 });
   const [logoutIconPos, setLogoutIconPos] = useState({ x: 0, y: 0 });
   const [search, setSearch] = useState("");
@@ -57,13 +59,15 @@ export default function SpHeaders({
     if (!ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     if (open) {
-      setAvatarIconPos({ x: rect.x + 3, y: rect.y - 85 });
-      setSearchIconPos({ x: rect.x - 45, y: rect.y - 75 });
-      setSettingIconPos({ x: rect.x - 75, y: rect.y - 35 });
+      setAvatarIconPos({ x: rect.x + 10, y: rect.y - 90 });
+      setSearchIconPos({ x: rect.x - 40, y: rect.y - 90 });
+      setPencilIconPos({ x: rect.x - 90, y: rect.y - 90 });
+      setSettingIconPos({ x: rect.x - 90, y: rect.y - 40 });
       setLogoutIconPos({ x: rect.x - 90, y: rect.y + 10 });
     } else {
       setAvatarIconPos({ x: rect.x, y: rect.y });
       setSearchIconPos({ x: rect.x, y: rect.y });
+      setPencilIconPos({ x: rect.x, y: rect.y });
       setSettingIconPos({ x: rect.x, y: rect.y });
       setLogoutIconPos({ x: rect.x, y: rect.y });
     }
@@ -125,7 +129,15 @@ export default function SpHeaders({
           {user.name && (
             <>
               <motion.button
-                className="w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
+                className="absolute top-0 left-0 w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
+                animate={{ x: pencilIconPos.x, y: pencilIconPos.y }}
+                transition={{ type: "spring" }}
+                onClick={() => handleLink(RouterPath.illustPost)}
+              >
+                <ImPencil className="w-full h-full icon-white" />
+              </motion.button>
+              <motion.button
+                className="absolute top-0 left-0 w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
                 animate={{ x: settingIconPos.x, y: settingIconPos.y }}
                 transition={{ type: "spring" }}
                 onClick={() => handleLink(RouterPath.account)}
