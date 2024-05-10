@@ -11,9 +11,9 @@ RUN bundle install
 
 COPY . /app
 
-COPY entrypoint.sh /usr/bin/
-RUN chmod +x /usr/bin/entrypoint.sh
-ENTRYPOINT ["entrypoint.sh"]
+COPY ./bin/docker-entrypoint /usr/bin/
+RUN chmod +x /usr/bin/docker-entrypoint
+ENTRYPOINT ["docker-entrypoint.sh"]
 
 EXPOSE 3000
 
