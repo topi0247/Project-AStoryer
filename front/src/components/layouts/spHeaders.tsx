@@ -63,7 +63,6 @@ export default function SpHeaders({
   }, [open]);
 
   const handleLink = (path: string) => {
-    console.log(path);
     setOpen(false);
     router.push(path);
   };
@@ -87,49 +86,31 @@ export default function SpHeaders({
               <VscAccount className="w-full h-full text-white" />
             </motion.button>
           )}
-          <motion.div
+          <motion.button
             className="absolute top-0 left-0 w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
             animate={{ x: searchIconPos.x, y: searchIconPos.y }}
             transition={{ type: "spring" }}
           >
-            <Mantine.Button
-              color="transparent"
-              bg="transparent"
-              className="w-full h-full p-0"
-            >
-              <IoMdSearch className="w-full h-full text-white" />
-            </Mantine.Button>
-          </motion.div>
+            <IoMdSearch className="w-full h-full text-white" />
+          </motion.button>
           {user.name && (
             <>
-              <motion.div
+              <motion.button
                 className="w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
                 animate={{ x: settingIconPos.x, y: settingIconPos.y }}
                 transition={{ type: "spring" }}
+                onClick={() => handleLink(RouterPath.account)}
               >
-                <Mantine.Button
-                  color="transparent"
-                  bg="transparent"
-                  className="w-full h-full p-0"
-                  onClick={() => handleLink(RouterPath.account)}
-                >
-                  <IoMdSettings className="w-full h-full text-white" />
-                </Mantine.Button>
-              </motion.div>
-              <motion.div
+                <IoMdSettings className="w-full h-full text-white" />
+              </motion.button>
+              <motion.button
                 className="absolute top-0 left-0 w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
                 animate={{ x: logoutIconPos.x, y: logoutIconPos.y }}
                 transition={{ type: "spring" }}
+                onClick={handleLogout}
               >
-                <Mantine.Button
-                  color="transparent"
-                  bg="transparent"
-                  className="w-full h-full p-0"
-                  onClick={handleLogout}
-                >
-                  <MdLogout className="w-full h-full text-white" />
-                </Mantine.Button>
-              </motion.div>
+                <MdLogout className="w-full h-full text-white" />
+              </motion.button>
             </>
           )}
         </LayoutGroup>
