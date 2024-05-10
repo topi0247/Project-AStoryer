@@ -71,7 +71,7 @@ export default function Headers() {
               onSubmit={handleSearch}
             >
               <label className="bg-green-100 rounded md:text-sm md:flex md:justify-center md:items-center text-gray-400 pl-2">
-                <IoMdSearch />
+                <IoMdSearch className="icon-gray-500" />
                 <Mantine.TextInput
                   className="bg-green-100 focus:outline-none w-60 text-black"
                   placeholder={t_Header("searchPlaceholder")}

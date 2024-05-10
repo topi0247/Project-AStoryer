@@ -111,7 +111,7 @@ export default function SpHeaders({
               transition={{ type: "spring" }}
               onClick={() => handleLink(RouterPath.users(user.id))}
             >
-              <VscAccount className="w-full h-full text-white" />
+              <VscAccount className="w-full h-full icon-white" />
             </motion.button>
           )}
           <motion.button
@@ -120,7 +120,7 @@ export default function SpHeaders({
             transition={{ type: "spring" }}
             onClick={() => handleSearchModal(true)}
           >
-            <IoMdSearch className="w-full h-full text-white" />
+            <IoMdSearch className="w-full h-full icon-white" />
           </motion.button>
           {user.name && (
             <>
@@ -130,7 +130,7 @@ export default function SpHeaders({
                 transition={{ type: "spring" }}
                 onClick={() => handleLink(RouterPath.account)}
               >
-                <IoMdSettings className="w-full h-full text-white" />
+                <IoMdSettings className="w-full h-full icon-white" />
               </motion.button>
               <motion.button
                 className="absolute top-0 left-0 w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
@@ -138,7 +138,7 @@ export default function SpHeaders({
                 transition={{ type: "spring" }}
                 onClick={handleLogout}
               >
-                <MdLogout className="w-full h-full text-white" />
+                <MdLogout className="w-full h-full icon-white" />
               </motion.button>
             </>
           )}
@@ -168,7 +168,7 @@ export default function SpHeaders({
           onSubmit={handleSearch}
         >
           <label className="bg-green-100 rounded text-sm flex justify-center items-center text-gray-400 pl-2">
-            <IoMdSearch />
+            <IoMdSearch className="icon-gray-600" />
             <Mantine.TextInput
               className="bg-green-100 focus:outline-none w-60 text-black"
               placeholder={t_Header("searchPlaceholder")}

@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.icon-default {
-  fill: white;
-}
-
 /* Googleでログイン・新規登録 */
 .gsi-material-button {
   -moz-user-select: none;
