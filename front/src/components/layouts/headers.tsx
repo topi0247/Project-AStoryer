@@ -116,7 +116,9 @@ export default function Headers() {
       </header>
 
       {/* SP */}
-      <SpHeaders user={user} handleLogout={handleLogout} />
+      <div className="md:hidden">
+        <SpHeaders user={user} handleLogout={handleLogout} />
+      </div>
     </>
   );
 }
