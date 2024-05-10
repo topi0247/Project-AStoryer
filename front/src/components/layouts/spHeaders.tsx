@@ -27,7 +27,8 @@ export default function SpHeaders({
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
+      const tapNode = event.target as HTMLElement;
+      if (tapNode.id === "sp-menu-back") {
         setOpen(false);
       }
     }
@@ -61,78 +62,77 @@ export default function SpHeaders({
     }
   }, [open]);
 
+  const handleLink = (path: string) => {
+    console.log(path);
+    setOpen(false);
+    router.push(path);
+  };
+
   return (
     <>
       <div
+        id="sp-menu-back"
         className={`${
           open ? "block" : "hidden"
         } md:hidden fixed bottom-0 right-0 w-full min-h-screen z-50 bg-black bg-opacity-40`}
       >
-        <div className="relative w-full h-full">
-          <LayoutGroup>
-            {user.name && (
+        <LayoutGroup>
+          {user.name && (
+            <motion.button
+              className="absolute top-0 left-0 w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
+              animate={{ x: avatarIconPos.x, y: avatarIconPos.y }}
+              transition={{ type: "spring" }}
+              onClick={() => handleLink(RouterPath.users(user.id))}
+            >
+              <VscAccount className="w-full h-full text-white" />
+            </motion.button>
+          )}
+          <motion.div
+            className="absolute top-0 left-0 w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
+            animate={{ x: searchIconPos.x, y: searchIconPos.y }}
+            transition={{ type: "spring" }}
+          >
+            <Mantine.Button
+              color="transparent"
+              bg="transparent"
+              className="w-full h-full p-0"
+            >
+              <IoMdSearch className="w-full h-full text-white" />
+            </Mantine.Button>
+          </motion.div>
+          {user.name && (
+            <>
               <motion.div
-                className="absolute top-0 left-0 w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
-                animate={{ x: avatarIconPos.x, y: avatarIconPos.y }}
+                className="w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
+                animate={{ x: settingIconPos.x, y: settingIconPos.y }}
                 transition={{ type: "spring" }}
               >
                 <Mantine.Button
                   color="transparent"
                   bg="transparent"
                   className="w-full h-full p-0"
-                  onClick={() => router.push(RouterPath.users(user.id))}
+                  onClick={() => handleLink(RouterPath.account)}
                 >
-                  <VscAccount className="w-full h-full text-white" />
+                  <IoMdSettings className="w-full h-full text-white" />
                 </Mantine.Button>
               </motion.div>
-            )}
-            <motion.div
-              className="absolute top-0 left-0 w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
-              animate={{ x: searchIconPos.x, y: searchIconPos.y }}
-              transition={{ type: "spring" }}
-            >
-              <Mantine.Button
-                color="transparent"
-                bg="transparent"
-                className="w-full h-full p-0"
+              <motion.div
+                className="absolute top-0 left-0 w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
+                animate={{ x: logoutIconPos.x, y: logoutIconPos.y }}
+                transition={{ type: "spring" }}
               >
-                <IoMdSearch className="w-full h-full text-white" />
-              </Mantine.Button>
-            </motion.div>
-            {user.name && (
-              <>
-                <motion.div
-                  className="w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
-                  animate={{ x: settingIconPos.x, y: settingIconPos.y }}
-                  transition={{ type: "spring" }}
+                <Mantine.Button
+                  color="transparent"
+                  bg="transparent"
+                  className="w-full h-full p-0"
+                  onClick={handleLogout}
                 >
-                  <Mantine.Button
-                    color="transparent"
-                    bg="transparent"
-                    className="w-full h-full p-0"
-                    onClick={() => router.push(RouterPath.account)}
-                  >
-                    <IoMdSettings className="w-full h-full text-white" />
-                  </Mantine.Button>
-                </motion.div>
-                <motion.div
-                  className="absolute top-0 left-0 w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
-                  animate={{ x: logoutIconPos.x, y: logoutIconPos.y }}
-                  transition={{ type: "spring" }}
-                >
-                  <Mantine.Button
-                    color="transparent"
-                    bg="transparent"
-                    className="w-full h-full p-0"
-                    onClick={handleLogout}
-                  >
-                    <MdLogout className="w-full h-full text-white" />
-                  </Mantine.Button>
-                </motion.div>
-              </>
-            )}
-          </LayoutGroup>
-        </div>
+                  <MdLogout className="w-full h-full text-white" />
+                </Mantine.Button>
+              </motion.div>
+            </>
+          )}
+        </LayoutGroup>
       </div>
       <div
         id="sp-menu"
