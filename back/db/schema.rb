@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_05_021607) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_10_134134) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -31,6 +31,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_05_021607) do
     t.boolean "follower", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "posts", force: :cascade do |t|
+    t.integer "content_kind", default: 0
+    t.string "title", null: false
+    t.string "caption"
+    t.integer "publish_state"
+    t.datetime "published_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
   create_table "profiles", force: :cascade do |t|
@@ -77,6 +89,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_05_021607) do
   end
 
   add_foreign_key "authentications", "users"
+  add_foreign_key "posts", "users"
   add_foreign_key "profiles", "users"
   add_foreign_key "relationships", "users", column: "followed_id"
   add_foreign_key "relationships", "users", column: "follower_id"

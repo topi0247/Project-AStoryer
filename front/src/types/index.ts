@@ -49,8 +49,8 @@ export interface UserPageEdit {
 }
 
 export enum PublicState {
-  All = "All",
   Draft = "Draft",
+  All = "All",
   URL = "URL",
   Follower = "Follower",
   Private = "Private",

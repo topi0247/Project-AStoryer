@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: authentictions
+# Table name: authentications
 #
 #  id         :bigint           not null, primary key
 #  provider   :string           not null
