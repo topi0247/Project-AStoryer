@@ -14,8 +14,6 @@ services:
     build:
       context: ./back
       dockerfile: Dockerfile.dev
-      args:
-        USERNAME: ${USERNAME}
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0'"
     volumes:
       - ./back:/app
