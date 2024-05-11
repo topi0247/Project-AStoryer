@@ -1,4 +1,4 @@
-import { ButtonState, PublicState } from "@/types";
+import { IButtonState, IPublicState } from "@/types";
 import { BookmarkButton, FavoriteButton, ShareButton } from ".";
 import { RequiredLoginModal } from "../modal";
 
@@ -9,8 +9,8 @@ export function IconButtonList({
   publicState,
 }: {
   postId: number;
-  buttonState: ButtonState;
-  publicState: PublicState;
+  buttonState: IButtonState;
+  publicState: IPublicState;
 }) {
   const currentUser = true; // TODO : ログインユーザーの状態
 
@@ -25,7 +25,7 @@ export function IconButtonList({
             <BookmarkButton state={buttonState.bookmark} />
           </li>
           {/* 公開範囲が全体のときのみシェア可能 */}
-          {publicState.valueOf() === PublicState.All && (
+          {publicState.valueOf() === IPublicState.All && (
             <li className="mx-2 h-full text-center">
               <ShareButton />
             </li>
@@ -44,8 +44,8 @@ export function FixedIconButtonList({
   publicState,
 }: {
   postId: number;
-  buttonState: ButtonState;
-  publicState: PublicState;
+  buttonState: IButtonState;
+  publicState: IPublicState;
 }) {
   const currentUser = true; // TODO : ログインユーザーの状態
 
@@ -60,7 +60,7 @@ export function FixedIconButtonList({
             <BookmarkButton state={buttonState.bookmark} />
           </li>
           {/* 公開範囲が全体のときのみシェア可能 */}
-          {publicState.valueOf() === PublicState.Private && (
+          {publicState.valueOf() === IPublicState.Private && (
             <li className="h-full mx-2 text-center">
               <ShareButton />
             </li>

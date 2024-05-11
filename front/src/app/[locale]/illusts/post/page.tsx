@@ -1,10 +1,9 @@
 "use client";
 
-import { TransitionsModal } from "@/components/ui";
-import { useRouter } from "@/lib";
-import { modalOpenState, userState } from "@/recoilState";
+import { Post2API, useRouter } from "@/lib";
+import { userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
-import { PublicState } from "@/types";
+import { IPublicState } from "@/types";
 import * as Mantine from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
@@ -33,10 +32,11 @@ const Synalios = Array.from({ length: 50 }).map((_, i) => ({
 export default function IllustPostPage() {
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
-  const [postIllust, setPostIllust] = useState<string[]>([] as string[]);
-  const [tags, setTags] = useState<string[]>([] as string[]);
+  const [postIllust, setPostIllust] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
   const [postId, setPostId] = useState<number>(0);
-  const setOpenModal = useSetRecoilState(modalOpenState);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
   const user = useRecoilValue(userState);
   const t_PostIllust = useTranslations("PostIllust");
@@ -46,7 +46,8 @@ export default function IllustPostPage() {
     initialValues: {
       postIllust: postIllust,
       title: "",
-      publishRange: "" as PublicState,
+      caption: "",
+      publishRange: "" as IPublicState,
     },
     validate: {
       postIllust: () => {
@@ -67,13 +68,35 @@ export default function IllustPostPage() {
     },
   });
 
-  const handleSubmit = () => {
-    // TODO : 投稿処理
+  const handleSubmit = async () => {
+    const { title, caption, publishRange } = form.getValues();
+    const post = {
+      post: {
+        title,
+        caption,
+        publish_state: publishRange,
+        postable_type: "Illust",
+        postable_attributes: {
+          image: postIllust[0],
+        },
+      },
+    };
 
-    setPostId(1);
+    try {
+      const res = await Post2API("/posts", JSON.stringify(post));
 
-    // 投稿・下書きしたらモーダル表示
-    setOpenModal(true);
+      if (res.status != 201) {
+        const state = publishRange === IPublicState.Draft ? "保存" : "投稿";
+        setErrorMessage(`${state}に失敗しました`);
+        return;
+      }
+
+      setPostId(res.data.id);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setModalOpen(true);
+    }
   };
 
   const handleDrop = (files: File[]) => {
@@ -86,10 +109,13 @@ export default function IllustPostPage() {
   };
 
   const handleModalClose = () => {
-    if (form.values.publishRange !== PublicState.Draft) {
+    if (
+      errorMessage === "" &&
+      form.values.publishRange !== IPublicState.Draft
+    ) {
       router.push(RouterPath.users(user.id));
     }
-    setOpenModal(false);
+    setModalOpen(false);
   };
 
   return (
@@ -205,22 +231,22 @@ export default function IllustPostPage() {
                   <Mantine.Group>
                     <Mantine.Radio
                       label={t_PostGeneral("allPublish")}
-                      value={PublicState.All}
+                      value={IPublicState.All}
                       style={{ cursor: "pointer" }}
                     />
                     <Mantine.Radio
                       label={t_PostGeneral("urlPublish")}
-                      value={PublicState.URL}
+                      value={IPublicState.URL}
                       style={{ cursor: "pointer" }}
                     />
                     <Mantine.Radio
                       label={t_PostGeneral("followerPublish")}
-                      value={PublicState.Follower}
+                      value={IPublicState.Follower}
                       style={{ cursor: "pointer" }}
                     />
                     <Mantine.Radio
                       label={t_PostGeneral("private")}
-                      value={PublicState.Private}
+                      value={IPublicState.Private}
                       style={{ cursor: "pointer" }}
                     />
                   </Mantine.Group>
@@ -240,7 +266,7 @@ export default function IllustPostPage() {
                   <Mantine.Button
                     type="submit"
                     onClick={() =>
-                      form.setValues({ publishRange: PublicState.Draft })
+                      form.setValues({ publishRange: IPublicState.Draft })
                     }
                     className="bg-slate-500 hover:bg-slate-800 transition-all"
                   >
@@ -253,37 +279,43 @@ export default function IllustPostPage() {
         </Mantine.Container>
       </article>
 
-      <TransitionsModal onClose={handleModalClose}>
-        <h3 className="text-xl text-center my-4">
-          {form.values.publishRange === PublicState.Draft
-            ? t_PostGeneral("draftSaved")
-            : t_PostGeneral("posted")}
-        </h3>
-        <Mantine.Group justify="center" gap={8}>
-          {form.values.publishRange === PublicState.Draft ? (
-            <>
-              <Mantine.Button
-                className="bg-green-300 text-black"
-                onClick={handleModalClose}
-              >
-                {t_PostGeneral("close")}
-              </Mantine.Button>
-            </>
-          ) : (
-            <>
-              <Mantine.Button
-                className="bg-green-300 text-black"
-                onClick={() => router.push(RouterPath.illust(postId))}
-              >
-                {t_PostGeneral("showPost")}
-              </Mantine.Button>
-              <Mantine.Button className="bg-black text-white">
-                {t_PostGeneral("XShare")}
-              </Mantine.Button>
-            </>
-          )}
-        </Mantine.Group>
-      </TransitionsModal>
+      <Mantine.Modal opened={modalOpen} onClose={handleModalClose}>
+        {errorMessage === "" ? (
+          <>
+            <h3 className="text-xl text-center my-4">
+              {form.values.publishRange === IPublicState.Draft
+                ? t_PostGeneral("draftSaved")
+                : t_PostGeneral("posted")}
+            </h3>
+            <Mantine.Group justify="center" gap={8}>
+              {form.values.publishRange === IPublicState.Draft ? (
+                <>
+                  <Mantine.Button
+                    className="bg-green-300 text-black"
+                    onClick={handleModalClose}
+                  >
+                    {t_PostGeneral("close")}
+                  </Mantine.Button>
+                </>
+              ) : (
+                <>
+                  <Mantine.Button
+                    className="bg-green-300 text-black"
+                    onClick={() => router.push(RouterPath.illust(postId))}
+                  >
+                    {t_PostGeneral("showPost")}
+                  </Mantine.Button>
+                  <Mantine.Button className="bg-black text-white">
+                    {t_PostGeneral("XShare")}
+                  </Mantine.Button>
+                </>
+              )}
+            </Mantine.Group>
+          </>
+        ) : (
+          <p className="text-center">{errorMessage}</p>
+        )}
+      </Mantine.Modal>
     </>
   );
 }

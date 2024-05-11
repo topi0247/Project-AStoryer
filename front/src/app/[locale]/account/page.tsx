@@ -80,7 +80,7 @@ export default function AccountPage() {
           <h3 className="text-xl font-semibold text-center mt-10 mb-2">
             {t_AccountSettings("notificationSettings")}
           </h3>
-          <NoticeTabs noticeStates={data.notices} />
+          <NoticeTabs INoticeStates={data.notices} />
         </section>
       </div>
     </article>

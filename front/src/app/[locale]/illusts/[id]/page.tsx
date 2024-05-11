@@ -9,7 +9,7 @@ import { FixedIconButtonList, IconButtonList } from "@/components/ui";
 import { useTranslations } from "next-intl";
 import { useMediaQuery } from "@mantine/hooks";
 import { MdCollections } from "rocketicons/md";
-import { PublicState } from "@/types";
+import { IPublicState } from "@/types";
 
 export default function IllustPage({
   params: { id },
@@ -95,7 +95,7 @@ export default function IllustPage({
                   <IconButtonList
                     postId={id}
                     buttonState={{ favorite: false, bookmark: false }} // TODO : いいね・ブックマークの状態
-                    publicState={PublicState.All} // TODO : 投稿の公開範囲
+                    publicState={IPublicState.All} // TODO : 投稿の公開範囲
                   />
                   <h3 className="text-2xl font-semibold">
                     タイトルタイトルタイトルタイトルタイトルタイトルタイトル
@@ -302,7 +302,7 @@ export default function IllustPage({
       <FixedIconButtonList
         postId={id}
         buttonState={{ favorite: false, bookmark: false }} // TODO : いいね・ブックマークの状態
-        publicState={PublicState.All} // TODO : 投稿の公開範囲
+        publicState={IPublicState.All} // TODO : 投稿の公開範囲
       />
     </article>
   );

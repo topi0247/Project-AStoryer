@@ -24,7 +24,11 @@ class Api::V1::PostsController < Api::V1::BasesController
     # イラストの場合
     # TODO : 別の場所に書いたほうが良さそうな気がする
     if post.illust?
-      decoded_image = Base64.decode64(post_params[:postable_attributes][:image])
+      # 送信されるデータは data: から始まるためエンコードデータのみ抽出
+      data = post_params[:postable_attributes][:image]
+      base64_data = data.split(",")[1]
+      decoded_image = Base64.decode64(base64_data)
+      # MiniMagickでwebpに軽量化
       image = MiniMagick::Image.read(decoded_image)
       image.format 'webp'
       blob = ActiveStorage::Blob.create_and_upload!(
@@ -38,7 +42,7 @@ class Api::V1::PostsController < Api::V1::BasesController
     # 保存
     post.save!
 
-    head :created
+    render json: { id: post.id }, status: :created
   end
 
   private
