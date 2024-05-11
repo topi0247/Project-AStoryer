@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_10_134134) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_11_024300) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -24,6 +24,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_10_134134) do
     t.index ["user_id"], name: "index_authentications_on_user_id"
   end
 
+  create_table "illusts", force: :cascade do |t|
+    t.string "image"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "notices", force: :cascade do |t|
     t.boolean "favorite", default: false, null: false
     t.boolean "bookmark", default: false, null: false
@@ -34,7 +40,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_10_134134) do
   end
 
   create_table "posts", force: :cascade do |t|
-    t.integer "content_kind", default: 0
     t.string "title", null: false
     t.string "caption"
     t.integer "publish_state"
@@ -42,6 +47,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_10_134134) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.string "postable_type", null: false
+    t.bigint "postable_id", null: false
+    t.index ["postable_type", "postable_id"], name: "index_posts_on_postable"
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
