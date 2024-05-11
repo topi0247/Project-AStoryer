@@ -5,7 +5,7 @@ import * as MantineDropzone from "@mantine/dropzone";
 import { useTranslations } from "next-intl";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import "@mantine/dropzone/styles.css";
-import { UserPageEdit } from "@/types";
+import { IUserPageEdit } from "@/types";
 import { useState } from "react";
 import { FaImage } from "rocketicons/fa";
 import { useForm } from "@mantine/form";
@@ -13,7 +13,7 @@ import { useForm } from "@mantine/form";
 export default function UserEdit({
   userProfile,
 }: {
-  userProfile: UserPageEdit;
+  userProfile: IUserPageEdit;
 }) {
   const t_General = useTranslations("General");
   const [opened, { open, close }] = useDisclosure(false);

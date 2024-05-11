@@ -1,5 +1,5 @@
 FROM --platform=linux/amd64 ruby:3.2.2
-RUN apt-get update -qq && apt-get install -y nodejs postgresql-client libvips
+RUN apt-get update -qq && apt-get install -y nodejs postgresql-client libvips imagemagick
 
 WORKDIR /app
 

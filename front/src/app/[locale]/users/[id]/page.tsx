@@ -1,6 +1,6 @@
 import * as Mantine from "@mantine/core";
 import * as UI from "@/components/ui";
-import { IndexIllustData, UserPageEdit } from "@/types";
+import { IndexIllustData, IUserPageEdit } from "@/types";
 import { Illust } from "@/components/features/illusts";
 import { useTranslations } from "next-intl";
 import * as Users from "@/components/features/users";
@@ -33,7 +33,7 @@ export default function UserPage() {
     },
     profile:
       "プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文",
-  } as UserPageEdit;
+  } as IUserPageEdit;
 
   return (
     <>

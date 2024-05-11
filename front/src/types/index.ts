@@ -10,7 +10,7 @@ export interface IndexIllustData {
   count: number;
 }
 
-export interface ButtonState {
+export interface IButtonState {
   favorite: boolean;
   bookmark: boolean;
 }
@@ -23,19 +23,19 @@ export interface IUser {
   follower_count: number;
 }
 
-export interface NoticeState {
+export interface INoticeState {
   favorite: boolean;
   bookmark: boolean;
   comment: boolean;
   follower: boolean;
 }
 
-export interface NoticeStates {
-  app: NoticeState;
-  email: NoticeState;
+export interface INoticeStates {
+  app: INoticeState;
+  email: INoticeState;
 }
 
-export interface UserPageEdit {
+export interface IUserPageEdit {
   headerImage: string;
   avatar: string;
   link: {
@@ -48,10 +48,10 @@ export interface UserPageEdit {
   profile: string;
 }
 
-export enum PublicState {
-  Draft = "Draft",
-  All = "All",
-  URL = "URL",
-  Follower = "Follower",
-  Private = "Private",
+export enum IPublicState {
+  Draft = "draft",
+  All = "all_publish",
+  URL = "only_url",
+  Follower = "only_follower",
+  Private = "private_publish",
 }

@@ -4,7 +4,7 @@ import { TransitionsModal } from "@/components/ui";
 import { useRouter } from "@/lib";
 import { modalOpenState, userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
-import { PublicState } from "@/types";
+import { IPublicState } from "@/types";
 import * as Mantine from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
@@ -37,7 +37,7 @@ const Illust = {
   caption: "キャプション",
   gameSystem: "システム1",
   synalioTitle: "シナリオ名",
-  publishRange: PublicState.All,
+  publishRange: IPublicState.All,
   Tags: ["タグ1", "タグ2"],
 };
 
@@ -114,7 +114,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
     setIsDelete(false);
     setIsDeleteConfirmation(false);
     setDeleteConfirmationError("");
-    if (form.values.publishRange !== PublicState.Draft && !isDelete) {
+    if (form.values.publishRange !== IPublicState.Draft && !isDelete) {
       router.push(RouterPath.users(user.id));
     }
     setOpenModal(false);
@@ -146,7 +146,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
               onSubmit={form.onSubmit(handleSubmit)}
             >
               <section>
-                {Illust.publishRange === PublicState.Draft ? (
+                {Illust.publishRange === IPublicState.Draft ? (
                   <>
                     <label htmlFor="postIllust">
                       {t_PostIllustEdit("upload")}
@@ -265,22 +265,22 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
                   <Mantine.Group>
                     <Mantine.Radio
                       label={t_PostGeneral("allPublish")}
-                      value={PublicState.All}
+                      value={IPublicState.All}
                       style={{ cursor: "pointer" }}
                     />
                     <Mantine.Radio
                       label={t_PostGeneral("urlPublish")}
-                      value={PublicState.URL}
+                      value={IPublicState.URL}
                       style={{ cursor: "pointer" }}
                     />
                     <Mantine.Radio
                       label={t_PostGeneral("followerPublish")}
-                      value={PublicState.Follower}
+                      value={IPublicState.Follower}
                       style={{ cursor: "pointer" }}
                     />
                     <Mantine.Radio
                       label={t_PostGeneral("private")}
-                      value={PublicState.Private}
+                      value={IPublicState.Private}
                       style={{ cursor: "pointer" }}
                     />
                   </Mantine.Group>
@@ -297,11 +297,11 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
                   >
                     {t_PostGeneral("post")}
                   </Mantine.Button>
-                  {Illust.publishRange === PublicState.Draft && (
+                  {Illust.publishRange === IPublicState.Draft && (
                     <Mantine.Button
                       type="submit"
                       onClick={() =>
-                        form.setValues({ publishRange: PublicState.Draft })
+                        form.setValues({ publishRange: IPublicState.Draft })
                       }
                       className="bg-slate-500 hover:bg-slate-800 transition-all"
                     >
@@ -366,12 +366,12 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
         ) : (
           <>
             <h3 className="text-xl text-center my-4">
-              {form.values.publishRange === PublicState.Draft
+              {form.values.publishRange === IPublicState.Draft
                 ? t_PostGeneral("draftSaved")
                 : t_PostGeneral("posted")}
             </h3>
             <Mantine.Group justify="center" gap={8}>
-              {form.values.publishRange === PublicState.Draft ? (
+              {form.values.publishRange === IPublicState.Draft ? (
                 <>
                   <Mantine.Button
                     className="bg-green-300 text-black"
