@@ -1,6 +1,5 @@
 "use client";
 
-import { TransitionsModal } from "@/components/ui";
 import { Post2API, useRouter } from "@/lib";
 import { userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
@@ -86,7 +85,7 @@ export default function IllustPostPage() {
     try {
       const res = await Post2API("/posts", JSON.stringify(post));
 
-      if (res.status != 200) {
+      if (res.status != 201) {
         const state = publishRange === IPublicState.Draft ? "保存" : "投稿";
         setErrorMessage(`${state}に失敗しました`);
         return;
@@ -94,7 +93,7 @@ export default function IllustPostPage() {
 
       setPostId(res.data.id);
     } catch (e) {
-      console.log(e);
+      console.error(e);
     } finally {
       setModalOpen(true);
     }
@@ -110,7 +109,10 @@ export default function IllustPostPage() {
   };
 
   const handleModalClose = () => {
-    if (form.values.publishRange !== IPublicState.Draft) {
+    if (
+      errorMessage === "" &&
+      form.values.publishRange !== IPublicState.Draft
+    ) {
       router.push(RouterPath.users(user.id));
     }
     setModalOpen(false);
@@ -278,9 +280,7 @@ export default function IllustPostPage() {
       </article>
 
       <Mantine.Modal opened={modalOpen} onClose={handleModalClose}>
-        {errorMessage ? (
-          <p>{errorMessage}</p>
-        ) : (
+        {errorMessage === "" ? (
           <>
             <h3 className="text-xl text-center my-4">
               {form.values.publishRange === IPublicState.Draft
@@ -312,6 +312,8 @@ export default function IllustPostPage() {
               )}
             </Mantine.Group>
           </>
+        ) : (
+          <p className="text-center">{errorMessage}</p>
         )}
       </Mantine.Modal>
     </>
