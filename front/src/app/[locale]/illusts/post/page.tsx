@@ -41,6 +41,8 @@ export default function IllustPostPage() {
   const user = useRecoilValue(userState);
   const t_PostIllust = useTranslations("PostIllust");
   const t_PostGeneral = useTranslations("PostGeneral");
+  const TITLE_MAX_LENGTH = 20;
+  const CAPTION_MAX_LENGTH = 10000;
 
   const form = useForm({
     initialValues: {
@@ -58,6 +60,13 @@ export default function IllustPostPage() {
       title: (value) => {
         if (!value) {
           return t_PostGeneral("titleValid");
+        } else if (value.length > TITLE_MAX_LENGTH) {
+          return "タイトルは20文字以下です";
+        }
+      },
+      caption: (value) => {
+        if (value.length > CAPTION_MAX_LENGTH) {
+          return "キャプションは10000文字以下です。";
         }
       },
       publishRange: (value) => {
