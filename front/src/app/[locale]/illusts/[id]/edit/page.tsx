@@ -1,7 +1,7 @@
 "use client";
 
 import { TransitionsModal } from "@/components/ui";
-import { GetFromAPI, useRouter } from "@/lib";
+import { GetFromAPI, Post2API, Put2API, useRouter } from "@/lib";
 import { modalOpenState, userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
 import { IEditIllustData, IPublicState } from "@/types";
@@ -68,6 +68,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
     initialValues: {
       postIllust: illustData.image,
       title: illustData?.title,
+      caption: illustData?.caption,
       publishRange: illustData?.publish_state,
     },
     validate: {
@@ -92,9 +93,34 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
   if (error) return <div>error</div>;
   if (data === undefined) return <div>Now Loading</div>;
 
-  const handleSubmit = () => {
-    // 投稿・下書きしたらモーダル表示
-    setOpenModal(true);
+  const handleSubmit = async () => {
+    const { title, caption, publishRange } = form.getValues();
+    form.getValues();
+
+    const update = {
+      post: {
+        title,
+        caption,
+        publish_state: publishRange,
+        postable_type: "Illust",
+        postable_attributes: {
+          image: postIllust[0],
+        },
+      },
+    };
+
+    try {
+      const res = await Put2API(`/posts/${id}`, JSON.stringify(update));
+      if (res.status != 200) {
+        // TODO : 更新失敗処理
+        return;
+      }
+    } catch (e) {
+      // TODO : 更新失敗処理
+      return;
+    } finally {
+      setOpenModal(true);
+    }
   };
 
   const handleDelete = () => {
