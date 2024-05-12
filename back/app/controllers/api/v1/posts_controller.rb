@@ -33,15 +33,35 @@ class Api::V1::PostsController < Api::V1::BasesController
     end
   end
 
+  def edit
+    post = current_api_v1_user.posts.includes(:postable).find_by(id: params[:id])
+
+    if post.nil?
+      render json: { error: 'Not Found' }, status: :not_found and return
+    end
+
+    post_json = PostSerializer.new(post).serializable_hash
+    content = nil
+    if post.illust?
+      content = post.postable.image.attached? ? url_for(post.postable.image) : nil
+    end
+
+    render json: {
+      id: post_json[:data][:id],
+      title: post_json[:data][:attributes][:title],
+      caption: post_json[:data][:attributes][:caption],
+      publish_state: post_json[:data][:attributes][:publish_state],
+      type: post_json[:data][:attributes][:type],
+      data: [content]
+    }, status: :ok
+  end
+
   def update
     begin
       # 投稿データのメインコンテンツの更新が可能か
       if @post.main_content_updatable?
         # イラストなら中身を書き換え
-        if @post.illust?
-          blob = @post.postable.active_storage_upload!(post_params[:postable_attributes][:image])
-          @post.postable.image.attach(blob)
-        end
+        @post.postable.active_storage_upload!(post_params[:postable_attributes][:image]) if @post.illust?
       end
 
       # 公開設定で初公開のときは公開日時を設定

@@ -9,7 +9,7 @@ Rails.application.routes.draw do
       }
       resource :account, only: %i[show update]
       resource :notice, only: %i[update]
-      resources :posts, only: %i[create update]
+      resources :posts, only: %i[create edit update]
     end
   end
 end

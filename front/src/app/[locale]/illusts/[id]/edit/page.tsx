@@ -1,18 +1,19 @@
 "use client";
 
 import { TransitionsModal } from "@/components/ui";
-import { useRouter } from "@/lib";
+import { GetFromAPI, useRouter } from "@/lib";
 import { modalOpenState, userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
-import { IPublicState } from "@/types";
+import { IEditIllustData, IPublicState } from "@/types";
 import * as Mantine from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { FaImage } from "rocketicons/fa";
+import useSWR from "swr";
 
 // 仮データをハードコーディング
 const Tags = Array.from({ length: 10 }).map((_, i) => ({
@@ -30,22 +31,21 @@ const Synalios = Array.from({ length: 50 }).map((_, i) => ({
   title: `シナリオ${i}`,
 }));
 
-const Illust = {
-  id: 1,
-  image: "https://source.unsplash.com/random",
-  title: "タイトル",
-  caption: "キャプション",
-  gameSystem: "システム1",
-  synalioTitle: "シナリオ名",
-  publishRange: IPublicState.All,
-  Tags: ["タグ1", "タグ2"],
-};
+const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 export default function IllustEditPage({ params }: { params: { id: string } }) {
+  const { id } = params;
+  const { data, error } = useSWR(`/posts/${id}/edit`, fetcher);
+  const illustData = data
+    ? ({
+        ...data,
+        image: data.data,
+      } as IEditIllustData)
+    : ({} as IEditIllustData);
+  const [postIllust, setPostIllust] = useState<string[]>([]);
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
-  const [postIllust, setPostIllust] = useState<string[]>([Illust.image]);
-  const [tags, setTags] = useState<string[]>(Illust.Tags);
+  const [tags, setTags] = useState<string[]>([]);
   const setOpenModal = useSetRecoilState(modalOpenState);
   const router = useRouter();
   const user = useRecoilValue(userState);
@@ -59,11 +59,16 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
   const [deleteConfirmationError, setDeleteConfirmationError] =
     useState<string>("");
 
+  useEffect(() => {
+    if (!illustData || illustData === undefined) return;
+    setPostIllust(illustData.image ?? []);
+  }, [illustData]);
+
   const form = useForm({
     initialValues: {
-      postIllust: postIllust,
-      title: Illust.title,
-      publishRange: Illust.publishRange,
+      postIllust: illustData.image,
+      title: illustData?.title,
+      publishRange: illustData?.publish_state,
     },
     validate: {
       postIllust: () => {
@@ -83,6 +88,9 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
       },
     },
   });
+
+  if (error) return <div>error</div>;
+  if (data === undefined) return <div>Now Loading</div>;
 
   const handleSubmit = () => {
     // 投稿・下書きしたらモーダル表示
@@ -146,7 +154,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
               onSubmit={form.onSubmit(handleSubmit)}
             >
               <section>
-                {Illust.publishRange === IPublicState.Draft ? (
+                {illustData.publish_state === IPublicState.Draft ? (
                   <>
                     <label htmlFor="postIllust">
                       {t_PostIllustEdit("upload")}
@@ -260,6 +268,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
                   name="publishRange"
                   label={t_PostGeneral("publishRange")}
                   withAsterisk
+                  value={form.values.publishRange}
                   {...form.getInputProps("publishRange")}
                 >
                   <Mantine.Group>
@@ -297,7 +306,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
                   >
                     {t_PostGeneral("post")}
                   </Mantine.Button>
-                  {Illust.publishRange === IPublicState.Draft && (
+                  {illustData.publish_state === IPublicState.Draft && (
                     <Mantine.Button
                       type="submit"
                       onClick={() =>
@@ -384,7 +393,9 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
                 <>
                   <Mantine.Button
                     className="bg-green-300 text-black"
-                    onClick={() => router.push(RouterPath.illust(Illust.id))}
+                    onClick={() =>
+                      router.push(RouterPath.illust(illustData.id))
+                    }
                   >
                     {t_PostGeneral("showPost")}
                   </Mantine.Button>
