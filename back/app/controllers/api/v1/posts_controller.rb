@@ -29,7 +29,7 @@ class Api::V1::PostsController < Api::V1::BasesController
       render json: { id: post.id }, status: :created
     rescue => e
       logger.error(e)
-      head status: :bad_request
+      render json: { error: e.message }, status: :bad_request
     end
   end
 
@@ -60,8 +60,9 @@ class Api::V1::PostsController < Api::V1::BasesController
     begin
       # 投稿データのメインコンテンツの更新が可能か
       if @post.main_content_updatable?
-        # イラストなら中身を書き換え
-        @post.postable.active_storage_upload!(post_params[:postable_attributes][:image]) if @post.illust?
+        if !@post.postable.image.attached? || url_for(@post.postable.image) != post_params[:postable_attributes][:image]
+          @post.postable.active_storage_upload!(post_params[:postable_attributes][:image])
+        end
       end
 
       # 公開設定で初公開のときは公開日時を設定
@@ -72,7 +73,7 @@ class Api::V1::PostsController < Api::V1::BasesController
       render json: { id: @post.id }, status: :ok
     rescue => e
       logger.error(e)
-      head status: :bad_request
+      render json: { error: e.message }, status: :bad_request
     end
   end
 

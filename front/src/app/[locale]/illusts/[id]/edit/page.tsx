@@ -122,6 +122,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
 
     try {
       const res = await Put2API(`/posts/${id}`, JSON.stringify(update));
+      setErrorMessage("");
       if (res.status != 200) {
         setErrorMessage(t_EditGeneral("updateError"));
         return;
@@ -339,21 +340,31 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
               </section>
               <section className="my-8">
                 <Mantine.Group className="flex justify-center items-center">
-                  <Mantine.Button
-                    type="submit"
-                    className="bg-green-300 text-black hover:bg-green-500 hover:text-black transition-all"
-                  >
-                    {t_EditGeneral("update")}
-                  </Mantine.Button>
-                  {illustData.publish_state === IPublicState.Draft && (
+                  {illustData.publish_state === IPublicState.Draft ? (
+                    <>
+                      <Mantine.Button
+                        type="submit"
+                        className="bg-green-300 text-black hover:bg-green-500 hover:text-black transition-all"
+                      >
+                        {t_PostGeneral("post")}
+                      </Mantine.Button>
+                      <Mantine.Button
+                        type="submit"
+                        onClick={() => {
+                          form.setValues({ publishRange: IPublicState.Draft });
+                          form.onSubmit(handleSubmit);
+                        }}
+                        className="bg-slate-500 hover:bg-slate-800 transition-all"
+                      >
+                        {t_PostGeneral("draftSave")}
+                      </Mantine.Button>
+                    </>
+                  ) : (
                     <Mantine.Button
                       type="submit"
-                      onClick={() =>
-                        form.setValues({ publishRange: IPublicState.Draft })
-                      }
-                      className="bg-slate-500 hover:bg-slate-800 transition-all"
+                      className="bg-green-300 text-black hover:bg-green-500 hover:text-black transition-all"
                     >
-                      {t_PostGeneral("draftSave")}
+                      {t_EditGeneral("update")}
                     </Mantine.Button>
                   )}
                   <Mantine.Button
