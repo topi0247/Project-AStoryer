@@ -11,8 +11,6 @@ import { LayoutGroup, motion } from "framer-motion";
 import { IUser } from "@/types";
 import { useRouter } from "@/lib";
 import { RouterPath } from "@/settings";
-import { useSetRecoilState } from "recoil";
-import { modalOpenState } from "@/recoilState";
 import { useTranslations } from "use-intl";
 
 export default function SpHeaders({
@@ -31,8 +29,8 @@ export default function SpHeaders({
   const [logoutIconPos, setLogoutIconPos] = useState({ x: 0, y: 0 });
   const [search, setSearch] = useState("");
   const router = useRouter();
-  const setModalOpen = useSetRecoilState(modalOpenState);
   const t_Header = useTranslations("Header");
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -173,7 +171,11 @@ export default function SpHeaders({
           </Mantine.Button>
         </div>
       </div>
-      <UI.TransitionsModal centered>
+      <Mantine.Modal
+        opened={modalOpen}
+        onClose={() => setModalOpen(false)}
+        centered
+      >
         <h2 className="text-center text-xl mb-4">検索</h2>
         <form
           className="flex flex-col justify-center items-center gap-2"
@@ -199,7 +201,7 @@ export default function SpHeaders({
             {t_Header("searchButton")}
           </Mantine.Button>
         </form>
-      </UI.TransitionsModal>
+      </Mantine.Modal>
     </>
   );
 }

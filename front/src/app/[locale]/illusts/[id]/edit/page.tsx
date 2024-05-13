@@ -13,7 +13,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { FaImage } from "rocketicons/fa";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 
 // 仮データをハードコーディング
 const Tags = Array.from({ length: 10 }).map((_, i) => ({
@@ -35,10 +35,13 @@ const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 export default function IllustEditPage({ params }: { params: { id: string } }) {
   const { id } = params;
+  const { cache } = useSWRConfig();
   const { data, error } = useSWR(`/posts/${id}/edit`, fetcher);
   const illustData = data
     ? ({
-        ...data,
+        title: data.title,
+        caption: data.caption,
+        publish_state: data.publish_state,
         image: data.data,
       } as IEditIllustData)
     : ({} as IEditIllustData);
@@ -58,11 +61,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
     useState<boolean>(false);
   const [deleteConfirmationError, setDeleteConfirmationError] =
     useState<string>("");
-
-  useEffect(() => {
-    if (!illustData || illustData === undefined) return;
-    setPostIllust(illustData.image ?? []);
-  }, [illustData]);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const form = useForm({
     initialValues: {
@@ -90,6 +89,18 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
     },
   });
 
+  useEffect(() => {
+    if (!illustData || illustData === undefined || postIllust.length > 0)
+      return;
+    setPostIllust(illustData.image ?? []);
+    form.setValues({
+      postIllust: illustData.image,
+      title: illustData?.title,
+      caption: illustData?.caption,
+      publishRange: illustData?.publish_state,
+    });
+  }, [illustData]);
+
   if (error) return <div>error</div>;
   if (data === undefined) return <div>Now Loading</div>;
 
@@ -112,11 +123,13 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
     try {
       const res = await Put2API(`/posts/${id}`, JSON.stringify(update));
       if (res.status != 200) {
-        // TODO : 更新失敗処理
+        setErrorMessage(t_EditGeneral("updateError"));
         return;
       }
+      cache.delete(`/posts/${id}/edit`);
+      cache.delete(`/posts/${id}`);
     } catch (e) {
-      // TODO : 更新失敗処理
+      setErrorMessage(t_EditGeneral("updateError"));
       return;
     } finally {
       setOpenModal(true);
@@ -330,7 +343,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
                     type="submit"
                     className="bg-green-300 text-black hover:bg-green-500 hover:text-black transition-all"
                   >
-                    {t_PostGeneral("post")}
+                    {t_EditGeneral("update")}
                   </Mantine.Button>
                   {illustData.publish_state === IPublicState.Draft && (
                     <Mantine.Button
@@ -418,14 +431,14 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
               ) : (
                 <>
                   <Mantine.Button
-                    className="bg-green-300 text-black"
+                    className="bg-green-300 hover:bg-green-500 transition-all text-black"
                     onClick={() =>
                       router.push(RouterPath.illust(illustData.id))
                     }
                   >
                     {t_PostGeneral("showPost")}
                   </Mantine.Button>
-                  <Mantine.Button className="bg-black text-white">
+                  <Mantine.Button className="bg-black hover:bg-gray-400 transition-all text-white">
                     {t_PostGeneral("XShare")}
                   </Mantine.Button>
                 </>
