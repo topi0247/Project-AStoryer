@@ -371,80 +371,84 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
       </article>
 
       <TransitionsModal onClose={handleModalClose}>
-        {isDelete ? (
-          <>
-            <h3 className="text-xl text-center my-4">
-              {t_EditGeneral("deleteModalTItle")}
-            </h3>
-            <p className="text-center text-sm">
-              {t_EditGeneral("deleteModalAttention")}
-            </p>
-            <div className="my-4 flex flex-col justify-center items-center">
-              <Mantine.Checkbox
-                label={t_EditGeneral("deleteCheckLabel")}
-                size="md"
-                radius="xl"
-                color="red"
-                onChange={() => setIsDeleteConfirmation(!isDelete)}
-              />
-              {deleteConfirmationError && (
-                <p className="text-red-400">{deleteConfirmationError}</p>
-              )}
-            </div>
-            <div className="flex flex-col justify-center items-center gap-4 my-8">
-              <Mantine.Button
-                type="button"
-                className="bg-red-400 hover:bg-red-600 transition-all text-white px-8 py-1"
-                onClick={handleDeleteSubmit}
-              >
-                削除
-              </Mantine.Button>
-              <Mantine.Button
-                type="button"
-                className="tracking-wider text-black hover:text-black hover:text-opacity-50 transition-all bg-transparent hover:bg-transparent"
-                onClick={() => {
-                  setIsDelete(false);
-                  setOpenModal(false);
-                }}
-              >
-                {t_General("back")}
-              </Mantine.Button>
-            </div>
-          </>
+        {errorMessage === "" ? (
+          isDelete ? (
+            <>
+              <h3 className="text-xl text-center my-4">
+                {t_EditGeneral("deleteModalTItle")}
+              </h3>
+              <p className="text-center text-sm">
+                {t_EditGeneral("deleteModalAttention")}
+              </p>
+              <div className="my-4 flex flex-col justify-center items-center">
+                <Mantine.Checkbox
+                  label={t_EditGeneral("deleteCheckLabel")}
+                  size="md"
+                  radius="xl"
+                  color="red"
+                  onChange={() => setIsDeleteConfirmation(!isDelete)}
+                />
+                {deleteConfirmationError && (
+                  <p className="text-red-400">{deleteConfirmationError}</p>
+                )}
+              </div>
+              <div className="flex flex-col justify-center items-center gap-4 my-8">
+                <Mantine.Button
+                  type="button"
+                  className="bg-red-400 hover:bg-red-600 transition-all text-white px-8 py-1"
+                  onClick={handleDeleteSubmit}
+                >
+                  削除
+                </Mantine.Button>
+                <Mantine.Button
+                  type="button"
+                  className="tracking-wider text-black hover:text-black hover:text-opacity-50 transition-all bg-transparent hover:bg-transparent"
+                  onClick={() => {
+                    setIsDelete(false);
+                    setOpenModal(false);
+                  }}
+                >
+                  {t_General("back")}
+                </Mantine.Button>
+              </div>
+            </>
+          ) : (
+            <>
+              <h3 className="text-xl text-center my-4">
+                {form.values.publishRange === IPublicState.Draft
+                  ? t_PostGeneral("draftSaved")
+                  : t_PostGeneral("posted")}
+              </h3>
+              <Mantine.Group justify="center" gap={8}>
+                {form.values.publishRange === IPublicState.Draft ? (
+                  <>
+                    <Mantine.Button
+                      className="bg-green-300 text-black"
+                      onClick={handleModalClose}
+                    >
+                      {t_PostGeneral("close")}
+                    </Mantine.Button>
+                  </>
+                ) : (
+                  <>
+                    <Mantine.Button
+                      className="bg-green-300 hover:bg-green-500 transition-all text-black"
+                      onClick={() =>
+                        router.push(RouterPath.illust(illustData.id))
+                      }
+                    >
+                      {t_PostGeneral("showPost")}
+                    </Mantine.Button>
+                    <Mantine.Button className="bg-black hover:bg-gray-400 transition-all text-white">
+                      {t_PostGeneral("XShare")}
+                    </Mantine.Button>
+                  </>
+                )}
+              </Mantine.Group>
+            </>
+          )
         ) : (
-          <>
-            <h3 className="text-xl text-center my-4">
-              {form.values.publishRange === IPublicState.Draft
-                ? t_PostGeneral("draftSaved")
-                : t_PostGeneral("posted")}
-            </h3>
-            <Mantine.Group justify="center" gap={8}>
-              {form.values.publishRange === IPublicState.Draft ? (
-                <>
-                  <Mantine.Button
-                    className="bg-green-300 text-black"
-                    onClick={handleModalClose}
-                  >
-                    {t_PostGeneral("close")}
-                  </Mantine.Button>
-                </>
-              ) : (
-                <>
-                  <Mantine.Button
-                    className="bg-green-300 hover:bg-green-500 transition-all text-black"
-                    onClick={() =>
-                      router.push(RouterPath.illust(illustData.id))
-                    }
-                  >
-                    {t_PostGeneral("showPost")}
-                  </Mantine.Button>
-                  <Mantine.Button className="bg-black hover:bg-gray-400 transition-all text-white">
-                    {t_PostGeneral("XShare")}
-                  </Mantine.Button>
-                </>
-              )}
-            </Mantine.Group>
-          </>
+          <p className="text-black text-center">{errorMessage}</p>
         )}
       </TransitionsModal>
     </>
