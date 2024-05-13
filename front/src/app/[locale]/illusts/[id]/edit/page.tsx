@@ -398,7 +398,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
                   className="bg-red-400 hover:bg-red-600 transition-all text-white px-8 py-1"
                   onClick={handleDeleteSubmit}
                 >
-                  削除
+                  {t_EditGeneral("deleteButton")}
                 </Mantine.Button>
                 <Mantine.Button
                   type="button"
