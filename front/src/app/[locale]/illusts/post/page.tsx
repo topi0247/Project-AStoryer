@@ -83,11 +83,10 @@ export default function IllustPostPage() {
       post: {
         title,
         caption,
+        tags,
         publish_state: publishRange,
         postable_type: "Illust",
-        postable_attributes: {
-          image: postIllust[0],
-        },
+        postable_attributes: postIllust,
       },
     };
 

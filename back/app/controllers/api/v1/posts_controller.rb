@@ -34,7 +34,7 @@ class Api::V1::PostsController < Api::V1::BasesController
   end
 
   def edit
-    post = current_api_v1_user.posts.includes(:postable).find_by(id: params[:id])
+    post = current_api_v1_user.posts.includes(:postable,:tags).find_by(id: params[:id])
 
     if post.nil?
       render json: { error: 'Not Found' }, status: :not_found and return

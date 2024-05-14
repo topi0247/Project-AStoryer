@@ -43,6 +43,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
         caption: data.caption,
         publish_state: data.publish_state,
         image: data.data,
+        tags: data.tags,
       } as IEditIllustData)
     : ({} as IEditIllustData);
   const [postIllust, setPostIllust] = useState<string[]>([]);
@@ -93,6 +94,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
     if (!illustData || illustData === undefined || postIllust.length > 0)
       return;
     setPostIllust(illustData.image ?? []);
+    setTags(illustData.tags ?? []);
     form.setValues({
       postIllust: illustData.image,
       title: illustData?.title,

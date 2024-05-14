@@ -1,17 +1,13 @@
 # == Schema Information
 #
-# Table name: illusts
+# Table name: tags
 #
 #  id         :bigint           not null, primary key
-#  image      :string
+#  name       :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
-class IllustSerializer
+class TagSerializer
   include JSONAPI::Serializer
-  attributes :image
-
-  def image
-    object.image.attached? ? url_for(object.image) : nil
-  end
+  attributes :name
 end

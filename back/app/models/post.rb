@@ -75,13 +75,14 @@ class Post < ApplicationRecord
 
   # 編集用のカスタムjson
   def as_custom_edit_json(content)
-    post_json = PostSerializer.new(post).serializable_hash
+    post_json = PostSerializer.new(self).serializable_hash
     {
       id: post_json[:data][:id],
       title: post_json[:data][:attributes][:title],
       caption: post_json[:data][:attributes][:caption],
       publish_state: post_json[:data][:attributes][:publish_state],
       type: post_json[:data][:attributes][:type],
+      tags: tags.map(&:name),
       data: [content]
     }
   end
