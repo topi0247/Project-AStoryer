@@ -20,7 +20,8 @@ class Api::V1::PostsController < Api::V1::BasesController
     begin
       # イラストの場合
       if post.illust?
-        post.postable.active_storage_upload!(post_params[:postable_attributes])
+        image = post_params[:postable_attributes].first
+        post.postable.active_storage_upload(image)
       end
 
       # 保存
@@ -52,8 +53,15 @@ class Api::V1::PostsController < Api::V1::BasesController
     begin
       # 投稿データのメインコンテンツの更新が可能か
       if @post.main_content_updatable?
-        if !@post.postable.image.attached? || url_for(@post.postable.image) != post_params[:postable_attributes][:image]
-          @post.postable.active_storage_upload!(post_params[:postable_attributes][:image])
+        # イラスト
+        if @post.illust?
+          # 送られてきた画像の1つだけ
+          # TODO : 複数画像は後に実装
+          image = post_params[:postable_attributes].first
+          # 画像データがURLでない場合は新規登録
+          if url_for(@post.postable.image) != image
+            @post.postable.active_storage_upload(image)
+          end
         end
       end
 

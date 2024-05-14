@@ -114,11 +114,10 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
       post: {
         title,
         caption,
+        tags,
         publish_state: publishRange,
         postable_type: "Illust",
-        postable_attributes: {
-          image: postIllust[0],
-        },
+        postable_attributes: postIllust,
       },
     };
 

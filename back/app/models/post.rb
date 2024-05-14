@@ -36,7 +36,7 @@ class Post < ApplicationRecord
   # タグの更新
   def update_tags(new_tags)
     # 登録しているタグを一旦全部消す
-    post_tags.destroy_alla
+    post_tags.destroy_all
 
     # 再登録
     create_tags(new_tags)
