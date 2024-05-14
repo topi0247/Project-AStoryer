@@ -1,7 +1,7 @@
 "use client";
 
 import { TransitionsModal } from "@/components/ui";
-import { GetFromAPI, Post2API, Put2API, useRouter } from "@/lib";
+import { GetFromAPI, Put2API, useRouter } from "@/lib";
 import { modalOpenState, userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
 import { IEditIllustData, IPublicState } from "@/types";
@@ -15,12 +15,6 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { FaImage } from "rocketicons/fa";
 import useSWR, { useSWRConfig } from "swr";
 
-// 仮データをハードコーディング
-const Tags = Array.from({ length: 10 }).map((_, i) => ({
-  id: i,
-  title: `タグ${i}`,
-}));
-
 const GameSystems = Array.from({ length: 50 }).map((_, i) => ({
   id: i,
   name: `システム${i}`,
@@ -32,6 +26,8 @@ const Synalios = Array.from({ length: 50 }).map((_, i) => ({
 }));
 
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
+
+const fetcherTags = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 export default function IllustEditPage({ params }: { params: { id: string } }) {
   const { id } = params;
@@ -46,9 +42,11 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
         tags: data.tags,
       } as IEditIllustData)
     : ({} as IEditIllustData);
+  const { data: Tags, error: errorTags } = useSWR("/tags", fetcherTags);
   const [postIllust, setPostIllust] = useState<string[]>([]);
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
+  const [tagData, setTagData] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const setOpenModal = useSetRecoilState(modalOpenState);
   const router = useRouter();
@@ -103,8 +101,13 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
     });
   }, [illustData]);
 
-  if (error) return <div>error</div>;
-  if (data === undefined) return <div>Now Loading</div>;
+  useEffect(() => {
+    if (!Tags) return;
+    setTagData(Tags);
+  }, [tagData]);
+
+  if (error || errorTags) return <div>error</div>;
+  if (data === undefined || Tags === undefined) return <div>Now Loading</div>;
 
   const handleSubmit = async () => {
     const { title, caption, publishRange } = form.getValues();
@@ -281,7 +284,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
                   name="tags"
                   label={t_PostGeneral("tag")}
                   splitChars={[" ", "|"]}
-                  data={Tags.map((tag) => tag.title)}
+                  data={Tags}
                   onChange={setTags}
                   value={tags}
                 />
