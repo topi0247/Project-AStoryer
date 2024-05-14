@@ -10,7 +10,7 @@ import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { FaImage } from "rocketicons/fa";
 
 // 仮データをハードコーディング

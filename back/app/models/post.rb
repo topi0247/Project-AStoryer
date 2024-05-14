@@ -20,11 +20,27 @@ class Post < ApplicationRecord
 
   has_many :post_tags, dependent: :destroy
   has_many :tags, through: :post_tags, source: :tag
-  accepts_nested_attributes_for :tags
 
   validates :title, presence: true, length: { maximum: 20 }
   validates :caption, length: { maximum: 10_000 }
   enum publish_state: { draft: 0, all_publish: 1, only_url: 2, only_follower: 3, private_publish:4 }
+
+  # タグの作成
+  def create_tags(new_tags)
+    new_tags.each do |tag|
+      new_tag = Tag.find_or_create_by!(name: tag)
+      post_tags.build(tag_id: new_tag.id)
+    end
+  end
+
+  # タグの更新
+  def update_tags(new_tags)
+    # 登録しているタグを一旦全部消す
+    post_tags.destroy_alla
+
+    # 再登録
+    create_tags(new_tags)
+  end
 
   def initialize_postable(type)
     case type
@@ -55,5 +71,18 @@ class Post < ApplicationRecord
     if publish_state != 'draft' && self.published_at.nil?
       self.published_at = Time.now
     end
+  end
+
+  # 編集用のカスタムjson
+  def as_custom_edit_json(content)
+    post_json = PostSerializer.new(post).serializable_hash
+    {
+      id: post_json[:data][:id],
+      title: post_json[:data][:attributes][:title],
+      caption: post_json[:data][:attributes][:caption],
+      publish_state: post_json[:data][:attributes][:publish_state],
+      type: post_json[:data][:attributes][:type],
+      data: [content]
+    }
   end
 end
