@@ -10,6 +10,14 @@ export interface IndexIllustData {
   count: number;
 }
 
+export interface IEditIllustData {
+  id: number;
+  title: string;
+  caption?: string;
+  image?: string[];
+  publish_state: IPublicState;
+}
+
 export interface IButtonState {
   favorite: boolean;
   bookmark: boolean;

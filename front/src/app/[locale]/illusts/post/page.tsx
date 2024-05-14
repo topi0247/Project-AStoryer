@@ -118,10 +118,7 @@ export default function IllustPostPage() {
   };
 
   const handleModalClose = () => {
-    if (
-      errorMessage === "" &&
-      form.values.publishRange !== IPublicState.Draft
-    ) {
+    if (errorMessage === "") {
       router.push(RouterPath.users(user.id));
     }
     setModalOpen(false);

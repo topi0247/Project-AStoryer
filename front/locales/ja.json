@@ -146,10 +146,12 @@
     "delete": "作品を削除する"
   },
   "EditGeneral": {
+    "update": "更新",
     "deleteButton": "削除",
     "deleteCheckLabel": "作品を削除する",
     "checkDeleteValid": "削除するにはチェックを入れてください",
     "deleteModalTItle": "本当に削除しますか？",
-    "deleteModalAttention": "※作品を削除すると元に戻すことはできません"
+    "deleteModalAttention": "※作品を削除すると元に戻すことはできません",
+    "updateError": "更新に失敗しました"
   }
 }

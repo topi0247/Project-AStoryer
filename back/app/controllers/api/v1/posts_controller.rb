@@ -1,12 +1,7 @@
 require 'mini_magick'
 
 class Api::V1::PostsController < Api::V1::BasesController
-  # 全体のエラーハンドリング
-  # TODO : 特定のエラーのみ捕捉するよう修正
-  rescue_from StandardError do |e|
-    logger.error(e)
-    render json: { message: '失敗しました' }, status: :bad_request
-  end
+  before_action :set_post, only: %i[update]
 
   def create
     post = current_api_v1_user.posts.build(post_params.except(:postable_attributes))
@@ -17,37 +12,78 @@ class Api::V1::PostsController < Api::V1::BasesController
     end
 
     # 投稿タイプに応じたクラス
-    postable_type = post_params[:postable_type].constantize
+    postable_type = post.initialize_postable(post_params[:postable_type])
     # 投稿タイプのクラスをインスタンス
     post.postable = postable_type.new
 
-    # イラストの場合
-    # TODO : 別の場所に書いたほうが良さそうな気がする
-    if post.illust?
-      # 送信されるデータは data: から始まるためエンコードデータのみ抽出
-      data = post_params[:postable_attributes][:image]
-      base64_data = data.split(",")[1]
-      decoded_image = Base64.decode64(base64_data)
-      # MiniMagickでwebpに軽量化
-      image = MiniMagick::Image.read(decoded_image)
-      image.format 'webp'
-      blob = ActiveStorage::Blob.create_and_upload!(
-        io: StringIO.new(image.to_blob),
-        filename: SecureRandom.uuid,
-        content_type: 'image/webp'
-      )
-      post.postable.image.attach(blob)
+    begin
+      # イラストの場合
+      if post.illust?
+        blob = post.postable.active_storage_upload!(post_params[:postable_attributes][:image])
+        post.postable.image.attach(blob)
+      end
+
+      # 保存
+      post.save!
+
+      render json: { id: post.id }, status: :created
+    rescue => e
+      logger.error(e)
+      render json: { error: e.message }, status: :bad_request
+    end
+  end
+
+  def edit
+    post = current_api_v1_user.posts.includes(:postable).find_by(id: params[:id])
+
+    if post.nil?
+      render json: { error: 'Not Found' }, status: :not_found and return
     end
 
-    # 保存
-    post.save!
+    post_json = PostSerializer.new(post).serializable_hash
+    content = nil
+    if post.illust?
+      content = post.postable.image.attached? ? url_for(post.postable.image) : nil
+    end
 
-    render json: { id: post.id }, status: :created
+    render json: {
+      id: post_json[:data][:id],
+      title: post_json[:data][:attributes][:title],
+      caption: post_json[:data][:attributes][:caption],
+      publish_state: post_json[:data][:attributes][:publish_state],
+      type: post_json[:data][:attributes][:type],
+      data: [content]
+    }, status: :ok
+  end
+
+  def update
+    begin
+      # 投稿データのメインコンテンツの更新が可能か
+      if @post.main_content_updatable?
+        if !@post.postable.image.attached? || url_for(@post.postable.image) != post_params[:postable_attributes][:image]
+          @post.postable.active_storage_upload!(post_params[:postable_attributes][:image])
+        end
+      end
+
+      # 公開設定で初公開のときは公開日時を設定
+      @post.set_published_at(post_params[:publish_state])
+
+      @post.update!(post_params.except(:postable_attributes))
+
+      render json: { id: @post.id }, status: :ok
+    rescue => e
+      logger.error(e)
+      render json: { error: e.message }, status: :bad_request
+    end
   end
 
   private
 
   def post_params
     params.require(:post).permit(:title, :caption, :publish_state, :postable_type,postable_attributes: [:image], tags: [:name])
+  end
+
+  def set_post
+    @post = current_api_v1_user.posts.find(params[:id])
   end
 end

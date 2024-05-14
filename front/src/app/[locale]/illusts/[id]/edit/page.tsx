@@ -1,18 +1,19 @@
 "use client";
 
 import { TransitionsModal } from "@/components/ui";
-import { useRouter } from "@/lib";
+import { GetFromAPI, Post2API, Put2API, useRouter } from "@/lib";
 import { modalOpenState, userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
-import { IPublicState } from "@/types";
+import { IEditIllustData, IPublicState } from "@/types";
 import * as Mantine from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { FaImage } from "rocketicons/fa";
+import useSWR, { useSWRConfig } from "swr";
 
 // 仮データをハードコーディング
 const Tags = Array.from({ length: 10 }).map((_, i) => ({
@@ -30,22 +31,24 @@ const Synalios = Array.from({ length: 50 }).map((_, i) => ({
   title: `シナリオ${i}`,
 }));
 
-const Illust = {
-  id: 1,
-  image: "https://source.unsplash.com/random",
-  title: "タイトル",
-  caption: "キャプション",
-  gameSystem: "システム1",
-  synalioTitle: "シナリオ名",
-  publishRange: IPublicState.All,
-  Tags: ["タグ1", "タグ2"],
-};
+const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 export default function IllustEditPage({ params }: { params: { id: string } }) {
+  const { id } = params;
+  const { cache } = useSWRConfig();
+  const { data, error } = useSWR(`/posts/${id}/edit`, fetcher);
+  const illustData = data
+    ? ({
+        title: data.title,
+        caption: data.caption,
+        publish_state: data.publish_state,
+        image: data.data,
+      } as IEditIllustData)
+    : ({} as IEditIllustData);
+  const [postIllust, setPostIllust] = useState<string[]>([]);
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
-  const [postIllust, setPostIllust] = useState<string[]>([Illust.image]);
-  const [tags, setTags] = useState<string[]>(Illust.Tags);
+  const [tags, setTags] = useState<string[]>([]);
   const setOpenModal = useSetRecoilState(modalOpenState);
   const router = useRouter();
   const user = useRecoilValue(userState);
@@ -58,12 +61,14 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
     useState<boolean>(false);
   const [deleteConfirmationError, setDeleteConfirmationError] =
     useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const form = useForm({
     initialValues: {
-      postIllust: postIllust,
-      title: Illust.title,
-      publishRange: Illust.publishRange,
+      postIllust: illustData.image,
+      title: illustData?.title,
+      caption: illustData?.caption,
+      publishRange: illustData?.publish_state,
     },
     validate: {
       postIllust: () => {
@@ -84,9 +89,52 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
     },
   });
 
-  const handleSubmit = () => {
-    // 投稿・下書きしたらモーダル表示
-    setOpenModal(true);
+  useEffect(() => {
+    if (!illustData || illustData === undefined || postIllust.length > 0)
+      return;
+    setPostIllust(illustData.image ?? []);
+    form.setValues({
+      postIllust: illustData.image,
+      title: illustData?.title,
+      caption: illustData?.caption,
+      publishRange: illustData?.publish_state,
+    });
+  }, [illustData]);
+
+  if (error) return <div>error</div>;
+  if (data === undefined) return <div>Now Loading</div>;
+
+  const handleSubmit = async () => {
+    const { title, caption, publishRange } = form.getValues();
+    form.getValues();
+
+    const update = {
+      post: {
+        title,
+        caption,
+        publish_state: publishRange,
+        postable_type: "Illust",
+        postable_attributes: {
+          image: postIllust[0],
+        },
+      },
+    };
+
+    try {
+      const res = await Put2API(`/posts/${id}`, JSON.stringify(update));
+      setErrorMessage("");
+      if (res.status != 200) {
+        setErrorMessage(t_EditGeneral("updateError"));
+        return;
+      }
+      cache.delete(`/posts/${id}/edit`);
+      cache.delete(`/posts/${id}`);
+    } catch (e) {
+      setErrorMessage(t_EditGeneral("updateError"));
+      return;
+    } finally {
+      setOpenModal(true);
+    }
   };
 
   const handleDelete = () => {
@@ -146,7 +194,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
               onSubmit={form.onSubmit(handleSubmit)}
             >
               <section>
-                {Illust.publishRange === IPublicState.Draft ? (
+                {illustData.publish_state === IPublicState.Draft ? (
                   <>
                     <label htmlFor="postIllust">
                       {t_PostIllustEdit("upload")}
@@ -260,6 +308,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
                   name="publishRange"
                   label={t_PostGeneral("publishRange")}
                   withAsterisk
+                  value={form.values.publishRange}
                   {...form.getInputProps("publishRange")}
                 >
                   <Mantine.Group>
@@ -291,21 +340,31 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
               </section>
               <section className="my-8">
                 <Mantine.Group className="flex justify-center items-center">
-                  <Mantine.Button
-                    type="submit"
-                    className="bg-green-300 text-black hover:bg-green-500 hover:text-black transition-all"
-                  >
-                    {t_PostGeneral("post")}
-                  </Mantine.Button>
-                  {Illust.publishRange === IPublicState.Draft && (
+                  {illustData.publish_state === IPublicState.Draft ? (
+                    <>
+                      <Mantine.Button
+                        type="submit"
+                        className="bg-green-300 text-black hover:bg-green-500 hover:text-black transition-all"
+                      >
+                        {t_PostGeneral("post")}
+                      </Mantine.Button>
+                      <Mantine.Button
+                        type="submit"
+                        onClick={() => {
+                          form.setValues({ publishRange: IPublicState.Draft });
+                          form.onSubmit(handleSubmit);
+                        }}
+                        className="bg-slate-500 hover:bg-slate-800 transition-all"
+                      >
+                        {t_PostGeneral("draftSave")}
+                      </Mantine.Button>
+                    </>
+                  ) : (
                     <Mantine.Button
                       type="submit"
-                      onClick={() =>
-                        form.setValues({ publishRange: IPublicState.Draft })
-                      }
-                      className="bg-slate-500 hover:bg-slate-800 transition-all"
+                      className="bg-green-300 text-black hover:bg-green-500 hover:text-black transition-all"
                     >
-                      {t_PostGeneral("draftSave")}
+                      {t_EditGeneral("update")}
                     </Mantine.Button>
                   )}
                   <Mantine.Button
@@ -323,78 +382,84 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
       </article>
 
       <TransitionsModal onClose={handleModalClose}>
-        {isDelete ? (
-          <>
-            <h3 className="text-xl text-center my-4">
-              {t_EditGeneral("deleteModalTItle")}
-            </h3>
-            <p className="text-center text-sm">
-              {t_EditGeneral("deleteModalAttention")}
-            </p>
-            <div className="my-4 flex flex-col justify-center items-center">
-              <Mantine.Checkbox
-                label={t_EditGeneral("deleteCheckLabel")}
-                size="md"
-                radius="xl"
-                color="red"
-                onChange={() => setIsDeleteConfirmation(!isDelete)}
-              />
-              {deleteConfirmationError && (
-                <p className="text-red-400">{deleteConfirmationError}</p>
-              )}
-            </div>
-            <div className="flex flex-col justify-center items-center gap-4 my-8">
-              <Mantine.Button
-                type="button"
-                className="bg-red-400 hover:bg-red-600 transition-all text-white px-8 py-1"
-                onClick={handleDeleteSubmit}
-              >
-                削除
-              </Mantine.Button>
-              <Mantine.Button
-                type="button"
-                className="tracking-wider text-black hover:text-black hover:text-opacity-50 transition-all bg-transparent hover:bg-transparent"
-                onClick={() => {
-                  setIsDelete(false);
-                  setOpenModal(false);
-                }}
-              >
-                {t_General("back")}
-              </Mantine.Button>
-            </div>
-          </>
+        {errorMessage === "" ? (
+          isDelete ? (
+            <>
+              <h3 className="text-xl text-center my-4">
+                {t_EditGeneral("deleteModalTItle")}
+              </h3>
+              <p className="text-center text-sm">
+                {t_EditGeneral("deleteModalAttention")}
+              </p>
+              <div className="my-4 flex flex-col justify-center items-center">
+                <Mantine.Checkbox
+                  label={t_EditGeneral("deleteCheckLabel")}
+                  size="md"
+                  radius="xl"
+                  color="red"
+                  onChange={() => setIsDeleteConfirmation(!isDelete)}
+                />
+                {deleteConfirmationError && (
+                  <p className="text-red-400">{deleteConfirmationError}</p>
+                )}
+              </div>
+              <div className="flex flex-col justify-center items-center gap-4 my-8">
+                <Mantine.Button
+                  type="button"
+                  className="bg-red-400 hover:bg-red-600 transition-all text-white px-8 py-1"
+                  onClick={handleDeleteSubmit}
+                >
+                  {t_EditGeneral("deleteButton")}
+                </Mantine.Button>
+                <Mantine.Button
+                  type="button"
+                  className="tracking-wider text-black hover:text-black hover:text-opacity-50 transition-all bg-transparent hover:bg-transparent"
+                  onClick={() => {
+                    setIsDelete(false);
+                    setOpenModal(false);
+                  }}
+                >
+                  {t_General("back")}
+                </Mantine.Button>
+              </div>
+            </>
+          ) : (
+            <>
+              <h3 className="text-xl text-center my-4">
+                {form.values.publishRange === IPublicState.Draft
+                  ? t_PostGeneral("draftSaved")
+                  : t_PostGeneral("posted")}
+              </h3>
+              <Mantine.Group justify="center" gap={8}>
+                {form.values.publishRange === IPublicState.Draft ? (
+                  <>
+                    <Mantine.Button
+                      className="bg-green-300 text-black"
+                      onClick={handleModalClose}
+                    >
+                      {t_PostGeneral("close")}
+                    </Mantine.Button>
+                  </>
+                ) : (
+                  <>
+                    <Mantine.Button
+                      className="bg-green-300 hover:bg-green-500 transition-all text-black"
+                      onClick={() =>
+                        router.push(RouterPath.illust(illustData.id))
+                      }
+                    >
+                      {t_PostGeneral("showPost")}
+                    </Mantine.Button>
+                    <Mantine.Button className="bg-black hover:bg-gray-400 transition-all text-white">
+                      {t_PostGeneral("XShare")}
+                    </Mantine.Button>
+                  </>
+                )}
+              </Mantine.Group>
+            </>
+          )
         ) : (
-          <>
-            <h3 className="text-xl text-center my-4">
-              {form.values.publishRange === IPublicState.Draft
-                ? t_PostGeneral("draftSaved")
-                : t_PostGeneral("posted")}
-            </h3>
-            <Mantine.Group justify="center" gap={8}>
-              {form.values.publishRange === IPublicState.Draft ? (
-                <>
-                  <Mantine.Button
-                    className="bg-green-300 text-black"
-                    onClick={handleModalClose}
-                  >
-                    {t_PostGeneral("close")}
-                  </Mantine.Button>
-                </>
-              ) : (
-                <>
-                  <Mantine.Button
-                    className="bg-green-300 text-black"
-                    onClick={() => router.push(RouterPath.illust(Illust.id))}
-                  >
-                    {t_PostGeneral("showPost")}
-                  </Mantine.Button>
-                  <Mantine.Button className="bg-black text-white">
-                    {t_PostGeneral("XShare")}
-                  </Mantine.Button>
-                </>
-              )}
-            </Mantine.Group>
-          </>
+          <p className="text-black text-center">{errorMessage}</p>
         )}
       </TransitionsModal>
     </>

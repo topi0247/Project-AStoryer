@@ -49,3 +49,5 @@ gem 'omniauth-discord'
 gem "omniauth-rails_csrf_protection"
 # JSONのシリアライザー
 gem 'jsonapi-serializer'
+# 設定
+gem 'config'
