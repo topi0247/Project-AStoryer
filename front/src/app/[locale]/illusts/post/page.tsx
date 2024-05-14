@@ -1,6 +1,6 @@
 "use client";
 
-import { Post2API, useRouter } from "@/lib";
+import { GetFromAPI, Post2API, useRouter } from "@/lib";
 import { userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
 import { IPublicState } from "@/types";
@@ -9,15 +9,10 @@ import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { FaImage } from "rocketicons/fa";
-
-// 仮データをハードコーディング
-const Tags = Array.from({ length: 10 }).map((_, i) => ({
-  id: i,
-  title: `タグ${i}`,
-}));
+import useSWR from "swr";
 
 const GameSystems = Array.from({ length: 50 }).map((_, i) => ({
   id: i,
@@ -29,10 +24,14 @@ const Synalios = Array.from({ length: 50 }).map((_, i) => ({
   title: `シナリオ${i}`,
 }));
 
+const fetcherTags = (url: string) => GetFromAPI(url).then((res) => res.data);
+
 export default function IllustPostPage() {
+  const { data: Tags, error: errorTags } = useSWR("/tags", fetcherTags);
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const [postIllust, setPostIllust] = useState<string[]>([]);
+  const [tagData, setTagData] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [postId, setPostId] = useState<number>(0);
   const [modalOpen, setModalOpen] = useState(false);
@@ -43,6 +42,11 @@ export default function IllustPostPage() {
   const t_PostGeneral = useTranslations("PostGeneral");
   const TITLE_MAX_LENGTH = 20;
   const CAPTION_MAX_LENGTH = 10000;
+
+  useEffect(() => {
+    if (!Tags) return;
+    setTagData(Tags);
+  }, [tagData]);
 
   const form = useForm({
     initialValues: {
@@ -76,6 +80,9 @@ export default function IllustPostPage() {
       },
     },
   });
+
+  if (errorTags) return <div>error</div>;
+  if (Tags === undefined) return <div>Now Loading</div>;
 
   const handleSubmit = async () => {
     const { title, caption, publishRange } = form.getValues();
@@ -203,7 +210,7 @@ export default function IllustPostPage() {
                   name="tags"
                   label={t_PostGeneral("tag")}
                   splitChars={[" ", "|"]}
-                  data={Tags.map((tag) => tag.title)}
+                  data={Tags}
                   onChange={setTags}
                   value={tags}
                 />
