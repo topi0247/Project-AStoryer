@@ -1,7 +1,7 @@
 require 'mini_magick'
 
 class Api::V1::PostsController < Api::V1::BasesController
-  before_action :set_post, only: %i[update]
+  before_action :set_post, only: %i[update destroy]
 
   def create
     default_params = post_params.except(:postable_attributes, :tags, :synalios)
@@ -30,8 +30,7 @@ class Api::V1::PostsController < Api::V1::BasesController
       post.save!
 
       render json: { id: post.id }, status: :created
-    rescue => e
-      logger.error(e)
+    rescue
       render json: { error: e.message }, status: :bad_request
     end
   end
@@ -79,9 +78,17 @@ class Api::V1::PostsController < Api::V1::BasesController
       @post.update!(post_params.except(:postable_attributes, :tags, :synalios))
 
       render json: { id: @post.id }, status: :ok
-    rescue => e
-      logger.error(e)
+    rescue
       render json: { error: e.message }, status: :bad_request
+    end
+  end
+
+  def destroy
+    begin
+      @post.destroy!
+      render json: { title: @post.title }, status: :ok
+    rescue
+      render json: { error: 'Not Found' }, status: :not_found
     end
   end
 
