@@ -20,6 +20,8 @@ class Post < ApplicationRecord
 
   has_many :post_tags, dependent: :destroy
   has_many :tags, through: :post_tags, source: :tag
+  has_many :post_synalios, dependent: :destroy
+  has_many :synalios, through: :post_synalios, source: :synalio
 
   validates :title, presence: true, length: { maximum: 20 }
   validates :caption, length: { maximum: 10_000 }
