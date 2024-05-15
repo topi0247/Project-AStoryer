@@ -20,14 +20,12 @@ const GameSystems = Array.from({ length: 50 }).map((_, i) => ({
   name: `システム${i}`,
 }));
 
-const Synalios = Array.from({ length: 50 }).map((_, i) => ({
-  id: i,
-  title: `シナリオ${i}`,
-}));
-
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 const fetcherTags = (url: string) => GetFromAPI(url).then((res) => res.data);
+
+const fetcherSynalios = (url: string) =>
+  GetFromAPI(url).then((res) => res.data);
 
 export default function IllustEditPage({ params }: { params: { id: string } }) {
   const { id } = params;
@@ -40,14 +38,20 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
         publish_state: data.publish_state,
         image: data.data,
         tags: data.tags,
+        synalios: data.synalios,
       } as IEditIllustData)
     : ({} as IEditIllustData);
   const { data: Tags, error: errorTags } = useSWR("/tags", fetcherTags);
+  const { data: Synalios, error: errorSynalios } = useSWR(
+    "/synalios",
+    fetcherSynalios
+  );
   const [postIllust, setPostIllust] = useState<string[]>([]);
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const [tagData, setTagData] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
+  const [synalioData, setSynalioData] = useState<string[]>([]);
   const setOpenModal = useSetRecoilState(modalOpenState);
   const router = useRouter();
   const user = useRecoilValue(userState);
@@ -106,8 +110,21 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
     setTagData(Tags);
   }, [tagData]);
 
-  if (error || errorTags) return <div>error</div>;
-  if (data === undefined || Tags === undefined) return <div>Now Loading</div>;
+  useEffect(() => {
+    if (!Synalios) return;
+    setSynalioData(Synalios);
+  }, [synalioData]);
+
+  const getFetcherError = () => {
+    return error || errorTags || errorSynalios;
+  };
+
+  const disableData = () => {
+    return data === undefined || Tags === undefined || Synalios === undefined;
+  };
+
+  if (getFetcherError()) return <div>error</div>;
+  if (disableData()) return <div>Now Loading</div>;
 
   const handleSubmit = async () => {
     const { title, caption, publishRange } = form.getValues();
@@ -302,7 +319,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
                   <Mantine.Autocomplete
                     name="synalioTitle"
                     label={t_PostGeneral("synalioTitle")}
-                    data={Synalios.map((synalio) => synalio.title)}
+                    data={Synalios}
                     {...form.getInputProps("synalioTitle")}
                   />
                 </div>

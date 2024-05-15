@@ -19,11 +19,6 @@ const GameSystems = Array.from({ length: 50 }).map((_, i) => ({
   name: `システム${i}`,
 }));
 
-const Synalios = Array.from({ length: 50 }).map((_, i) => ({
-  id: i,
-  title: `シナリオ${i}`,
-}));
-
 const fetcherTags = (url: string) => GetFromAPI(url).then((res) => res.data);
 const fetcherSynalios = (url: string) =>
   GetFromAPI(url).then((res) => res.data);
