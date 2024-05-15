@@ -105,7 +105,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
       publishRange: illustData?.publish_state,
       synalioTitle: illustData?.synalio,
     });
-  }, [illustData]);
+  }, [illustData, postIllust]);
 
   useEffect(() => {
     if (!Tags) return;
