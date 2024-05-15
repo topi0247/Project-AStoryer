@@ -4,10 +4,10 @@ class Api::V1::PostsController < Api::V1::BasesController
   before_action :set_post, only: %i[update]
 
   def create
-    default_params = post_params.except(:postable_attributes,:tags,:synalio)
+    default_params = post_params.except(:postable_attributes, :tags, :synalios)
     post = current_api_v1_user.posts.build(default_params)
     post.create_tags(post_params[:tags])
-    post.create_synalio(post_params[:synalio])
+    post.create_synalios(post_params[:synalios])
 
     # 下書き以外は投稿日時保存
     if !post.draft?
@@ -73,7 +73,10 @@ class Api::V1::PostsController < Api::V1::BasesController
       # タグの更新
       @post.update_tags(post_params[:tags])
 
-      @post.update!(post_params.except(:postable_attributes,:tags))
+      # シナリオ名の更新
+      @post.update_synalios(post_params[:synalios])
+
+      @post.update!(post_params.except(:postable_attributes, :tags, :synalios))
 
       render json: { id: @post.id }, status: :ok
     rescue => e
@@ -85,7 +88,7 @@ class Api::V1::PostsController < Api::V1::BasesController
   private
 
   def post_params
-    params.require(:post).permit(:title, :caption, :publish_state, :postable_type,postable_attributes: [], tags: [], synalio: [])
+    params.require(:post).permit(:title, :caption, :publish_state, :postable_type,postable_attributes: [], tags: [], synalios: [])
   end
 
   def set_post

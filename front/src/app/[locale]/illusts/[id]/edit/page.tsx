@@ -38,7 +38,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
         publish_state: data.publish_state,
         image: data.data,
         tags: data.tags,
-        synalios: data.synalios,
+        synalio: data.synalio,
       } as IEditIllustData)
     : ({} as IEditIllustData);
   const { data: Tags, error: errorTags } = useSWR("/tags", fetcherTags);
@@ -72,6 +72,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
       title: illustData?.title,
       caption: illustData?.caption,
       publishRange: illustData?.publish_state,
+      synalioTitle: illustData?.synalio,
     },
     validate: {
       postIllust: () => {
@@ -102,6 +103,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
       title: illustData?.title,
       caption: illustData?.caption,
       publishRange: illustData?.publish_state,
+      synalioTitle: illustData?.synalio,
     });
   }, [illustData]);
 
@@ -127,7 +129,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
   if (disableData()) return <div>Now Loading</div>;
 
   const handleSubmit = async () => {
-    const { title, caption, publishRange } = form.getValues();
+    const { title, caption, publishRange, synalioTitle } = form.getValues();
     form.getValues();
 
     const update = {
@@ -135,6 +137,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
         title,
         caption,
         tags,
+        synalios: [synalioTitle],
         publish_state: publishRange,
         postable_type: "Illust",
         postable_attributes: postIllust,

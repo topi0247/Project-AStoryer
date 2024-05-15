@@ -61,6 +61,7 @@ export default function IllustPostPage() {
       title: "",
       caption: "",
       publishRange: "" as IPublicState,
+      synalioTitle: "",
     },
     validate: {
       postIllust: () => {
@@ -88,19 +89,28 @@ export default function IllustPostPage() {
     },
   });
 
-  if (errorTags) return <div>error</div>;
-  if (Tags === undefined) return <div>Now Loading</div>;
+  const getFetcherError = () => {
+    return errorTags || errorSynalios;
+  };
+
+  const disableData = () => {
+    return Tags === undefined || Synalios === undefined;
+  };
+
+  if (getFetcherError()) return <div>error</div>;
+  if (disableData()) return <div>Now Loading</div>;
 
   const handleSubmit = async () => {
-    const { title, caption, publishRange } = form.getValues();
+    const { title, caption, publishRange, synalioTitle } = form.getValues();
     const post = {
       post: {
+        postable_attributes: postIllust,
         title,
         caption,
         tags,
         publish_state: publishRange,
         postable_type: "Illust",
-        postable_attributes: postIllust,
+        synalios: [synalioTitle],
       },
     };
 
