@@ -51,3 +51,5 @@ gem "omniauth-rails_csrf_protection"
 gem 'jsonapi-serializer'
 # 設定
 gem 'config'
+# Googleスプレッドシートを扱うためのgem
+gem 'google-apis-sheets_v4', '~> 0.2.0'

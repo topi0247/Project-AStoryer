@@ -41,5 +41,6 @@ module App
     config.action_dispatch.cookies_same_site_protection = :none
     config.action_controller.forgery_protection_origin_check = false
     config.i18n.default_locale = :ja
+    config.paths.add "lib", eager_load: true
   end
 end

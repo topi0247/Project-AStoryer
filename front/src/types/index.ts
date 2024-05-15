@@ -16,6 +16,7 @@ export interface IEditIllustData {
   caption?: string;
   image?: string[];
   tags?: string[];
+  synalio?: string;
   publish_state: IPublicState;
 }
 

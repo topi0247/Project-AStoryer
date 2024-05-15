@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       resource :notice, only: %i[update]
       resources :posts, only: %i[create edit update]
       resources :tags, only: %i[index create]
+      resources :synalios, only: %i[index]
     end
   end
 end

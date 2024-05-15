@@ -19,20 +19,22 @@ const GameSystems = Array.from({ length: 50 }).map((_, i) => ({
   name: `システム${i}`,
 }));
 
-const Synalios = Array.from({ length: 50 }).map((_, i) => ({
-  id: i,
-  title: `シナリオ${i}`,
-}));
-
 const fetcherTags = (url: string) => GetFromAPI(url).then((res) => res.data);
+const fetcherSynalios = (url: string) =>
+  GetFromAPI(url).then((res) => res.data);
 
 export default function IllustPostPage() {
   const { data: Tags, error: errorTags } = useSWR("/tags", fetcherTags);
+  const { data: Synalios, error: errorSynalios } = useSWR(
+    "/synalios",
+    fetcherSynalios
+  );
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const [postIllust, setPostIllust] = useState<string[]>([]);
   const [tagData, setTagData] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
+  const [synalioData, setSynalioData] = useState<string[]>([]);
   const [postId, setPostId] = useState<number>(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -48,12 +50,18 @@ export default function IllustPostPage() {
     setTagData(Tags);
   }, [tagData]);
 
+  useEffect(() => {
+    if (!Synalios) return;
+    setSynalioData(Synalios);
+  }, [synalioData]);
+
   const form = useForm({
     initialValues: {
       postIllust: postIllust,
       title: "",
       caption: "",
       publishRange: "" as IPublicState,
+      synalioTitle: "",
     },
     validate: {
       postIllust: () => {
@@ -81,19 +89,28 @@ export default function IllustPostPage() {
     },
   });
 
-  if (errorTags) return <div>error</div>;
-  if (Tags === undefined) return <div>Now Loading</div>;
+  const getFetcherError = () => {
+    return errorTags || errorSynalios;
+  };
+
+  const disableData = () => {
+    return Tags === undefined || Synalios === undefined;
+  };
+
+  if (getFetcherError()) return <div>error</div>;
+  if (disableData()) return <div>Now Loading</div>;
 
   const handleSubmit = async () => {
-    const { title, caption, publishRange } = form.getValues();
+    const { title, caption, publishRange, synalioTitle } = form.getValues();
     const post = {
       post: {
+        postable_attributes: postIllust,
         title,
         caption,
         tags,
         publish_state: publishRange,
         postable_type: "Illust",
-        postable_attributes: postIllust,
+        synalios: [synalioTitle],
       },
     };
 
@@ -228,7 +245,7 @@ export default function IllustPostPage() {
                   <Mantine.Autocomplete
                     name="synalioTitle"
                     label={t_PostGeneral("synalioTitle")}
-                    data={Synalios.map((synalio) => synalio.title)}
+                    data={Synalios}
                     {...form.getInputProps("synalioTitle")}
                   />
                 </div>
