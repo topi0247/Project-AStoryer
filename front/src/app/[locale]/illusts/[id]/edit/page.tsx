@@ -1,7 +1,7 @@
 "use client";
 
 import { TransitionsModal } from "@/components/ui";
-import { GetFromAPI, Put2API, useRouter } from "@/lib";
+import { Delete2API, GetFromAPI, Put2API, useRouter } from "@/lib";
 import { modalOpenState, userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
 import { IEditIllustData, IPublicState } from "@/types";
@@ -166,9 +166,21 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
     setIsDelete(true);
   };
 
-  const handleDeleteSubmit = () => {
+  const handleDeleteSubmit = async () => {
     if (!isDeleteConfirmation) {
       setDeleteConfirmationError(t_EditGeneral("checkDeleteValid"));
+      return;
+    }
+
+    try {
+      const res = await Delete2API(`/posts/${id}`);
+      if (res.status != 200) {
+        setErrorMessage(t_EditGeneral("deleteError"));
+        return;
+      }
+      router.push(RouterPath.users(user.id));
+    } catch (e) {
+      setErrorMessage(t_EditGeneral("deleteError"));
       return;
     }
   };
@@ -421,7 +433,10 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
                   size="md"
                   radius="xl"
                   color="red"
-                  onChange={() => setIsDeleteConfirmation(!isDelete)}
+                  checked={isDeleteConfirmation}
+                  onChange={(event) =>
+                    setIsDeleteConfirmation(event.currentTarget.checked)
+                  }
                 />
                 {deleteConfirmationError && (
                   <p className="text-red-400">{deleteConfirmationError}</p>
