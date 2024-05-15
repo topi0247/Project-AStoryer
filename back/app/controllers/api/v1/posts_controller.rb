@@ -4,7 +4,8 @@ class Api::V1::PostsController < Api::V1::BasesController
   before_action :set_post, only: %i[update]
 
   def create
-    post = current_api_v1_user.posts.build(post_params.except(:postable_attributes))
+    post = current_api_v1_user.posts.build(post_params.except(:postable_attributes,:tags))
+    post.create_tags(post_params[:tags])
 
     # 下書き以外は投稿日時保存
     if !post.draft?
@@ -19,8 +20,8 @@ class Api::V1::PostsController < Api::V1::BasesController
     begin
       # イラストの場合
       if post.illust?
-        blob = post.postable.active_storage_upload!(post_params[:postable_attributes][:image])
-        post.postable.image.attach(blob)
+        image = post_params[:postable_attributes].first
+        post.postable.active_storage_upload(image)
       end
 
       # 保存
@@ -34,41 +35,43 @@ class Api::V1::PostsController < Api::V1::BasesController
   end
 
   def edit
-    post = current_api_v1_user.posts.includes(:postable).find_by(id: params[:id])
+    post = current_api_v1_user.posts.includes(:postable,:tags).find_by(id: params[:id])
 
     if post.nil?
       render json: { error: 'Not Found' }, status: :not_found and return
     end
 
-    post_json = PostSerializer.new(post).serializable_hash
     content = nil
     if post.illust?
       content = post.postable.image.attached? ? url_for(post.postable.image) : nil
     end
 
-    render json: {
-      id: post_json[:data][:id],
-      title: post_json[:data][:attributes][:title],
-      caption: post_json[:data][:attributes][:caption],
-      publish_state: post_json[:data][:attributes][:publish_state],
-      type: post_json[:data][:attributes][:type],
-      data: [content]
-    }, status: :ok
+    render json: post.as_custom_edit_json(content), status: :ok
   end
 
   def update
     begin
       # 投稿データのメインコンテンツの更新が可能か
       if @post.main_content_updatable?
-        if !@post.postable.image.attached? || url_for(@post.postable.image) != post_params[:postable_attributes][:image]
-          @post.postable.active_storage_upload!(post_params[:postable_attributes][:image])
+        # イラスト
+        if @post.illust?
+          # 送られてきた画像の1つだけ
+          # TODO : 複数画像は後に実装
+          image = post_params[:postable_attributes].first
+          # 画像データがURLでない場合は新規登録
+          if url_for(@post.postable.image) != image
+            @post.postable.active_storage_upload(image)
+          end
         end
       end
 
       # 公開設定で初公開のときは公開日時を設定
       @post.set_published_at(post_params[:publish_state])
 
-      @post.update!(post_params.except(:postable_attributes))
+      # タグの更新
+      @post.update_tags(post_params[:tags])
+
+      @post.update!(post_params.except(:postable_attributes,:tags))
 
       render json: { id: @post.id }, status: :ok
     rescue => e
@@ -80,7 +83,7 @@ class Api::V1::PostsController < Api::V1::BasesController
   private
 
   def post_params
-    params.require(:post).permit(:title, :caption, :publish_state, :postable_type,postable_attributes: [:image])
+    params.require(:post).permit(:title, :caption, :publish_state, :postable_type, postable_attributes: [], tags: [])
   end
 
   def set_post

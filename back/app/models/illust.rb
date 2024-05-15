@@ -11,10 +11,12 @@ class Illust < ApplicationRecord
   has_one :post, as: :postable, dependent: :destroy
   has_one_attached :image
 
-  def active_storage_upload!(data_image)
-    data = data_image
+  def active_storage_upload(data_image)
     # 送信されるデータは data: から始まるためエンコードデータのみ抽出
-    base64_data = data.split(",")[1]
+    base64_data = data_image
+    if data_image.start_with?('data:image')
+      base64_data = data_image.split(",")[1]
+    end
     decoded_image = Base64.decode64(base64_data)
     # MiniMagickでwebpに軽量化
     img = MiniMagick::Image.read(decoded_image)
