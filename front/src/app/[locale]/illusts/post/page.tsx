@@ -25,14 +25,21 @@ const Synalios = Array.from({ length: 50 }).map((_, i) => ({
 }));
 
 const fetcherTags = (url: string) => GetFromAPI(url).then((res) => res.data);
+const fetcherSynalios = (url: string) =>
+  GetFromAPI(url).then((res) => res.data);
 
 export default function IllustPostPage() {
   const { data: Tags, error: errorTags } = useSWR("/tags", fetcherTags);
+  const { data: Synalios, error: errorSynalios } = useSWR(
+    "/synalios",
+    fetcherSynalios
+  );
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const [postIllust, setPostIllust] = useState<string[]>([]);
   const [tagData, setTagData] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
+  const [synalioData, setSynalioData] = useState<string[]>([]);
   const [postId, setPostId] = useState<number>(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -47,6 +54,11 @@ export default function IllustPostPage() {
     if (!Tags) return;
     setTagData(Tags);
   }, [tagData]);
+
+  useEffect(() => {
+    if (!Synalios) return;
+    setSynalioData(Synalios);
+  }, [synalioData]);
 
   const form = useForm({
     initialValues: {
@@ -228,7 +240,7 @@ export default function IllustPostPage() {
                   <Mantine.Autocomplete
                     name="synalioTitle"
                     label={t_PostGeneral("synalioTitle")}
-                    data={Synalios.map((synalio) => synalio.title)}
+                    data={Synalios}
                     {...form.getInputProps("synalioTitle")}
                   />
                 </div>

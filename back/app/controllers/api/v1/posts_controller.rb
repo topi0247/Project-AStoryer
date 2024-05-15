@@ -4,8 +4,10 @@ class Api::V1::PostsController < Api::V1::BasesController
   before_action :set_post, only: %i[update]
 
   def create
-    post = current_api_v1_user.posts.build(post_params.except(:postable_attributes,:tags))
+    default_params = post_params.except(:postable_attributes,:tags,:synalio)
+    post = current_api_v1_user.posts.build(default_params)
     post.create_tags(post_params[:tags])
+    post.create_synalio(post_params[:synalio])
 
     # 下書き以外は投稿日時保存
     if !post.draft?
@@ -35,7 +37,7 @@ class Api::V1::PostsController < Api::V1::BasesController
   end
 
   def edit
-    post = current_api_v1_user.posts.includes(:postable,:tags).find_by(id: params[:id])
+    post = current_api_v1_user.posts.includes(:postable,:tags, :synalios).find_by(id: params[:id])
 
     if post.nil?
       render json: { error: 'Not Found' }, status: :not_found and return
@@ -83,7 +85,7 @@ class Api::V1::PostsController < Api::V1::BasesController
   private
 
   def post_params
-    params.require(:post).permit(:title, :caption, :publish_state, :postable_type, postable_attributes: [], tags: [])
+    params.require(:post).permit(:title, :caption, :publish_state, :postable_type,postable_attributes: [], tags: [], synalio: [])
   end
 
   def set_post

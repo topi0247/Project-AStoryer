@@ -44,11 +44,29 @@ class Post < ApplicationRecord
     create_tags(new_tags)
   end
 
+  # シナリオの作成
+  def create_synalios(new_synalios)
+    new_synalios.each do |synalio|
+      new_synalio = Synalio.find_or_create_by!(name: synalio)
+      post_synalios.build(synalio_id: new_synalio.id)
+    end
+  end
+
+  # シナリオの更新
+  def update_synalios(new_synalios)
+    post_synalios.destroy_all
+    create_synalios(new_synalios)
+  end
+
   def initialize_postable(type)
     case type
     when 'Illust'
       Illust
     end
+  end
+
+  def get_postable
+    postable.class.name
   end
 
   # 投稿タイプがイラストか
@@ -77,13 +95,13 @@ class Post < ApplicationRecord
 
   # 編集用のカスタムjson
   def as_custom_edit_json(content)
-    post_json = PostSerializer.new(self).serializable_hash
     {
-      id: post_json[:data][:id],
-      title: post_json[:data][:attributes][:title],
-      caption: post_json[:data][:attributes][:caption],
-      publish_state: post_json[:data][:attributes][:publish_state],
-      type: post_json[:data][:attributes][:type],
+      id: id,
+      title: title,
+      caption: caption,
+      synalio: synalios.map(&:name).first,
+      publish_state: publish_state,
+      type: get_postable,
       tags: tags.map(&:name),
       data: [content]
     }
