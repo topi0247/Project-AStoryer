@@ -14,7 +14,7 @@ class Illust < ApplicationRecord
   def active_storage_upload(data_image)
     # 送信されるデータは data: から始まるためエンコードデータのみ抽出
     base64_data = data_image
-    if data.start_with?('data:image')
+    if data_image.start_with?('data:image')
       base64_data = data_image.split(",")[1]
     end
     decoded_image = Base64.decode64(base64_data)
