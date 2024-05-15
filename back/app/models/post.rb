@@ -111,8 +111,27 @@ class Post < ApplicationRecord
     end
   end
 
+  # 表示用のカスタムjson
+  def as_custom_show_json(content)
+    {
+      id: id,
+      title: title,
+      caption: caption,
+      synalio: synalios.map(&:name).first,
+      tags: tags.map(&:name),
+      data: [content],
+      user: {
+        id: user.id,
+        name: user.name,
+        profile: user.profile&.text,
+        avatar: user.profile&.avatar&.url,
+        follower: user.followers.count
+      }
+    }
+  end
+
   # 編集用のカスタムjson
-  def as_custom_json(content)
+  def as_custom_edit_json(content)
     {
       id: id,
       title: title,

@@ -5,7 +5,7 @@ class Api::V1::PostsController < Api::V1::BasesController
   before_action :set_post, only: %i[update destroy]
 
   def show
-    post = Post.includes(:postable, :tags, :synalios).find_by(id: params[:id])
+    post = Post.includes(:postable, :tags, :synalios, :user).find_by(id: params[:id])
 
     if post.nil? || !post.publishable?(current_api_v1_user)
       render json: { error: 'Not Found' }, status: :not_found and return
@@ -16,7 +16,7 @@ class Api::V1::PostsController < Api::V1::BasesController
       content = post.postable.image.attached? ? url_for(post.postable.image) : nil
     end
 
-    render json: post.as_custom_json(content), status: :ok
+    render json: post.as_custom_show_json(content), status: :ok
   end
 
   def create
@@ -63,7 +63,7 @@ class Api::V1::PostsController < Api::V1::BasesController
       content = post.postable.image.attached? ? url_for(post.postable.image) : nil
     end
 
-    render json: post.as_custom_json(content), status: :ok
+    render json: post.as_custom_edit_json(content), status: :ok
   end
 
   def update
