@@ -6,6 +6,7 @@ tags.each do |tag|
 end
 
 # シナリオ
+# シナリオの取り扱いはセンシティブなため、Googleスプレッドシートから取得する
 sheets = Google::Spreadsheets.new.get_values(ENV['GOOGLE_SPREADSHEET_ID'], 'synalio!A2:C')
 sheets.values.each do |row|
   Synalio.find_or_create_by!(name: row[0])
