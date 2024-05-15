@@ -27,6 +27,24 @@ class Post < ApplicationRecord
   validates :caption, length: { maximum: 10_000 }
   enum publish_state: { draft: 0, all_publish: 1, only_url: 2, only_follower: 3, private_publish:4 }
 
+  # 公開可能か
+  def publishable?(current_user=nil)
+    case publish_state
+    when 'draft'
+      current_user == user
+    when 'all_publish'
+      true
+    when 'only_url'
+      true
+    when 'only_follower'
+      self.user.followers.include?(current_user)
+    when 'private_publish'
+      current_user == user
+    else
+      false
+    end
+  end
+
   # タグの作成
   def create_tags(new_tags)
     new_tags.each do |tag|
@@ -91,6 +109,25 @@ class Post < ApplicationRecord
     if publish_state != 'draft' && self.published_at.nil?
       self.published_at = Time.now
     end
+  end
+
+  # 表示用のカスタムjson
+  def as_custom_show_json(content)
+    {
+      id: id,
+      title: title,
+      caption: caption,
+      synalio: synalios.map(&:name).first,
+      tags: tags.map(&:name),
+      data: [content],
+      user: {
+        id: user.id,
+        name: user.name,
+        profile: user.profile&.text,
+        avatar: user.profile&.avatar&.url,
+        follower: user.followers.count
+      }
+    }
   end
 
   # 編集用のカスタムjson
