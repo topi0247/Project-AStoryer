@@ -85,7 +85,9 @@
     "follow": "フォロー",
     "unFollow": "フォロー解除",
     "send": "送信",
-    "requiredComment": "コメント機能はログインで使えます"
+    "requiredComment": "コメント機能はログインで使えます",
+    "fusetter": "ふせったー",
+    "other": "その他"
   },
   "AccountSettings": {
     "settings": "設定",

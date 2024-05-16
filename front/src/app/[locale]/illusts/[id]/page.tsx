@@ -93,7 +93,7 @@ export default function IllustPage({
               >
                 <Mantine.Image
                   src={illustData.data[0]}
-                  alt="拡大表示"
+                  alt={illustData.title}
                   fit="contain"
                   style={{
                     maxHeight: "80vh",
@@ -221,7 +221,7 @@ export default function IllustPage({
                 </div>
               </form>
               <div className="w-full h-full absolute top-0 left-0 bg-gray-500 bg-opacity-80 text-white font-semibold md:text-3xl flex justify-center items-center rounded">
-                <p>コメント機能はログインで使えます</p>
+                <p>{t_ShowPost("requiredComment")}</p>
               </div>
             </section>
 
@@ -260,7 +260,7 @@ export default function IllustPage({
 
         <article className="hidden md:w-1/3 md:block md:sticky md:top-4">
           <section className="bg-white p-4 rounded flex flex-col gap-4">
-            <h3 className="text-xl">投稿者</h3>
+            <h3 className="text-xl">{t_ShowPost("postUser")}</h3>
             <div className="flex gap-4 justify-start items-center">
               <Link href="/users/1">
                 <Mantine.Avatar
@@ -279,7 +279,7 @@ export default function IllustPage({
                     onClick={handleFollow}
                     className="w-32"
                   >
-                    フォロー解除
+                    {t_ShowPost("unFollow")}
                   </Mantine.Button>
                 ) : (
                   <Mantine.Button
@@ -288,7 +288,7 @@ export default function IllustPage({
                     onClick={handleFollow}
                     className="w-32"
                   >
-                    フォロー
+                    {t_ShowPost("follow")}
                   </Mantine.Button>
                 )}
               </div>
@@ -304,10 +304,10 @@ export default function IllustPage({
                 privatter
               </Link>
               <Link href="" className="bg-slate-300 rounded px-2">
-                ふせったー
+                {t_ShowPost("fusetter")}
               </Link>
               <Link href="" className="bg-slate-300 rounded px-2">
-                HP
+                {t_ShowPost("other")}
               </Link>
             </div>
             <div>
