@@ -53,3 +53,5 @@ gem 'jsonapi-serializer'
 gem 'config'
 # Googleスプレッドシートを扱うためのgem
 gem 'google-apis-sheets_v4', '~> 0.2.0'
+# DBを使わない固定データを利用するためのGem
+gem 'active_hash', '~> 2.3.0'
