@@ -135,13 +135,13 @@ export default function IllustPage({
                   </Mantine.Button>
                   <div className="text-sm flex justify-center items-center md:justify-start gap-2">
                     <Link
-                      href="/illusts/gameSystem=1"
+                      href="/illusts/search=1"
                       className="bg-blue-200 rounded-lg px-2 py-1 hover:opacity-60 transition-all"
                     >
                       システム名
                     </Link>
                     <Link
-                      href={`/illusts?scenario=${illustData.synalio}`}
+                      href={`/illusts?search=${illustData.synalio}`}
                       className="bg-green-200 rounded-lg px-2 py-1 hover:opacity-60 transition-all"
                     >
                       {illustData.synalio}
@@ -151,7 +151,7 @@ export default function IllustPage({
                     {illustData.tags.map((tag: string, i: number) => (
                       <Link
                         key={i}
-                        href={`/illusts?tag=${tag}`}
+                        href={`/illusts?search=${tag}`}
                         className="text-blue-600 hover:underline hover:opacity-60 transition-all"
                       >
                         #{tag}
