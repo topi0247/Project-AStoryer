@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_15_043035) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_16_030135) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -65,6 +65,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_15_043035) do
     t.boolean "follower", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "post_game_systems", force: :cascade do |t|
+    t.integer "game_system_id", null: false
+    t.bigint "post_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_post_game_systems_on_post_id"
   end
 
   create_table "post_synalios", force: :cascade do |t|
@@ -158,6 +166,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_15_043035) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "authentications", "users"
+  add_foreign_key "post_game_systems", "posts"
   add_foreign_key "post_synalios", "posts"
   add_foreign_key "post_synalios", "synalios"
   add_foreign_key "post_tags", "posts"

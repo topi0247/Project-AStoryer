@@ -14,6 +14,9 @@
 #  postable_id   :bigint           not null
 #
 class Post < ApplicationRecord
+  include ActiveHash::Associations
+  has_many :post_game_systems, dependent: :destroy
+  has_many :game_systems, through: :post_game_systems, source: :game_system
   belongs_to :user
   belongs_to :postable, polymorphic: true
   accepts_nested_attributes_for :postable
