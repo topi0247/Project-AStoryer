@@ -3,14 +3,14 @@
 import { FormEvent, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import * as RecoilState from "@/recoilState";
-import { GetFromAPI, Link } from "@/lib";
+import { GetFromAPI, Link, useRouter } from "@/lib";
 import * as Mantine from "@mantine/core";
 import { FixedIconButtonList, IconButtonList } from "@/components/ui";
 import { useTranslations } from "next-intl";
 import { useMediaQuery } from "@mantine/hooks";
 import { MdCollections } from "rocketicons/md";
-import { IPublicState } from "@/types";
 import useSWR from "swr";
+import { RouterPath } from "@/settings";
 
 const fetcherIllust = (url: string) => GetFromAPI(url).then((res) => res.data);
 
@@ -31,9 +31,15 @@ export default function IllustPage({
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const CAPTION_OPEN_LENGTH = 280;
+  const router = useRouter();
 
   if (illustError) return <div>error</div>;
   if (!illustData) return <div>now loading...</div>;
+
+  if (illustData.error === "Not Found") {
+    // TODO : 404ページへリダイレクト
+    router.push(RouterPath.home);
+  }
 
   const handleOpenUser = () => {
     // TODO : 投稿者の情報モーダルの表示
