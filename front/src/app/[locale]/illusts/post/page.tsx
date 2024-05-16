@@ -3,13 +3,13 @@
 import { GetFromAPI, Post2API, useRouter } from "@/lib";
 import { userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
-import { IGameSystem, IPublicState } from "@/types";
+import { IPublicState } from "@/types";
 import * as Mantine from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRecoilValue } from "recoil";
 import { FaImage } from "rocketicons/fa";
 import useSWR from "swr";
@@ -33,9 +33,7 @@ export default function IllustPostPage() {
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const [postIllust, setPostIllust] = useState<string[]>([]);
-  const [tagData, setTagData] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
-  const [synalioData, setSynalioData] = useState<string[]>([]);
   const [postId, setPostId] = useState<number>(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -45,16 +43,6 @@ export default function IllustPostPage() {
   const t_PostGeneral = useTranslations("PostGeneral");
   const TITLE_MAX_LENGTH = 20;
   const CAPTION_MAX_LENGTH = 10000;
-
-  useEffect(() => {
-    if (!Tags) return;
-    setTagData(Tags);
-  }, [tagData]);
-
-  useEffect(() => {
-    if (!Synalios) return;
-    setSynalioData(Synalios);
-  }, [synalioData]);
 
   const form = useForm({
     initialValues: {
@@ -107,12 +95,6 @@ export default function IllustPostPage() {
   const handleSubmit = async () => {
     const { title, caption, publishRange, synalioTitle, gameSystem } =
       form.getValues();
-    const systems = gameSystem
-      ? [
-          GameSystems.find((system: IGameSystem) => system.name === gameSystem)
-            .id,
-        ]
-      : [];
     const post = {
       post: {
         postable_attributes: postIllust,
@@ -122,7 +104,7 @@ export default function IllustPostPage() {
         publish_state: publishRange,
         postable_type: "Illust",
         synalios: [synalioTitle],
-        game_systems: systems,
+        game_systems: [gameSystem],
       },
     };
     setErrorMessage("");
@@ -155,10 +137,10 @@ export default function IllustPostPage() {
   };
 
   const handleModalClose = () => {
+    setModalOpen(false);
     if (errorMessage === "") {
       router.push(RouterPath.users(user.id));
     }
-    setModalOpen(false);
   };
 
   return (
@@ -251,7 +233,7 @@ export default function IllustPostPage() {
                   <Mantine.Autocomplete
                     name="gameSystem"
                     label={t_PostGeneral("gameSystem")}
-                    data={GameSystems.map((system: IGameSystem) => system.name)}
+                    data={GameSystems}
                     {...form.getInputProps("gameSystem")}
                   />
                 </div>

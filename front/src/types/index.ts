@@ -18,6 +18,7 @@ export interface IEditIllustData {
   tags?: string[];
   synalio?: string;
   publish_state: IPublicState;
+  game_system?: string;
 }
 
 export interface IButtonState {
@@ -64,9 +65,4 @@ export enum IPublicState {
   URL = "only_url",
   Follower = "only_follower",
   Private = "private_publish",
-}
-
-export interface IGameSystem {
-  id: number;
-  name: string;
 }

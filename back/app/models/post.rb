@@ -24,7 +24,6 @@ class Post < ApplicationRecord
   has_many :synalios, through: :post_synalios, source: :synalio
   include ActiveHash::Associations
   has_many :post_game_systems, dependent: :destroy
-  has_many :game_systems, through: :post_game_systems, source: :game_system
 
   validates :title, presence: true, length: { maximum: 20 }
   validates :caption, length: { maximum: 10_000 }
@@ -85,7 +84,10 @@ class Post < ApplicationRecord
   def create_game_systems(new_game_systems)
     return if new_game_systems[0].blank?
     new_game_systems.each do |game_system|
-      post_game_systems.build(game_system_id: game_system)
+      system = GameSystem.find_by(name: game_system)
+      if system.present?
+        PostGameSystem.create!(post_id: id, game_system_id: system.id)
+      end
     end
   end
 
@@ -93,6 +95,12 @@ class Post < ApplicationRecord
   def update_game_systems(new_game_systems)
     post_game_systems.destroy_all
     create_game_systems(new_game_systems)
+  end
+
+  # システムの取得
+  # TODO : ActiveHashがActiveRecordライクに出来ていないので仮
+  def get_game_systems
+    post_game_systems.map { |pgs| GameSystem.find(pgs.game_system_id)}
   end
 
   def initialize_postable(type)
@@ -137,7 +145,7 @@ class Post < ApplicationRecord
       title: title,
       caption: caption,
       synalio: synalios.map(&:name).first,
-      game_systems: game_systems.map(&:name).first,
+      game_systems: get_game_systems.map(&:name).first,
       tags: tags.map(&:name),
       data: [content],
       user: {
@@ -147,7 +155,7 @@ class Post < ApplicationRecord
         avatar: user.profile&.avatar&.url,
         follower: user.followers.count
       },
-      published_at: published_at.strftime('%Y/%m/%d %H:%M:%S')
+      published_at: published_at.strftime('%Y/%m/%d %H:%M:%S'),
     }
   end
 
@@ -157,11 +165,11 @@ class Post < ApplicationRecord
       id: id,
       title: title,
       caption: caption,
-      synalio: synalios.length > 0 ? synalios.map(&:name).first : nil,
-      game_systems: game_systems.length > 0 ? game_systems.map(&:name).first : nil,
+      synalio: synalios.map(&:name).first,
+      game_systems: get_game_systems.map(&:name).first,
       publish_state: publish_state,
       type: get_postable,
-      tags: tags.length > 0 ? tags.map(&:name) : [],
+      tags: tags.map(&:name),
       data: [content]
     }
   end
