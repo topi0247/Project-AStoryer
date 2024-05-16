@@ -65,3 +65,8 @@ export enum IPublicState {
   Follower = "only_follower",
   Private = "private_publish",
 }
+
+export interface IGameSystem {
+  id: number;
+  name: string;
+}

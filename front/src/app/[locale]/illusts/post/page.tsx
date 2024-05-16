@@ -3,7 +3,7 @@
 import { GetFromAPI, Post2API, useRouter } from "@/lib";
 import { userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
-import { IPublicState } from "@/types";
+import { IGameSystem, IPublicState } from "@/types";
 import * as Mantine from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
@@ -14,13 +14,10 @@ import { useRecoilValue } from "recoil";
 import { FaImage } from "rocketicons/fa";
 import useSWR from "swr";
 
-const GameSystems = Array.from({ length: 50 }).map((_, i) => ({
-  id: i,
-  name: `システム${i}`,
-}));
-
 const fetcherTags = (url: string) => GetFromAPI(url).then((res) => res.data);
 const fetcherSynalios = (url: string) =>
+  GetFromAPI(url).then((res) => res.data);
+const fetcherGameSystems = (url: string) =>
   GetFromAPI(url).then((res) => res.data);
 
 export default function IllustPostPage() {
@@ -28,6 +25,10 @@ export default function IllustPostPage() {
   const { data: Synalios, error: errorSynalios } = useSWR(
     "/synalios",
     fetcherSynalios
+  );
+  const { data: GameSystems, error: errorGameSystems } = useSWR(
+    "/game_systems",
+    fetcherGameSystems
   );
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
@@ -62,6 +63,7 @@ export default function IllustPostPage() {
       caption: "",
       publishRange: "" as IPublicState,
       synalioTitle: "",
+      gameSystem: "",
     },
     validate: {
       postIllust: () => {
@@ -90,18 +92,21 @@ export default function IllustPostPage() {
   });
 
   const getFetcherError = () => {
-    return errorTags || errorSynalios;
+    return errorTags || errorSynalios || errorGameSystems;
   };
 
   const disableData = () => {
-    return Tags === undefined || Synalios === undefined;
+    return (
+      Tags === undefined || Synalios === undefined || GameSystems === undefined
+    );
   };
 
   if (getFetcherError()) return <div>error</div>;
   if (disableData()) return <div>Now Loading</div>;
 
   const handleSubmit = async () => {
-    const { title, caption, publishRange, synalioTitle } = form.getValues();
+    const { title, caption, publishRange, synalioTitle, gameSystem } =
+      form.getValues();
     const post = {
       post: {
         postable_attributes: postIllust,
@@ -111,6 +116,10 @@ export default function IllustPostPage() {
         publish_state: publishRange,
         postable_type: "Illust",
         synalios: [synalioTitle],
+        game_systems: [
+          GameSystems.find((system: IGameSystem) => system.name === gameSystem)
+            .id,
+        ],
       },
     };
 
@@ -234,10 +243,10 @@ export default function IllustPostPage() {
               </section>
               <section className="flex gap-5 flex-col md:flex-row md:items-center md:gap-2 w-full ">
                 <div className="md:w-1/3">
-                  <Mantine.Select
+                  <Mantine.Autocomplete
                     name="gameSystem"
                     label={t_PostGeneral("gameSystem")}
-                    data={GameSystems.map((system) => system.name)}
+                    data={GameSystems.map((system: IGameSystem) => system.name)}
                     {...form.getInputProps("gameSystem")}
                   />
                 </div>

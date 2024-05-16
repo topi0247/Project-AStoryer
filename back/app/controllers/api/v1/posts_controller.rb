@@ -20,10 +20,11 @@ class Api::V1::PostsController < Api::V1::BasesController
   end
 
   def create
-    default_params = post_params.except(:postable_attributes, :tags, :synalios)
+    default_params = post_params.except(:postable_attributes, :tags, :synalios, :game_systems)
     post = current_api_v1_user.posts.build(default_params)
     post.create_tags(post_params[:tags])
     post.create_synalios(post_params[:synalios])
+    post.create_game_systems(post_params[:game_systems])
 
     # 下書き以外は投稿日時保存
     if !post.draft?
@@ -52,7 +53,7 @@ class Api::V1::PostsController < Api::V1::BasesController
   end
 
   def edit
-    post = current_api_v1_user.posts.includes(:postable, :tags, :synalios).find_by(id: params[:id])
+    post = current_api_v1_user.posts.includes(:postable, :tags, :synalios,:game_systems).find_by(id: params[:id])
 
     if post.nil?
       render json: { error: 'Not Found' }, status: :not_found and return
@@ -91,7 +92,10 @@ class Api::V1::PostsController < Api::V1::BasesController
       # シナリオ名の更新
       @post.update_synalios(post_params[:synalios])
 
-      @post.update!(post_params.except(:postable_attributes, :tags, :synalios))
+      # システムの更新
+      @post.update_game_systems(post_params[:game_systems])
+
+      @post.update!(post_params.except(:postable_attributes, :tags, :synalios, :game_systems))
 
       render json: { id: @post.id }, status: :ok
     rescue
@@ -111,7 +115,7 @@ class Api::V1::PostsController < Api::V1::BasesController
   private
 
   def post_params
-    params.require(:post).permit(:title, :caption, :publish_state, :postable_type,postable_attributes: [], tags: [], synalios: [])
+    params.require(:post).permit(:title, :caption, :publish_state, :postable_type,postable_attributes: [], tags: [], synalios: [], game_systems: [])
   end
 
   def set_post
