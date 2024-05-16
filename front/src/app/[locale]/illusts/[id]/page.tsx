@@ -3,19 +3,26 @@
 import { FormEvent, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import * as RecoilState from "@/recoilState";
-import { Link } from "@/lib";
+import { GetFromAPI, Link } from "@/lib";
 import * as Mantine from "@mantine/core";
 import { FixedIconButtonList, IconButtonList } from "@/components/ui";
 import { useTranslations } from "next-intl";
 import { useMediaQuery } from "@mantine/hooks";
 import { MdCollections } from "rocketicons/md";
 import { IPublicState } from "@/types";
+import useSWR from "swr";
+
+const fetcherIllust = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 export default function IllustPage({
   params: { id },
 }: {
   params: { id: number };
 }) {
+  const { data: illustData, error: illustError } = useSWR(
+    `/posts/${id}`,
+    fetcherIllust
+  );
   const [expansionMode, setExpansionMode] = useState(false);
   const [openCaption, setOpenCaption] = useState(false);
   const [follow, setFollow] = useState(false);
@@ -23,6 +30,10 @@ export default function IllustPage({
   const t_ShowPost = useTranslations("ShowPost");
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
+  const CAPTION_OPEN_LENGTH = 280;
+
+  if (illustError) return <div>error</div>;
+  if (!illustData) return <div>now loading...</div>;
 
   const handleOpenUser = () => {
     // TODO : 投稿者の情報モーダルの表示
@@ -58,19 +69,21 @@ export default function IllustPage({
                 type="button"
                 className="block h-full cursor-pointer transition-all hover:opacity-75 relative"
                 onClick={() => setExpansionMode(true)}
-                style={{ width: "100%", height: "auto", padding: 0 }}
+                style={{ width: "100%", padding: 0 }}
               >
                 <Mantine.Image
-                  src="/assets/900x1600.png"
-                  alt="タイトル"
+                  src={illustData.data[0]} // TODO : 画像の複数枚に対応する
+                  alt={illustData.title}
                   fit="contain"
                   style={{
-                    maxWidth: "100%",
+                    width: "100%",
                     maxHeight: "90vh",
                     height: "auto",
                   }}
                 />
-                <MdCollections className="absolute top-2 right-2 text-white" />
+                {illustData.data.length > 1 && (
+                  <MdCollections className="absolute top-2 right-2 icon-gray" />
+                )}
               </Mantine.Button>
               <Mantine.Modal
                 opened={expansionMode}
@@ -79,7 +92,7 @@ export default function IllustPage({
                 padding="sm"
               >
                 <Mantine.Image
-                  src="/assets/900x1600.png"
+                  src={illustData.data[0]}
                   alt="拡大表示"
                   fit="contain"
                   style={{
@@ -97,9 +110,7 @@ export default function IllustPage({
                     buttonState={{ favorite: false, bookmark: false }} // TODO : いいね・ブックマークの状態
                     publicState={IPublicState.All} // TODO : 投稿の公開範囲
                   />
-                  <h3 className="text-2xl font-semibold">
-                    タイトルタイトルタイトルタイトルタイトルタイトルタイトル
-                  </h3>
+                  <h3 className="text-2xl font-semibold">{illustData.title}</h3>
                   <Mantine.Button
                     variant="transparent"
                     onClick={handleOpenUser}
@@ -110,11 +121,13 @@ export default function IllustPage({
                       radius="xl"
                       size="md"
                       alt="icon"
-                      src="/assets/900x1600.png"
+                      src={illustData.user.avatar}
                     />
-                    <span className="ml-2 text-black">ユーザー名</span>
+                    <span className="ml-2 text-black">
+                      {illustData.user.name}
+                    </span>
                   </Mantine.Button>
-                  <div className="text-sm flex justify-center items-center gap-2">
+                  <div className="text-sm flex justify-center items-center md:justify-start gap-2">
                     <Link
                       href="/illusts/gameSystem=1"
                       className="bg-blue-200 rounded-lg px-2 py-1 hover:opacity-60 transition-all"
@@ -122,49 +135,56 @@ export default function IllustPage({
                       システム名
                     </Link>
                     <Link
-                      href="/illusts/synalio=シナリオ名"
+                      href={`/illusts?scenario=${illustData.synalio}`}
                       className="bg-green-200 rounded-lg px-2 py-1 hover:opacity-60 transition-all"
                     >
-                      シナリオ名
+                      {illustData.synalio}
                     </Link>
                   </div>
                   <div className="flex flex-wrap gap-2 text-sm">
-                    {Array.from({ length: 5 }).map((_, i) => (
+                    {illustData.tags.map((tag: string, i: number) => (
                       <Link
                         key={i}
-                        href={`/illusts/tag=タグ${i + 1}`}
+                        href={`/illusts?tag=${tag}`}
                         className="text-blue-600 hover:underline hover:opacity-60 transition-all"
                       >
-                        #タグ{i + 1}
+                        #{tag}
                       </Link>
                     ))}
                   </div>
                   <p className="flex justify-end items-center text-xs text-gray-500 md:gap-4">
-                    2024/04/20 14:47:50
+                    {illustData.published_at}
                   </p>
                 </div>
               </div>
               <div className="relative w-full">
                 <p
                   className={`overflow-y-hidden
-                ${openCaption ? "max-h-auto" : `gradientText max-h-32`}`}
+                ${
+                  openCaption ||
+                  illustData.caption.length <= CAPTION_OPEN_LENGTH
+                    ? "max-h-auto"
+                    : `gradientText max-h-32`
+                }`}
                 >
-                  キャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプションキャプション
+                  {illustData.caption}
                 </p>
-                <button
-                  type="button"
-                  className={`w-full bg-blue-300 border border-blue-600 border-opacity-50 bg-opacity-50 hover:bg-opacity-25 hover:border-opacity-25 flex justify-center items-center rounded py-1 transition-all
+                {illustData.caption.length > CAPTION_OPEN_LENGTH && (
+                  <button
+                    type="button"
+                    className={`w-full bg-blue-300 border border-blue-600 border-opacity-50 bg-opacity-50 hover:bg-opacity-25 hover:border-opacity-25 flex justify-center items-center rounded py-1 transition-all
                 ${openCaption ? "mt-3" : "absolute bottom-0 left-0"} `}
-                  onClick={() => setOpenCaption(!openCaption)}
-                >
-                  <span
-                    className={`${
-                      openCaption ? "rotate-180" : ""
-                    } transition-all`}
+                    onClick={() => setOpenCaption(!openCaption)}
                   >
-                    ▼
-                  </span>
-                </button>
+                    <span
+                      className={`${
+                        openCaption ? "rotate-180" : ""
+                      } transition-all`}
+                    >
+                      ▼
+                    </span>
+                  </button>
+                )}
               </div>
             </section>
           </div>
@@ -250,7 +270,7 @@ export default function IllustPage({
               </Link>
               <div className="w-full flex flex-col gap-2">
                 <Link href="/users/1" className="text-xl">
-                  ユーザー名
+                  {illustData.user.name}
                 </Link>
                 {follow ? (
                   <Mantine.Button
@@ -291,9 +311,7 @@ export default function IllustPage({
               </Link>
             </div>
             <div>
-              <p>
-                自己紹介文自己紹介文自己紹介文自己紹介文自己紹介文自己紹介文自己紹介文自己紹介文自己紹介文自己紹介文自己紹介文自己紹介文自己紹介文自己紹介文自己紹介文自己紹介文自己紹介文自己紹介文自己紹介文自己紹介文
-              </p>
+              <p>{illustData.user.profile}</p>
             </div>
           </section>
         </article>
