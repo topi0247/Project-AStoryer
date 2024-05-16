@@ -134,18 +134,22 @@ export default function IllustPage({
                     </span>
                   </Mantine.Button>
                   <div className="text-sm flex justify-center items-center md:justify-start gap-2">
-                    <Link
-                      href={`/illusts?search=${illustData.game_systems[0]}`}
-                      className="bg-blue-200 rounded-lg px-2 py-1 hover:opacity-60 transition-all"
-                    >
-                      {illustData.game_systems[0]}
-                    </Link>
-                    <Link
-                      href={`/illusts?search=${illustData.synalio}`}
-                      className="bg-green-200 rounded-lg px-2 py-1 hover:opacity-60 transition-all"
-                    >
-                      {illustData.synalio}
-                    </Link>
+                    {illustData.game_systems && (
+                      <Link
+                        href={`/illusts?search=${illustData.game_systems}`}
+                        className="bg-blue-200 rounded-lg px-2 py-1 hover:opacity-60 transition-all"
+                      >
+                        {illustData.game_systems}
+                      </Link>
+                    )}
+                    {illustData.synalio && (
+                      <Link
+                        href={`/illusts?search=${illustData.synalio}`}
+                        className="bg-green-200 rounded-lg px-2 py-1 hover:opacity-60 transition-all"
+                      >
+                        {illustData.synalio}
+                      </Link>
+                    )}
                   </div>
                   <div className="flex flex-wrap gap-2 text-sm">
                     {illustData.tags.map((tag: string, i: number) => (

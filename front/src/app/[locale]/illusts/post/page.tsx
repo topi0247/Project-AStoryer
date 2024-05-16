@@ -107,6 +107,12 @@ export default function IllustPostPage() {
   const handleSubmit = async () => {
     const { title, caption, publishRange, synalioTitle, gameSystem } =
       form.getValues();
+    const systems = gameSystem
+      ? [
+          GameSystems.find((system: IGameSystem) => system.name === gameSystem)
+            .id,
+        ]
+      : [];
     const post = {
       post: {
         postable_attributes: postIllust,
@@ -116,16 +122,14 @@ export default function IllustPostPage() {
         publish_state: publishRange,
         postable_type: "Illust",
         synalios: [synalioTitle],
-        game_systems: [
-          GameSystems.find((system: IGameSystem) => system.name === gameSystem)
-            .id,
-        ],
+        game_systems: systems,
       },
     };
-
+    setErrorMessage("");
     try {
-      const res = await Post2API("/posts", JSON.stringify(post));
-
+      const res = await Post2API("/posts", JSON.stringify(post)).then(
+        (res) => res
+      );
       if (res.status != 201) {
         const state = publishRange === IPublicState.Draft ? "保存" : "投稿";
         setErrorMessage(`${state}に失敗しました`);
@@ -134,7 +138,8 @@ export default function IllustPostPage() {
 
       setPostId(res.data.id);
     } catch (e) {
-      console.error(e);
+      const state = publishRange === IPublicState.Draft ? "保存" : "投稿";
+      setErrorMessage(`${state}に失敗しました`);
     } finally {
       setModalOpen(true);
     }

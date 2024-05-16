@@ -85,8 +85,7 @@ class Post < ApplicationRecord
   def create_game_systems(new_game_systems)
     return if new_game_systems[0].blank?
     new_game_systems.each do |game_system|
-      system = GameSystem.find(game_system)
-      post_game_systems.build(game_system_id: system.id)
+      post_game_systems.build(game_system_id: game_system)
     end
   end
 
@@ -158,11 +157,11 @@ class Post < ApplicationRecord
       id: id,
       title: title,
       caption: caption,
-      synalio: synalios.map(&:name).first,
-      game_systems: game_systems.map(&:name).first,
+      synalio: synalios.length > 0 ? synalios.map(&:name).first : nil,
+      game_systems: game_systems.length > 0 ? game_systems.map(&:name).first : nil,
       publish_state: publish_state,
       type: get_postable,
-      tags: tags.map(&:name),
+      tags: tags.length > 0 ? tags.map(&:name) : [],
       data: [content]
     }
   end
