@@ -108,7 +108,7 @@ export default function IllustPage({
                   <IconButtonList
                     postId={id}
                     buttonState={{ favorite: false, bookmark: false }} // TODO : いいね・ブックマークの状態
-                    publicState={IPublicState.All} // TODO : 投稿の公開範囲
+                    publicState={illustData.publish_state}
                   />
                   <h3 className="text-2xl font-semibold">{illustData.title}</h3>
                   <Mantine.Button
