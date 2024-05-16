@@ -196,8 +196,11 @@ export default function IllustPage({
               <form onSubmit={handleSendComment}>
                 <div className="flex items-start gap-4">
                   <Mantine.Avatar
+                    variant="default"
+                    radius="xl"
+                    size="md"
                     alt="icon"
-                    src="https://placehold.jp/300x300.png"
+                    src={illustData.user.avatar}
                   />
                   <div className="flex flex-col gap-2 w-full">
                     <span className="p-0 m-0 font-semibold">ユーザー名</span>
@@ -233,10 +236,7 @@ export default function IllustPage({
                     className="flex gap-4 items-start py-4 border-b border-slate-200 last-of-type:border-none"
                   >
                     <Link href="/users/1">
-                      <Mantine.Avatar
-                        alt="icon"
-                        src="https://placehold.jp/300x300.png"
-                      />
+                      <Mantine.Avatar alt="icon" src={illustData.user.avatar} />
                     </Link>
                     <div className="flex flex-col gap-1">
                       <Link href="/users/1" className="font-semibold">
@@ -264,8 +264,11 @@ export default function IllustPage({
             <div className="flex gap-4 justify-start items-center">
               <Link href="/users/1">
                 <Mantine.Avatar
+                  variant="default"
+                  radius="xl"
+                  size="lg"
                   alt="icon"
-                  src="https://placehold.jp/300x300.png"
+                  src={illustData.user.avatar}
                 />
               </Link>
               <div className="w-full flex flex-col gap-2">
@@ -320,7 +323,7 @@ export default function IllustPage({
       <FixedIconButtonList
         postId={id}
         buttonState={{ favorite: false, bookmark: false }} // TODO : いいね・ブックマークの状態
-        publicState={IPublicState.All} // TODO : 投稿の公開範囲
+        publicState={illustData.publish_state}
       />
     </article>
   );

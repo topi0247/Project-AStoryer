@@ -56,7 +56,7 @@ export function FixedIconButtonList({
             <BookmarkButton state={buttonState.bookmark} />
           </li>
           {/* 公開範囲が全体のときのみシェア可能 */}
-          {publicState.valueOf() === IPublicState.Private && (
+          {publicState === IPublicState.All && (
             <li className="h-full mx-2 text-center">
               <ShareButton />
             </li>
