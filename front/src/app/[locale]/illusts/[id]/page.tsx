@@ -135,7 +135,7 @@ export default function IllustPage({
                   </Mantine.Button>
                   <div className="text-sm flex justify-center items-center md:justify-start gap-2">
                     <Link
-                      href="/illusts/search=1"
+                      href="/illusts?search=1"
                       className="bg-blue-200 rounded-lg px-2 py-1 hover:opacity-60 transition-all"
                     >
                       システム名
