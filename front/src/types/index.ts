@@ -18,6 +18,7 @@ export interface IEditIllustData {
   tags?: string[];
   synalio?: string;
   publish_state: IPublicState;
+  game_system?: string;
 }
 
 export interface IButtonState {

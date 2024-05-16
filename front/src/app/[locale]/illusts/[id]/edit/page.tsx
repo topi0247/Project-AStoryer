@@ -15,16 +15,14 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { FaImage } from "rocketicons/fa";
 import useSWR, { useSWRConfig } from "swr";
 
-const GameSystems = Array.from({ length: 50 }).map((_, i) => ({
-  id: i,
-  name: `システム${i}`,
-}));
-
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 const fetcherTags = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 const fetcherSynalios = (url: string) =>
+  GetFromAPI(url).then((res) => res.data);
+
+const fetcherGameSystems = (url: string) =>
   GetFromAPI(url).then((res) => res.data);
 
 export default function IllustEditPage({ params }: { params: { id: string } }) {
@@ -39,6 +37,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
         image: data.data,
         tags: data.tags,
         synalio: data.synalio,
+        game_system: data.game_systems,
       } as IEditIllustData)
     : ({} as IEditIllustData);
   const { data: Tags, error: errorTags } = useSWR("/tags", fetcherTags);
@@ -46,12 +45,14 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
     "/synalios",
     fetcherSynalios
   );
+  const { data: GameSystems, error: errorGameSystems } = useSWR(
+    "/game_systems",
+    fetcherGameSystems
+  );
   const [postIllust, setPostIllust] = useState<string[]>([]);
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
-  const [tagData, setTagData] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
-  const [synalioData, setSynalioData] = useState<string[]>([]);
   const setOpenModal = useSetRecoilState(modalOpenState);
   const router = useRouter();
   const user = useRecoilValue(userState);
@@ -68,11 +69,12 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
 
   const form = useForm({
     initialValues: {
-      postIllust: illustData.image,
+      postIllust: illustData?.image,
       title: illustData?.title,
       caption: illustData?.caption,
       publishRange: illustData?.publish_state,
       synalioTitle: illustData?.synalio,
+      gameSystem: illustData?.game_system,
     },
     validate: {
       postIllust: () => {
@@ -94,42 +96,39 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
   });
 
   useEffect(() => {
-    if (!illustData || illustData === undefined || postIllust.length > 0)
+    if (Object.keys(illustData).length === 0 || postIllust.length > 0) {
       return;
+    }
     setPostIllust(illustData.image ?? []);
-    setTags(illustData.tags ?? []);
     form.setValues({
       postIllust: illustData.image,
       title: illustData?.title,
       caption: illustData?.caption,
       publishRange: illustData?.publish_state,
       synalioTitle: illustData?.synalio,
+      gameSystem: illustData?.game_system,
     });
-  }, [illustData, postIllust]);
-
-  useEffect(() => {
-    if (!Tags) return;
-    setTagData(Tags);
-  }, [tagData]);
-
-  useEffect(() => {
-    if (!Synalios) return;
-    setSynalioData(Synalios);
-  }, [synalioData]);
+  }, [illustData]);
 
   const getFetcherError = () => {
-    return error || errorTags || errorSynalios;
+    return error || errorTags || errorSynalios || errorGameSystems;
   };
 
   const disableData = () => {
-    return data === undefined || Tags === undefined || Synalios === undefined;
+    return (
+      data === undefined ||
+      Tags === undefined ||
+      Synalios === undefined ||
+      GameSystems === undefined
+    );
   };
 
   if (getFetcherError()) return <div>error</div>;
   if (disableData()) return <div>Now Loading</div>;
 
   const handleSubmit = async () => {
-    const { title, caption, publishRange, synalioTitle } = form.getValues();
+    const { title, caption, publishRange, synalioTitle, gameSystem } =
+      form.getValues();
     form.getValues();
 
     const update = {
@@ -141,6 +140,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
         publish_state: publishRange,
         postable_type: "Illust",
         postable_attributes: postIllust,
+        game_systems: [gameSystem],
       },
     };
 
@@ -230,7 +230,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
               onSubmit={form.onSubmit(handleSubmit)}
             >
               <section>
-                {illustData.publish_state === IPublicState.Draft ? (
+                {illustData?.publish_state === IPublicState.Draft ? (
                   <>
                     <label htmlFor="postIllust">
                       {t_PostIllustEdit("upload")}
@@ -326,7 +326,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
                   <Mantine.Select
                     name="gameSystem"
                     label={t_PostGeneral("gameSystem")}
-                    data={GameSystems.map((system) => system.name)}
+                    data={GameSystems}
                     {...form.getInputProps("gameSystem")}
                   />
                 </div>
@@ -376,7 +376,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
               </section>
               <section className="my-8">
                 <Mantine.Group className="flex justify-center items-center">
-                  {illustData.publish_state === IPublicState.Draft ? (
+                  {illustData?.publish_state === IPublicState.Draft ? (
                     <>
                       <Mantine.Button
                         type="submit"
@@ -483,9 +483,10 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
                   <>
                     <Mantine.Button
                       className="bg-green-300 hover:bg-green-500 transition-all text-black"
-                      onClick={() =>
-                        router.push(RouterPath.illust(illustData.id))
-                      }
+                      onClick={() => {
+                        router.push(RouterPath.illust(Number(id)));
+                        setOpenModal(false);
+                      }}
                     >
                       {t_PostGeneral("showPost")}
                     </Mantine.Button>

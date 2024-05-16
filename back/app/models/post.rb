@@ -14,9 +14,6 @@
 #  postable_id   :bigint           not null
 #
 class Post < ApplicationRecord
-  include ActiveHash::Associations
-  has_many :post_game_systems, dependent: :destroy
-  has_many :game_systems, through: :post_game_systems, source: :game_system
   belongs_to :user
   belongs_to :postable, polymorphic: true
   accepts_nested_attributes_for :postable
@@ -25,6 +22,8 @@ class Post < ApplicationRecord
   has_many :tags, through: :post_tags, source: :tag
   has_many :post_synalios, dependent: :destroy
   has_many :synalios, through: :post_synalios, source: :synalio
+  include ActiveHash::Associations
+  has_many :post_game_systems, dependent: :destroy
 
   validates :title, presence: true, length: { maximum: 20 }
   validates :caption, length: { maximum: 10_000 }
@@ -50,6 +49,7 @@ class Post < ApplicationRecord
 
   # タグの作成
   def create_tags(new_tags)
+    return if new_tags[0].blank?
     new_tags.each do |tag|
       new_tag = Tag.find_or_create_by!(name: tag)
       post_tags.build(tag_id: new_tag.id)
@@ -67,6 +67,7 @@ class Post < ApplicationRecord
 
   # シナリオの作成
   def create_synalios(new_synalios)
+    return if new_synalios[0].blank?
     new_synalios.each do |synalio|
       new_synalio = Synalio.find_or_create_by!(name: synalio)
       post_synalios.build(synalio_id: new_synalio.id)
@@ -77,6 +78,29 @@ class Post < ApplicationRecord
   def update_synalios(new_synalios)
     post_synalios.destroy_all
     create_synalios(new_synalios)
+  end
+
+  # システムの作成
+  def create_game_systems(new_game_systems)
+    return if new_game_systems[0].blank?
+    new_game_systems.each do |game_system|
+      system = GameSystem.find_by(name: game_system)
+      if system.present?
+        PostGameSystem.create!(post_id: id, game_system_id: system.id)
+      end
+    end
+  end
+
+  # システムの更新
+  def update_game_systems(new_game_systems)
+    post_game_systems.destroy_all
+    create_game_systems(new_game_systems)
+  end
+
+  # システムの取得
+  # TODO : ActiveHashがActiveRecordライクに出来ていないので仮
+  def get_game_systems
+    post_game_systems.map { |pgs| GameSystem.find(pgs.game_system_id)}
   end
 
   def initialize_postable(type)
@@ -121,6 +145,7 @@ class Post < ApplicationRecord
       title: title,
       caption: caption,
       synalio: synalios.map(&:name).first,
+      game_systems: get_game_systems.map(&:name).first,
       tags: tags.map(&:name),
       data: [content],
       user: {
@@ -130,7 +155,7 @@ class Post < ApplicationRecord
         avatar: user.profile&.avatar&.url,
         follower: user.followers.count
       },
-      published_at: published_at.strftime('%Y/%m/%d %H:%M:%S')
+      published_at: published_at.strftime('%Y/%m/%d %H:%M:%S'),
     }
   end
 
@@ -141,6 +166,7 @@ class Post < ApplicationRecord
       title: title,
       caption: caption,
       synalio: synalios.map(&:name).first,
+      game_systems: get_game_systems.map(&:name).first,
       publish_state: publish_state,
       type: get_postable,
       tags: tags.map(&:name),

@@ -9,18 +9,15 @@ import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRecoilValue } from "recoil";
 import { FaImage } from "rocketicons/fa";
 import useSWR from "swr";
 
-const GameSystems = Array.from({ length: 50 }).map((_, i) => ({
-  id: i,
-  name: `システム${i}`,
-}));
-
 const fetcherTags = (url: string) => GetFromAPI(url).then((res) => res.data);
 const fetcherSynalios = (url: string) =>
+  GetFromAPI(url).then((res) => res.data);
+const fetcherGameSystems = (url: string) =>
   GetFromAPI(url).then((res) => res.data);
 
 export default function IllustPostPage() {
@@ -29,12 +26,14 @@ export default function IllustPostPage() {
     "/synalios",
     fetcherSynalios
   );
+  const { data: GameSystems, error: errorGameSystems } = useSWR(
+    "/game_systems",
+    fetcherGameSystems
+  );
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const [postIllust, setPostIllust] = useState<string[]>([]);
-  const [tagData, setTagData] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
-  const [synalioData, setSynalioData] = useState<string[]>([]);
   const [postId, setPostId] = useState<number>(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -45,16 +44,6 @@ export default function IllustPostPage() {
   const TITLE_MAX_LENGTH = 20;
   const CAPTION_MAX_LENGTH = 10000;
 
-  useEffect(() => {
-    if (!Tags) return;
-    setTagData(Tags);
-  }, [tagData]);
-
-  useEffect(() => {
-    if (!Synalios) return;
-    setSynalioData(Synalios);
-  }, [synalioData]);
-
   const form = useForm({
     initialValues: {
       postIllust: postIllust,
@@ -62,6 +51,7 @@ export default function IllustPostPage() {
       caption: "",
       publishRange: "" as IPublicState,
       synalioTitle: "",
+      gameSystem: "",
     },
     validate: {
       postIllust: () => {
@@ -90,18 +80,21 @@ export default function IllustPostPage() {
   });
 
   const getFetcherError = () => {
-    return errorTags || errorSynalios;
+    return errorTags || errorSynalios || errorGameSystems;
   };
 
   const disableData = () => {
-    return Tags === undefined || Synalios === undefined;
+    return (
+      Tags === undefined || Synalios === undefined || GameSystems === undefined
+    );
   };
 
   if (getFetcherError()) return <div>error</div>;
   if (disableData()) return <div>Now Loading</div>;
 
   const handleSubmit = async () => {
-    const { title, caption, publishRange, synalioTitle } = form.getValues();
+    const { title, caption, publishRange, synalioTitle, gameSystem } =
+      form.getValues();
     const post = {
       post: {
         postable_attributes: postIllust,
@@ -111,12 +104,14 @@ export default function IllustPostPage() {
         publish_state: publishRange,
         postable_type: "Illust",
         synalios: [synalioTitle],
+        game_systems: [gameSystem],
       },
     };
-
+    setErrorMessage("");
     try {
-      const res = await Post2API("/posts", JSON.stringify(post));
-
+      const res = await Post2API("/posts", JSON.stringify(post)).then(
+        (res) => res
+      );
       if (res.status != 201) {
         const state = publishRange === IPublicState.Draft ? "保存" : "投稿";
         setErrorMessage(`${state}に失敗しました`);
@@ -125,7 +120,8 @@ export default function IllustPostPage() {
 
       setPostId(res.data.id);
     } catch (e) {
-      console.error(e);
+      const state = publishRange === IPublicState.Draft ? "保存" : "投稿";
+      setErrorMessage(`${state}に失敗しました`);
     } finally {
       setModalOpen(true);
     }
@@ -141,10 +137,10 @@ export default function IllustPostPage() {
   };
 
   const handleModalClose = () => {
+    setModalOpen(false);
     if (errorMessage === "") {
       router.push(RouterPath.users(user.id));
     }
-    setModalOpen(false);
   };
 
   return (
@@ -234,10 +230,10 @@ export default function IllustPostPage() {
               </section>
               <section className="flex gap-5 flex-col md:flex-row md:items-center md:gap-2 w-full ">
                 <div className="md:w-1/3">
-                  <Mantine.Select
+                  <Mantine.Autocomplete
                     name="gameSystem"
                     label={t_PostGeneral("gameSystem")}
-                    data={GameSystems.map((system) => system.name)}
+                    data={GameSystems}
                     {...form.getInputProps("gameSystem")}
                   />
                 </div>
