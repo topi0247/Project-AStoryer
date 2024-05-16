@@ -126,7 +126,8 @@ class Post < ApplicationRecord
         profile: user.profile&.text,
         avatar: user.profile&.avatar&.url,
         follower: user.followers.count
-      }
+      },
+      published_at: published_at.strftime('%Y/%m/%d %H:%M:%S')
     }
   end
 

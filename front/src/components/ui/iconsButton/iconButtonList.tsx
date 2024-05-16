@@ -12,8 +12,6 @@ export function IconButtonList({
   buttonState: IButtonState;
   publicState: IPublicState;
 }) {
-  const currentUser = true; // TODO : ログインユーザーの状態
-
   return (
     <>
       <div className="hidden md:flex gap-2 justify-end items-center">
@@ -25,7 +23,7 @@ export function IconButtonList({
             <BookmarkButton state={buttonState.bookmark} />
           </li>
           {/* 公開範囲が全体のときのみシェア可能 */}
-          {publicState.valueOf() === IPublicState.All && (
+          {publicState === IPublicState.All && (
             <li className="mx-2 h-full text-center">
               <ShareButton />
             </li>
@@ -47,8 +45,6 @@ export function FixedIconButtonList({
   buttonState: IButtonState;
   publicState: IPublicState;
 }) {
-  const currentUser = true; // TODO : ログインユーザーの状態
-
   return (
     <>
       <article className="fixed bottom-0 left-0 w-full md:hidden">
@@ -60,7 +56,7 @@ export function FixedIconButtonList({
             <BookmarkButton state={buttonState.bookmark} />
           </li>
           {/* 公開範囲が全体のときのみシェア可能 */}
-          {publicState.valueOf() === IPublicState.Private && (
+          {publicState === IPublicState.All && (
             <li className="h-full mx-2 text-center">
               <ShareButton />
             </li>

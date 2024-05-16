@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import * as RecoilState from "@/recoilState";
 import { IconButtonList, FixedIconButtonList } from "./iconButtonList";
 import { MdFavorite, MdOutlineFavoriteBorder, MdShare } from "rocketicons/md";
@@ -9,13 +9,15 @@ import { FaBookmark, FaRegBookmark } from "rocketicons/fa";
 import { Button } from "@mantine/core";
 
 const FavoriteButton = ({ state }: { state: boolean }) => {
+  const user = useRecoilValue(RecoilState.userState);
   const [favorite, setFavorite] = useState(state);
   const setModalOpen = useSetRecoilState(RecoilState.requireModalOpenState);
 
   const handleFavorite = (value: boolean) => {
-    // TODO : ログインユーザーでなければログインや登録を促す
-    setModalOpen(true);
-    return;
+    if (!user) {
+      setModalOpen(true);
+      return;
+    }
 
     // TODO : いいねの更新処理
     setFavorite(!favorite);
@@ -28,6 +30,7 @@ const FavoriteButton = ({ state }: { state: boolean }) => {
           onClick={() => handleFavorite(false)}
           variant="transparent"
           color="pink"
+          className="p-0"
         >
           <MdFavorite className="icon-red-400" />
         </Button>
@@ -45,13 +48,15 @@ const FavoriteButton = ({ state }: { state: boolean }) => {
 };
 
 const BookmarkButton = ({ state }: { state: boolean }) => {
+  const user = useRecoilValue(RecoilState.userState);
   const [bookmark, setBookmark] = useState(state);
   const setModalOpen = useSetRecoilState(RecoilState.requireModalOpenState);
 
   const handleBookmark = (value: boolean) => {
-    // TODO : ログインユーザーでなければログインや登録を促す
-    setModalOpen(true);
-    return;
+    if (!user) {
+      setModalOpen(true);
+      return;
+    }
 
     // TODO : ブックマークの更新処理
     setBookmark(!bookmark);
@@ -60,14 +65,17 @@ const BookmarkButton = ({ state }: { state: boolean }) => {
   return (
     <>
       {bookmark ? (
-        <Button onClick={() => handleBookmark(false)} variant="transparent">
+        <Button
+          onClick={() => handleBookmark(false)}
+          variant="transparent"
+          className="p-0"
+        >
           <FaBookmark className="icon-sky-500" />
         </Button>
       ) : (
         <Button
           onClick={() => handleBookmark(true)}
           variant="transparent"
-          color="gray"
           className="p-0"
         >
           <FaRegBookmark className="icon-gray-500" />
