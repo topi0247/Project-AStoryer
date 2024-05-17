@@ -24,13 +24,20 @@ export default function UserTabs() {
 
   return (
     <Mantine.Tabs value={value} onChange={handleChange}>
-      <Mantine.Tabs.List aria-label="一覧切り替え">
-        <Mantine.Tabs.Tab value={Tab.post}>
+      <Mantine.Tabs.List
+        aria-label="一覧切り替え"
+        className="before:border-none"
+      >
+        <Mantine.Tabs.Tab
+          value={Tab.post}
+          className="border-green-400 transition-all hover:bg-transparent cursor-default"
+        >
           {t_UserPage("post")}
         </Mantine.Tabs.Tab>
-        <Mantine.Tabs.Tab value={Tab.bookmark}>
+        {/* TODO : ブックマーク機能を追加したら追加 */}
+        {/* <Mantine.Tabs.Tab value={Tab.bookmark}>
           {t_UserPage("bookmark")}
-        </Mantine.Tabs.Tab>
+        </Mantine.Tabs.Tab> */}
       </Mantine.Tabs.List>
     </Mantine.Tabs>
   );
