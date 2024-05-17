@@ -1,7 +1,6 @@
 import { Delete2API, GetFromAPI, Post2API } from "@/lib";
 import { IUser } from "@/types";
 
-// TODO : axiosに置き換える
 export const useAuth = () => {
   const login = async (email: string, password: string) => {
     try {
@@ -14,8 +13,6 @@ export const useAuth = () => {
         clearAccessTokens();
         return { success: false, message: response.data.message };
       }
-
-      console.log(response.headers);
 
       setAccessTokens(
         response.headers["access-token"] || "",
