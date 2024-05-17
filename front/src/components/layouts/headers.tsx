@@ -17,13 +17,30 @@ import SpHeaders from "./spHeaders";
 
 export default function Headers() {
   const [user, setUser] = useRecoilState(RecoilState.userState);
-  const { autoLogin, logout } = useAuth();
+  const { autoLogin, logout, setAccessTokens } = useAuth();
   const t_Header = useTranslations("Header");
   const [search, setSearch] = useState("");
   const router = useRouter();
+
   useEffect(() => {
     if (user.name !== "") return;
     const fetchData = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const status = params.get("status");
+      if (status === "error") {
+        // TODO : 表示方法を考える
+        alert("ログインに失敗しました。");
+        return;
+      }
+
+      const accessToken = params.get("token");
+      const uid = params.get("uid");
+      const client = params.get("client");
+      const expiry = params.get("expiry");
+      if (!accessToken || !uid || !client || !expiry) return;
+
+      setAccessTokens(accessToken, client, uid, expiry);
+
       const result = await autoLogin();
       if (result.success && result.user) {
         setUser(result.user);
@@ -150,8 +167,8 @@ export function AccountMenu({
       <Mantine.Menu.Target>
         <Mantine.Avatar
           alt="icon"
-          variant="light"
-          src={user.avatar ? user.avatar : "https://placehold.jp/300x300.png"}
+          variant="default"
+          src={user.avatar}
           className="cursor-pointer"
           radius="xl"
           size="lg"
@@ -162,10 +179,8 @@ export function AccountMenu({
           <div className="flex justify-start items-center">
             <Mantine.Avatar
               alt="icon"
-              src={
-                user.avatar ? user.avatar : "https://placehold.jp/300x300.png"
-              }
-              variant="light"
+              src={user.avatar}
+              variant="default"
               radius="xl"
               size="lg"
             />

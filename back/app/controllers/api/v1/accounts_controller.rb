@@ -26,7 +26,7 @@ class Api::V1::AccountsController < Api::V1::BasesController
       end
     end.reduce({}, :merge) # マージして1つのハッシュにする
 
-    render json: {account: account,notices: notices}, status: :ok
+    render json: {account: account, notices: notices}, status: :ok
   end
 
   def update

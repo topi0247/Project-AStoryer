@@ -1,4 +1,5 @@
 import { Delete2API, GetFromAPI, Post2API } from "@/lib";
+import { Settings } from "@/settings";
 import { IUser } from "@/types";
 
 export const useAuth = () => {
@@ -72,6 +73,14 @@ export const useAuth = () => {
     }
   };
 
+  const loginWithGoogle = () => {
+    window.location.href = `${Settings.API_URL}/auth/google_oauth2`;
+  };
+
+  const loginWithDiscord = () => {
+    window.location.href = `${Settings.API_URL}/auth/discord`;
+  };
+
   const autoLogin = async () => {
     try {
       const response = await GetFromAPI("/auth/validate_token");
@@ -125,5 +134,13 @@ export const useAuth = () => {
     localStorage.removeItem("expiry");
   };
 
-  return { login, signUp, autoLogin, logout };
+  return {
+    login,
+    signUp,
+    loginWithGoogle,
+    loginWithDiscord,
+    autoLogin,
+    logout,
+    setAccessTokens,
+  };
 };

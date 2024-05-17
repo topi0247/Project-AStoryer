@@ -8,7 +8,7 @@ import { GetFromAPI } from "@/lib";
 interface AccountProps {
   name: string;
   email?: string;
-  google?: string;
+  google_oauth2?: string;
   discord?: string;
 }
 
@@ -16,11 +16,11 @@ const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 export default function AccountPage() {
   const { data, error } = useSWR("/account", fetcher);
-  const account = data?.account as AccountProps;
   const t_AccountSettings = useTranslations("AccountSettings");
   // TODO : ローディング・エラー画面
   if (error) return <div>error</div>;
   if (data === undefined) return <div>Now Loading</div>;
+  const account = data?.account as AccountProps;
 
   return (
     <article className="my-8 m-auto w-full px-4">
@@ -50,12 +50,12 @@ export default function AccountPage() {
             <dd className="ml-4 md:ml-0 border-b border-slate-300 pb-2 flex justify-start items-start flex-wrap gap-2">
               <span
                 className={`border rounded text-xs px-2 py-1  ${
-                  account.google
+                  account.google_oauth2
                     ? "border-red-500 text-red-500"
                     : "border-gray-500 text-gray-500"
                 }`}
               >
-                Google{account.google ? "連携中" : "未連携"}
+                Google{account.google_oauth2 ? "連携中" : "未連携"}
               </span>
               <span
                 className={`border rounded text-xs px-2 py-1  ${
@@ -67,20 +67,22 @@ export default function AccountPage() {
                 Discord{data.account.discord ? "連携中" : "未連携"}
               </span>
             </dd>
-            <dt className="md:border-b md:border-slate-300 md:pb-2">
+            {/* TODO : パスワード再設定はあとにする */}
+            {/* <dt className="md:border-b md:border-slate-300 md:pb-2">
               {t_AccountSettings("password")}
             </dt>
             <dd className="ml-4 md:ml-0 border-b border-slate-300 pb-2">
               <button className="text-sm text-blue-500 underline hover:opacity-50 transition-all">
                 {t_AccountSettings("changePassword")}
               </button>
-            </dd>
+            </dd> */}
           </dl>
 
-          <h3 className="text-xl font-semibold text-center mt-10 mb-2">
+          {/* TODO : 通知設定はあとにする */}
+          {/* <h3 className="text-xl font-semibold text-center mt-10 mb-2">
             {t_AccountSettings("notificationSettings")}
           </h3>
-          <NoticeTabs INoticeStates={data.notices} />
+          <NoticeTabs noticeState={data.notices} /> */}
         </section>
       </div>
     </article>

@@ -38,11 +38,36 @@ class User < ActiveRecord::Base
   enum role: { general: 0, admin: 1 } # general: 一般ユーザー, admin: 管理者
 
   def self.from_omniauth(auth)
-    find_or_create_by(provider: auth.provider, uid: auth.uid) do |user|
-      user.email = auth.info.email
-      user.name = auth.info.name
-      user.password = Devise.friendly_token[0, 20]
+    transaction do
+      user = find_by(email: auth.info.email)
+      if user.nil?
+        user = User.new(email: auth.info.email, provider: auth.provider, uid: auth.uid)
+        user.name = auth.info.name if user.name.blank?
+        user.password = Devise.friendly_token[0, 20] if user.encrypted_password.blank?
+      end
+      user.provider = auth.provider
+      user.uid = auth.uid
+
+      if user.save
+        # 通知設定のテーブル作成
+        if user.user_notices.blank?
+          # TODO : もうちょっと良い方法がある気がする
+          notice_app = Notice.create!
+          UserNotice.create!(user_id: user.id, notice_id: notice_app.id,notice_kind: UserNotice.notice_kinds[:app])
+          notice_email = Notice.create!
+          UserNotice.create!(user_id: user.id, notice_id: notice_email.id,notice_kind: UserNotice.notice_kinds[:email])
+        end
+
+        user.authentications.create!(provider: auth.provider, uid: auth.uid)
+        user
+      else
+        logger.error "User save failed: #{user.errors.full_messages.join(", ")}"
+        nil
+      end
     end
+  rescue => e
+    logger.error e
+    nil
   end
 
   def as_header_json

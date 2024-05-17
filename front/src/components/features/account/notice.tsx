@@ -15,19 +15,19 @@ interface TabPanelProps {
   children?: React.ReactNode;
   index: string;
   value: string;
-  INoticeState: INoticeState;
+  noticeState: INoticeState;
   setNewNoticeState: React.Dispatch<React.SetStateAction<INoticeStates>>;
 }
 
 export default function NoticeTabs({
-  INoticeStates,
+  noticeState,
 }: {
-  INoticeStates: INoticeStates;
+  noticeState: INoticeStates;
 }) {
   const [value, setValue] = useState<string>(NoticeType.app);
   const t_AccountSettings = useTranslations("AccountSettings");
   const [newNoticeState, setNewNoticeState] =
-    useState<INoticeStates>(INoticeStates);
+    useState<INoticeStates>(noticeState);
   const t_General = useTranslations("General");
 
   const handleChange = (newValue: string | null) => {
@@ -66,7 +66,7 @@ export default function NoticeTabs({
           <NoticePanel
             value={value}
             index={NoticeType.app}
-            INoticeState={newNoticeState.app}
+            noticeState={newNoticeState.app}
             setNewNoticeState={setNewNoticeState}
           />
         </Mantine.Tabs.Panel>
@@ -74,7 +74,7 @@ export default function NoticeTabs({
           <NoticePanel
             value={value}
             index={NoticeType.email}
-            INoticeState={newNoticeState.email}
+            noticeState={newNoticeState.email}
             setNewNoticeState={setNewNoticeState}
           />
         </Mantine.Tabs.Panel>
@@ -89,12 +89,12 @@ export default function NoticeTabs({
 }
 
 function NoticePanel(props: TabPanelProps) {
-  const { value, index, INoticeState, setNewNoticeState, ...other } = props;
+  const { value, index, noticeState, setNewNoticeState, ...other } = props;
   const t_AccountSettings = useTranslations("AccountSettings");
 
   const handleChange = (key: string, value: boolean) => {
     const newNoticeState = {
-      ...INoticeState,
+      ...noticeState,
       [key]: value,
     };
     setNewNoticeState((prevState) => ({
@@ -116,23 +116,23 @@ function NoticePanel(props: TabPanelProps) {
         <>
           <Mantine.Switch
             label={t_AccountSettings("favorite")}
-            checked={INoticeState.favorite}
-            onChange={() => handleChange("favorite", !INoticeState.favorite)}
+            checked={noticeState.favorite}
+            onChange={() => handleChange("favorite", !noticeState.favorite)}
           />
           <Mantine.Switch
             label={t_AccountSettings("bookmark")}
-            checked={INoticeState.bookmark}
-            onChange={() => handleChange("bookmark", !INoticeState.bookmark)}
+            checked={noticeState.bookmark}
+            onChange={() => handleChange("bookmark", !noticeState.bookmark)}
           />
           <Mantine.Switch
             label={t_AccountSettings("comment")}
-            checked={INoticeState.comment}
-            onChange={() => handleChange("comment", !INoticeState.comment)}
+            checked={noticeState.comment}
+            onChange={() => handleChange("comment", !noticeState.comment)}
           />
           <Mantine.Switch
             label={t_AccountSettings("follower")}
-            checked={INoticeState.follower}
-            onChange={() => handleChange("follower", !INoticeState.follower)}
+            checked={noticeState.follower}
+            onChange={() => handleChange("follower", !noticeState.follower)}
           />
         </>
       )}
