@@ -175,7 +175,7 @@ export default function UserEdit({
                 }}
               >
                 <MantineDropzone.Dropzone.Idle>
-                  {headerImageBlob.length > 0 && (
+                  {headerImageBlob && (
                     <MantineCore.Image
                       src={headerImageBlob}
                       h={mobile ? "8rem" : "15rem"}
@@ -209,7 +209,7 @@ export default function UserEdit({
                   }}
                 >
                   <MantineDropzone.Dropzone.Idle>
-                    {avatarBlob.length > 0 && (
+                    {avatarBlob && (
                       <MantineCore.Image
                         src={avatarBlob}
                         fit="cover"

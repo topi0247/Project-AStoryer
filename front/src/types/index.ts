@@ -13,12 +13,13 @@ export interface IndexIllustData {
   id: number;
   title: string;
   image: string;
-  user: {
+  user?: {
     id: number;
     name: string;
     avatar: string;
   };
-  count: number;
+  count?: number;
+  publishRange?: string;
 }
 
 export interface IEditIllustData {

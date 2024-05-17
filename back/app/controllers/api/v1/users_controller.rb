@@ -14,6 +14,7 @@ class Api::V1::UsersController < Api::V1::BasesController
       posts = user.posts.map do |post|
         {
           id: post.id,
+          title: post.title,
           data: url_for(post.postable.image),
           publish_state: post.publish_state,
         }
@@ -24,6 +25,7 @@ class Api::V1::UsersController < Api::V1::BasesController
       posts = user.posts.where(publish_state: 'all_publish').map do |post|
         {
           id: post.id,
+          title: post.title,
           data: post.illust? ? url_for(post.postable.image) : nil,
         }
       end

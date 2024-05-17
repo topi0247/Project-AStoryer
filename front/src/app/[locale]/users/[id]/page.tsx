@@ -1,29 +1,28 @@
+"use client";
+
 import * as Mantine from "@mantine/core";
 import * as UI from "@/components/ui";
 import { IndexIllustData, IUserPageEdit } from "@/types";
 import { Illust } from "@/components/features/illusts";
 import { useTranslations } from "next-intl";
 import * as Users from "@/components/features/users";
+import { GetFromAPI } from "@/lib";
+import useSWR from "swr";
 
-// 仮データをハードコーディング
-const illusts = Array.from({ length: 20 }).map((_, i) => ({
-  id: i,
-  image: "/assets/900x1600.png",
-  title: `イラスト${i}`,
-  user: {
-    id: i,
-    name: `ユーザー${i}`,
-    avatar: "/assets/900x1600.png",
-  },
-  count: Math.floor(Math.random() * 2) + 1,
-}));
+const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
-export default function UserPage() {
-  const imgUrl = ""; // TODO : ユーザーヘッダーのURLを取得
+export default function UserPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const t_UserPage = useTranslations("UserPage");
+  const { data, error } = useSWR(`/users/${id}`, fetcher);
+
+  if (error) return <div>failed to load</div>;
+  if (!data) return <div>loading...</div>;
+
   const userProfile = {
-    headerImage: "",
-    avatar: "",
+    name: data.name,
+    headerImage: data.header_image,
+    avatar: data.avatar,
     link: {
       twitter: "",
       pixiv: "",
@@ -31,9 +30,24 @@ export default function UserPage() {
       privatter: "",
       other: "",
     },
-    profile:
-      "プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文プロフィール文",
-  } as IUserPageEdit;
+    profile: data.profile,
+  };
+
+  const illusts = data.posts.map(
+    (illust: {
+      id: string;
+      title: string;
+      data: string;
+      publish_state?: string;
+    }) => {
+      return {
+        id: illust.id,
+        title: illust.title,
+        image: illust.data,
+        publishRange: illust.publish_state ?? null,
+      };
+    }
+  );
 
   return (
     <>
@@ -41,14 +55,14 @@ export default function UserPage() {
         <section className="w-full h-full relative z-0">
           {/* ヘッダー画像 */}
           <div className="absolute top-0 left-0 w-full h-[180px] md:h-[300px] -z-10">
-            {imgUrl.length === 0 ? (
-              <div className="w-full h-full bg-slate-400"></div>
-            ) : (
+            {userProfile.headerImage ? (
               <Mantine.Image
-                src={imgUrl}
+                src={userProfile.headerImage}
                 alt={t_UserPage("headerImage")}
                 className="object-cover h-full w-full"
               />
+            ) : (
+              <div className="w-full h-full bg-slate-400"></div>
             )}
           </div>
 
@@ -57,9 +71,10 @@ export default function UserPage() {
             <div className="flex flex-col justify-center items-center w-full">
               <div className="w-full relative flex md:gap-3 md:mb-8">
                 <Mantine.Avatar
+                  variant="default"
                   size={150}
                   alt={t_UserPage("avatar")}
-                  src="https://placehold.jp/300x300.png" // TODO : ユーザーアイコンのURLを取得
+                  src={userProfile.avatar}
                 />
 
                 <div className="w-full flex flex-col justify-start items-end md:items-start md:justify-start md:relative">
@@ -68,7 +83,7 @@ export default function UserPage() {
                   <div className="hidden md:block md:h-1/3">
                     <h2 className="text-3xl">
                       <span className="pb-2 border-b-2 border-green-300 px-1 pr-3">
-                        ユーザー名
+                        {userProfile.name}
                       </span>
                     </h2>
                   </div>
@@ -136,7 +151,7 @@ export default function UserPage() {
 
               {/* SP */}
               <h3 className="text-xl font-semibold my-4 md:hidden">
-                ユーザー名
+                {userProfile.name}
               </h3>
 
               {/* profile */}
@@ -147,7 +162,7 @@ export default function UserPage() {
       </article>
 
       {/* イラスト一覧 */}
-      <article>
+      <article className="mb-16">
         <section id="tabs" className="mx-2 md:container md:m-auto md:mb-8">
           <Users.UserTabs />
         </section>
@@ -160,9 +175,10 @@ export default function UserPage() {
             ))}
           </div>
         </section>
-        <section className="mt-4 mb-16">
+        {/* TODO : スタート時は投稿数が少ないことからページネーションは後で実装 */}
+        {/* <section className="mt-4">
           <UI.Pagination elementName="#tabs" adjust={-20} />
-        </section>
+        </section> */}
       </article>
     </>
   );
