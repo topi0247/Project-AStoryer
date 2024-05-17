@@ -97,10 +97,9 @@ export const useAuth = () => {
   const logout = async () => {
     try {
       const response = await Delete2API("/auth/sign_out");
-      console.log(response);
       clearAccessTokens();
       return {
-        success: true,
+        success: response.status === 200 && response.data.success,
       };
     } catch (error) {
       clearAccessTokens();
