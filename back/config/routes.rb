@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       resources :synalios, only: %i[index]
       resources :game_systems, only: %i[index]
       resources :users, only: %i[show]
+      resources :favorites, only: %i[show create destroy]
     end
   end
 end

@@ -1,26 +1,48 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import * as RecoilState from "@/recoilState";
 import { IconButtonList, FixedIconButtonList } from "./iconButtonList";
 import { MdFavorite, MdOutlineFavoriteBorder, MdShare } from "rocketicons/md";
 import { FaBookmark, FaRegBookmark } from "rocketicons/fa";
 import { Button } from "@mantine/core";
+import { Delete2API, GetFromAPI, Post2API } from "@/lib";
+import useSWR, { useSWRConfig } from "swr";
 
-const FavoriteButton = ({ state }: { state: boolean }) => {
+const fetcherFavorite = (url: string) =>
+  GetFromAPI(url).then((res) => res.data);
+
+const FavoriteButton = ({ postId }: { postId: number }) => {
+  const { data, error } = useSWR(`/favorites/${postId}`, fetcherFavorite);
+  const { cache } = useSWRConfig();
   const user = useRecoilValue(RecoilState.userState);
-  const [favorite, setFavorite] = useState(state);
+  const [favorite, setFavorite] = useState(false);
   const setModalOpen = useSetRecoilState(RecoilState.requireModalOpenState);
 
-  const handleFavorite = (value: boolean) => {
-    if (!user) {
+  useEffect(() => {
+    if (data) {
+      setFavorite(data.isFavorite);
+    }
+  }, [data]);
+
+  const handleFavorite = async (value: boolean) => {
+    if (user.id < 0) {
       setModalOpen(true);
       return;
     }
 
-    // TODO : いいねの更新処理
-    setFavorite(!favorite);
+    if (value) {
+      const res = await Post2API("/favorites", {
+        favorite: { post_id: postId },
+      });
+      if (res.status != 200 || !res.data.success) return;
+    } else {
+      const res = await Delete2API(`/favorites/${postId}`);
+      if (res.status != 200 || !res.data.success) return;
+    }
+    cache.delete(`/favorites/${postId}`);
+    setFavorite(value);
   };
 
   return (
@@ -47,13 +69,13 @@ const FavoriteButton = ({ state }: { state: boolean }) => {
   );
 };
 
-const BookmarkButton = ({ state }: { state: boolean }) => {
+const BookmarkButton = ({ postId }: { postId: number }) => {
   const user = useRecoilValue(RecoilState.userState);
-  const [bookmark, setBookmark] = useState(state);
+  const [bookmark, setBookmark] = useState(false);
   const setModalOpen = useSetRecoilState(RecoilState.requireModalOpenState);
 
   const handleBookmark = (value: boolean) => {
-    if (!user) {
+    if (user.id < 0) {
       setModalOpen(true);
       return;
     }
