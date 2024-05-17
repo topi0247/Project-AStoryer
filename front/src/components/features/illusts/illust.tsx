@@ -40,7 +40,10 @@ export default function Illust({
 
   return (
     <section className="relative overflow-hidden">
-      <Link href={RouterPath.illust(illust.id)} className="relative z-0">
+      <Link
+        href={RouterPath.illust(illust.id)}
+        className="relative z-0 hover:opacity-70 transition-all"
+      >
         <Image
           src={illust.image}
           loading="lazy"
