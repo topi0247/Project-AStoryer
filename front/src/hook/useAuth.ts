@@ -1,34 +1,38 @@
-import { Settings } from "@/settings";
+import { Delete2API, GetFromAPI, Post2API } from "@/lib";
 import { IUser } from "@/types";
 
 // TODO : axiosに置き換える
 export const useAuth = () => {
   const login = async (email: string, password: string) => {
-    const response = await fetch(`${Settings.API_URL}/auth/sign_in`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const response = await Post2API(
+        "/auth/sign_in",
+        JSON.stringify({ email, password })
+      );
 
-    const data = await response.json();
+      if (response.status !== 200 || !response.data.success) {
+        clearAccessTokens();
+        return { success: false, message: response.data.message };
+      }
 
-    if (!response.ok || !data.success) {
-      clearAccessTokens();
-      return { success: false, message: data.message };
+      console.log(response.headers);
+
+      setAccessTokens(
+        response.headers["access-token"] || "",
+        response.headers.client || "",
+        response.headers.uid || "",
+        response.headers.expiry || ""
+      );
+
+      return {
+        success: true,
+        user: response.data.user as IUser,
+      };
+    } catch (error) {
+      return {
+        success: false,
+      };
     }
-    setAccessTokens(
-      response.headers.get("Access-Token") || "",
-      response.headers.get("Client") || "",
-      response.headers.get("Uid") || "",
-      response.headers.get("Expiry") || ""
-    );
-
-    return {
-      success: true,
-      user: data.user as IUser,
-    };
   };
 
   const signUp = async (
@@ -37,69 +41,73 @@ export const useAuth = () => {
     password: string,
     passwordConfirmation: string
   ) => {
-    const response = await fetch(`${Settings.API_URL}/auth`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name,
-        email,
-        password,
-        password_confirmation: passwordConfirmation,
-      }),
-    });
+    try {
+      const response = await Post2API(
+        "/auth/sign_in",
+        JSON.stringify({
+          name,
+          email,
+          password,
+          password_confirmation: passwordConfirmation,
+        })
+      );
 
-    const data = await response.json();
-    if (!response.ok || !data.success) {
-      clearAccessTokens();
-      return { success: false, message: data.message };
+      if (response.status !== 200 || !response.data.success) {
+        clearAccessTokens();
+        return { success: false, message: response.data.message };
+      }
+
+      setAccessTokens(
+        response.headers["access-token"] || "",
+        response.headers.client || "",
+        response.headers.uid || "",
+        response.headers.expiry || ""
+      );
+
+      return {
+        success: true,
+        user: response.data.user as IUser,
+      };
+    } catch (error) {
+      return {
+        success: false,
+      };
     }
-
-    setAccessTokens(
-      response.headers.get("Access-Token") || "",
-      response.headers.get("Client") || "",
-      response.headers.get("Uid") || "",
-      response.headers.get("Expiry") || ""
-    );
-    return {
-      success: true,
-      user: data.user as IUser,
-    };
   };
 
   const autoLogin = async () => {
-    const accessToken = localStorage.getItem("Access-Token");
-    const client = localStorage.getItem("Client");
-    const uid = localStorage.getItem("Uid");
-    const expiry = localStorage.getItem("Expiry");
+    try {
+      const response = await GetFromAPI("/auth/validate_token");
 
-    if (!accessToken || !client || !uid || !expiry) {
-      clearAccessTokens();
-      return { success: false };
+      if (response.status !== 200 || !response.data.success) {
+        clearAccessTokens();
+        return { success: false };
+      }
+      return {
+        success: true,
+        user: response.data.user as IUser,
+      };
+    } catch (error) {
+      return {
+        success: false,
+      };
     }
+  };
 
-    const response = await fetch(`${Settings.API_URL}/auth/validate_token`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Token": accessToken,
-        Client: client,
-        Uid: uid,
-        Expiry: expiry,
-      },
-    });
-
-    const data = await response.json();
-    if (!response.ok || !data.success) {
+  const logout = async () => {
+    try {
+      const response = await Delete2API("/auth/sign_out");
+      console.log(response);
       clearAccessTokens();
-      return { success: false };
+      return {
+        success: true,
+      };
+    } catch (error) {
+      clearAccessTokens();
+      return {
+        success: false,
+      };
     }
-
-    return {
-      success: true,
-      user: data.user as IUser,
-    };
   };
 
   const setAccessTokens = (
@@ -108,18 +116,18 @@ export const useAuth = () => {
     uid: string,
     expiry: string
   ) => {
-    localStorage.setItem("Access-Token", accessToken);
-    localStorage.setItem("Client", client);
-    localStorage.setItem("Uid", uid);
-    localStorage.setItem("Expiry", expiry);
+    localStorage.setItem("access-token", accessToken);
+    localStorage.setItem("client", client);
+    localStorage.setItem("uid", uid);
+    localStorage.setItem("expiry", expiry);
   };
 
   const clearAccessTokens = () => {
-    localStorage.removeItem("Access-Token");
-    localStorage.removeItem("Client");
-    localStorage.removeItem("Uid");
-    localStorage.removeItem("Expiry");
+    localStorage.removeItem("access-token");
+    localStorage.removeItem("client");
+    localStorage.removeItem("uid");
+    localStorage.removeItem("expiry");
   };
 
-  return { login, signUp, autoLogin };
+  return { login, signUp, autoLogin, logout };
 };
