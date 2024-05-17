@@ -14,8 +14,4 @@ class Api::V1::Auth::SessionsController < DeviseTokenAuth::SessionsController
       user: @resource.as_header_json,
     }
   end
-
-  def resource_name
-    :user
-  end
 end

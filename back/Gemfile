@@ -36,7 +36,7 @@ gem 'rails_same_site_cookie'
 # 認証
 gem "devise"
 # トークンの方はRails7に対応していないので、githubから取得
-gem 'devise_token_auth', '>= 1.2.0', git: "https://github.com/lynndylanhurley/devise_token_auth"
+gem 'devise_token_auth', '>= 1.2.0', git: 'https://github.com/lynndylanhurley/devise_token_auth'
 # 多言語用
 gem 'devise-i18n'
 # OAuth2.0用
