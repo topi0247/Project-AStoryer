@@ -16,6 +16,7 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
   const firstRow = illusts.slice(0, 5);
   const secondRow = illusts.slice(5, 10);
   const thirdRow = illusts.slice(10, 15);
+  const fourRow = illusts.slice(15, 20);
   const ref = React.useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -65,37 +66,37 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
       >
         <motion.div className="flex flex-row-reverse space-x-reverse space-x-6 md:space-x-20 mb-5 md:mb-20">
           {firstRow.map((illust) => (
-            <ProductCard
+            <IllustCard
               illust={illust}
               translate={translateX}
-              key={illust.title}
+              key={illust.id}
             />
           ))}
         </motion.div>
         <motion.div className="flex flex-row space-x-6 md:space-x-20 mb-5 md:mb-20">
           {secondRow.map((illust) => (
-            <ProductCard
+            <IllustCard
               illust={illust}
               translate={translateXReverse}
-              key={illust.title}
+              key={illust.id}
             />
           ))}
         </motion.div>
         <motion.div className="flex flex-row-reverse space-x-reverse space-x-6 md:space-x-20 mb-5 md:mb-20">
           {thirdRow.map((illust) => (
-            <ProductCard
+            <IllustCard
               illust={illust}
               translate={translateX}
-              key={illust.title}
+              key={illust.id}
             />
           ))}
         </motion.div>
         <motion.div className="flex flex-row space-x-6 md:space-x-20">
-          {secondRow.map((illust) => (
-            <ProductCard
+          {fourRow.map((illust) => (
+            <IllustCard
               illust={illust}
               translate={translateXReverse}
-              key={illust.title}
+              key={illust.id}
             />
           ))}
         </motion.div>
@@ -105,6 +106,7 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
 };
 
 export const Header = () => {
+  // TODO : ロゴアイコンを入れたい
   return (
     <div className="max-w-7xl relative mx-auto py-20 md:py-40 px-4 w-full  left-0 top-0">
       <h1 className="text-2xl md:text-7xl font-bold">
@@ -116,7 +118,7 @@ export const Header = () => {
   );
 };
 
-export const ProductCard = ({
+export const IllustCard = ({
   illust,
   translate,
 }: {
