@@ -62,6 +62,7 @@ class User < ActiveRecord::Base
       name: name,
       avatar: profile&.avatar&.url,
       header_image: profile&.header_image&.url,
+      profile: profile&.text,
       following_count: following.count || 0,
       follower_count: followers.count || 0,
       posts: posts,
