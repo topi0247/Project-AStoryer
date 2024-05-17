@@ -167,8 +167,8 @@ export function AccountMenu({
       <Mantine.Menu.Target>
         <Mantine.Avatar
           alt="icon"
-          variant="light"
-          src={user.avatar ? user.avatar : "https://placehold.jp/300x300.png"}
+          variant="default"
+          src={user.avatar}
           className="cursor-pointer"
           radius="xl"
           size="lg"
@@ -179,10 +179,8 @@ export function AccountMenu({
           <div className="flex justify-start items-center">
             <Mantine.Avatar
               alt="icon"
-              src={
-                user.avatar ? user.avatar : "https://placehold.jp/300x300.png"
-              }
-              variant="light"
+              src={user.avatar}
+              variant="default"
               radius="xl"
               size="lg"
             />

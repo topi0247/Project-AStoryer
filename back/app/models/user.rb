@@ -47,12 +47,27 @@ class User < ActiveRecord::Base
       end
       user.provider = auth.provider
       user.uid = auth.uid
-      user.save!
-      user.authentications.create!(provider: auth.provider, uid: auth.uid)
-      user
+
+      if user.save
+        # 通知設定のテーブル作成
+        if user.user_notices.blank?
+          # TODO : もうちょっと良い方法がある気がする
+          notice_app = Notice.create!
+          UserNotice.create!(user_id: user.id, notice_id: notice_app.id,notice_kind: UserNotice.notice_kinds[:app])
+          notice_email = Notice.create!
+          UserNotice.create!(user_id: user.id, notice_id: notice_email.id,notice_kind: UserNotice.notice_kinds[:email])
+        end
+
+        user.authentications.create!(provider: auth.provider, uid: auth.uid)
+        user
+      else
+        logger.error "User save failed: #{user.errors.full_messages.join(", ")}"
+        nil
+      end
     end
   rescue => e
     logger.error e
+    nil
   end
 
   def as_header_json
