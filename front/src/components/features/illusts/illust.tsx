@@ -33,8 +33,6 @@ export default function Illust({
         return "非公開";
       case IPublicState.Follower:
         return "フォロワー";
-      default:
-        return "公開範囲不明";
     }
   };
 
@@ -64,11 +62,13 @@ export default function Illust({
               {t_General("edit")}
             </Link>
           </div>
-          <div className="absolute top-0 right-0 text-sm text-end">
-            <p className="px-2 py-1 bg-sky-300 bg-opacity-50 text-white rounded-l">
-              {getPublishRange()}
-            </p>
-          </div>
+          {illust.publishRange && (
+            <div className="absolute top-0 right-0 text-sm text-end">
+              <p className="px-2 py-1 bg-sky-300 bg-opacity-50 text-white rounded-l">
+                {getPublishRange()}
+              </p>
+            </div>
+          )}
         </>
       ) : (
         <div className="mt-2 flex ml-4 justify-start items-center gap-3">
