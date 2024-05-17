@@ -55,4 +55,16 @@ class User < ActiveRecord::Base
       follower_count: followers.count || 0,
     }
   end
+
+  def as_custom_json(posts = [])
+    {
+      id: id,
+      name: name,
+      avatar: profile&.avatar&.url,
+      header_image: profile&.header_image&.url,
+      following_count: following.count || 0,
+      follower_count: followers.count || 0,
+      posts: posts,
+    }
+  end
 end

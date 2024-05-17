@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       resources :tags, only: %i[index create]
       resources :synalios, only: %i[index]
       resources :game_systems, only: %i[index]
+      resources :users, only: %i[show]
     end
   end
 end
