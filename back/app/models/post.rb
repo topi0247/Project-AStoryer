@@ -138,6 +138,20 @@ class Post < ApplicationRecord
     end
   end
 
+  # 未検索時用のカスタムjson
+  def as_custom_index_json(content)
+    {
+      id: id,
+      title: title,
+      data: [content],
+      user: {
+        id: user.id,
+        name: user.name,
+        avatar: user.profile&.avatar&.url,
+      }
+    }
+  end
+
   # 表示用のカスタムjson
   def as_custom_show_json(content)
     {

@@ -1,8 +1,20 @@
 require 'mini_magick'
 
 class Api::V1::PostsController < Api::V1::BasesController
-  skip_before_action :authenticate_api_v1_user!, only: %i[show]
+  skip_before_action :authenticate_api_v1_user!, only: %i[index show]
   before_action :set_post, only: %i[update destroy]
+
+  def index
+    posts = Post.includes(:postable, :user).where(publish_state: 'all_publish').order(published_at: :desc).limit(20)
+    posts_json = posts.map do |post|
+      content = nil
+      if post.illust?
+        content = url_for(post.postable.image)
+      end
+      post.as_custom_index_json(content)
+    end
+    render json: posts_json, status: :ok
+  end
 
   def show
     post = Post.includes(:postable, :tags, :synalios, :user).find_by(id: params[:id])

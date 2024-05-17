@@ -9,7 +9,7 @@ Rails.application.routes.draw do
       }
       resource :account, only: %i[show update]
       resource :notice, only: %i[update]
-      resources :posts, only: %i[show create edit update destroy]
+      resources :posts, only: %i[index show create edit update destroy]
       resources :tags, only: %i[index create]
       resources :synalios, only: %i[index]
       resources :game_systems, only: %i[index]
