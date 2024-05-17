@@ -81,7 +81,7 @@ export default function SearchModal() {
 
     close();
 
-    router.push(`${RouterPath.illust}?${query}`);
+    router.push(RouterPath.illustDetailSearch(query));
   };
 
   const getQuery = (query: string, key: string, value: string | number) => {

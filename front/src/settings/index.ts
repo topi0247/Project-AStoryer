@@ -9,6 +9,7 @@ export const RouterPath = {
   illustIndex: "/",
   illust: (id: number) => `/illusts/${id}`,
   illustSearch: (searchWord: string) => `/illusts?search=${searchWord}`,
+  illustDetailSearch: (searchWord: string) => `/illusts?${searchWord}`,
   illustPost: "/illusts/post",
   illustEdit: (id: number) => `/illusts/${id}/edit`,
   users: (id: number) => `/users/${id}`,
