@@ -26,10 +26,8 @@ const FavoriteButton = ({ postId }: { postId: number }) => {
     }
   }, [data]);
 
-  if (error) return;
-
   const handleFavorite = async (value: boolean) => {
-    if (!user) {
+    if (user.id < 0) {
       setModalOpen(true);
       return;
     }
@@ -77,7 +75,7 @@ const BookmarkButton = ({ postId }: { postId: number }) => {
   const setModalOpen = useSetRecoilState(RecoilState.requireModalOpenState);
 
   const handleBookmark = (value: boolean) => {
-    if (!user) {
+    if (user.id < 0) {
       setModalOpen(true);
       return;
     }
