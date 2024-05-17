@@ -1,39 +1,37 @@
-import { IllustCarousel } from "@/components/features/illusts";
-import { useTranslations } from "next-intl";
+"use client";
+import React from "react";
+import { HomeParallax } from "@/components/features/home";
+import { GetFromAPI } from "@/lib";
+import useSWR from "swr";
 
-// 仮データをハードコーディング
-const illusts = Array.from({ length: 10 }).map((_, i) => ({
-  id: i,
-  image: "/assets/900x1600.png",
-  title: `イラスト${i}`,
-  user: {
-    id: i,
-    name: `ユーザー${i}`,
-    avatar: "/assets/900x1600.png",
-  },
-  count: Math.floor(Math.random() * 2) + 1,
-}));
+const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 export default function Home() {
-  const t_General = useTranslations("General");
-  return (
-    <div className="w-full flex flex-col gap-16 my-8">
-      <article>
-        <h2 className="text-xl text-start my-4 ml-8">
-          {t_General("followedNewPosts")}
-        </h2>
-        <section>
-          <IllustCarousel illustsData={illusts} />
-        </section>
-      </article>
-      <article>
-        <h2 className="text-xl text-start mb-4 ml-8">
-          {t_General("newPosts")}
-        </h2>
-        <div>
-          <IllustCarousel illustsData={illusts} />
-        </div>
-      </article>
-    </div>
+  const { data, error } = useSWR("/posts", fetcher);
+  if (error) return <div>error</div>;
+  if (!data) return <div>loading...</div>;
+
+  const illusts = data.map(
+    (illust: {
+      id: number;
+      title: string;
+      data: string[];
+      user: {
+        id: number;
+        name: string;
+        avatar: string;
+      };
+    }) => ({
+      id: illust.id,
+      title: illust.title,
+      image: illust.data[0],
+      user: {
+        id: illust.user.id,
+        name: illust.user.name,
+        avatar: illust.user.avatar,
+      },
+    })
   );
+
+  return <HomeParallax illusts={illusts} />;
 }
