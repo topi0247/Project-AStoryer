@@ -1,4 +1,4 @@
-import { client } from "@/auth";
+import { client } from ".";
 
 export function Post2API(url: string, body: any) {
   return client.post(url, body);

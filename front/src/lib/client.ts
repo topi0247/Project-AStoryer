@@ -13,16 +13,16 @@ export const client = axios.create({
 client.interceptors.request.use((config) => {
   if (typeof window === "undefined") return config;
 
-  const accessToken = localStorage.getItem("Access-Token");
-  const client = localStorage.getItem("Client");
-  const uid = localStorage.getItem("Uid");
-  const expiry = localStorage.getItem("Expiry");
+  const accessToken = localStorage.getItem("access-token");
+  const client = localStorage.getItem("client");
+  const uid = localStorage.getItem("uid");
+  const expiry = localStorage.getItem("expiry");
 
   if (accessToken && client && uid && expiry) {
-    config.headers["Access-Token"] = accessToken;
-    config.headers["Client"] = client;
-    config.headers["Uid"] = uid;
-    config.headers["Expiry"] = expiry;
+    config.headers["access-token"] = accessToken;
+    config.headers.client = client;
+    config.headers.uid = uid;
+    config.headers.expiry = expiry;
   }
 
   return config;

@@ -17,7 +17,7 @@ import SpHeaders from "./spHeaders";
 
 export default function Headers() {
   const [user, setUser] = useRecoilState(RecoilState.userState);
-  const { autoLogin } = useAuth();
+  const { autoLogin, logout } = useAuth();
   const t_Header = useTranslations("Header");
   const [search, setSearch] = useState("");
   const router = useRouter();
@@ -46,7 +46,15 @@ export default function Headers() {
   };
 
   const handleLogout = async () => {
-    // TODO : ログアウト処理をここに書く
+    const result = await logout();
+    setUser({
+      id: -1,
+      name: "",
+      avatar: "",
+      following_count: 0,
+      follower_count: 0,
+    });
+    router.push(RouterPath.home);
   };
 
   return (
