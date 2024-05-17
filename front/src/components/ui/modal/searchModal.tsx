@@ -1,27 +1,18 @@
 "use client";
 
-import * as UI from "@/components/ui";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { useRouter } from "@/lib";
+import { GetFromAPI, useRouter } from "@/lib";
 import * as Mantine from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import useSWR from "swr";
+import { RouterPath } from "@/settings";
 
-// 仮データをハードコーディング
-const Tags = Array.from({ length: 10 }).map((_, i) => ({
-  id: i,
-  title: `タグ${i}`,
-}));
-
-const GameSystems = Array.from({ length: 50 }).map((_, i) => ({
-  id: i,
-  name: `システム${i}`,
-}));
-
-const Synalios = Array.from({ length: 50 }).map((_, i) => ({
-  id: i,
-  title: `シナリオ${i}`,
-}));
+const fetcherTags = (url: string) => GetFromAPI(url).then((res) => res.data);
+const fetcherSynalios = (url: string) =>
+  GetFromAPI(url).then((res) => res.data);
+const fetcherGameSystems = (url: string) =>
+  GetFromAPI(url).then((res) => res.data);
 
 enum SearchType {
   AND = "AND",
@@ -29,6 +20,15 @@ enum SearchType {
 }
 
 export default function SearchModal() {
+  const { data: Tags, error: errorTags } = useSWR("/tags", fetcherTags);
+  const { data: Synalios, error: errorSynalios } = useSWR(
+    "/synalios",
+    fetcherSynalios
+  );
+  const { data: GameSystems, error: errorGameSystems } = useSWR(
+    "/game_systems",
+    fetcherGameSystems
+  );
   const t_Search = useTranslations("Search");
   const t_SearchOption = useTranslations("SearchOption");
   const [opened, { open, close }] = useDisclosure(false);
@@ -40,17 +40,30 @@ export default function SearchModal() {
   const [searchType, setSearchType] = useState<string>("");
   const router = useRouter();
 
+  const getFetcherError = () => {
+    return errorTags || errorSynalios || errorGameSystems;
+  };
+
+  const disableData = () => {
+    return (
+      Tags === undefined || Synalios === undefined || GameSystems === undefined
+    );
+  };
+
+  if (getFetcherError()) return <div>error</div>;
+  if (disableData()) return <div>Now Loading</div>;
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!postTitle && !gameSystem && !synalioName && !tags.length && !userName)
       return;
 
-    let query = "?";
+    // TODO : もっといい方法ありそう
+    let query = "";
     // 作品名取得
     if (postTitle) query += `postTitle=${postTitle}`;
 
     // システムの番号取得
-    // TODO : システム名にするか悩む
     if (gameSystem)
       query += getQuery(query, "gameSystem", gameSystem.toString());
 
@@ -58,8 +71,7 @@ export default function SearchModal() {
     if (synalioName) query += getQuery(query, "synalioName", synalioName);
 
     // タグ取得
-    // TODO : 空白削除の処理は未実装
-    //if (tags.length >= 1) query += getQuery(query, "tags", tags.join(","));
+    if (tags.length >= 1) query += getQuery(query, "tags", tags.join(","));
 
     // ユーザー名取得
     if (userName) query += getQuery(query, "userName", userName);
@@ -69,7 +81,7 @@ export default function SearchModal() {
 
     close();
 
-    router.push(`/illusts${query}`);
+    router.push(RouterPath.illustDetailSearch(query));
   };
 
   const getQuery = (query: string, key: string, value: string | number) => {
@@ -99,7 +111,7 @@ export default function SearchModal() {
           <Mantine.Select
             label={t_SearchOption("gameSystem")}
             onChange={setGameSystem}
-            data={GameSystems.map((system) => system.name)}
+            data={GameSystems}
             value={gameSystem}
           />
 
@@ -107,20 +119,19 @@ export default function SearchModal() {
             label={t_SearchOption("synalio")}
             value={synalioName}
             onChange={setSynalioName}
-            data={Synalios.map((synalio) => synalio.title)}
+            data={Synalios}
           />
 
           <Mantine.TagsInput
             label={t_SearchOption("tag")}
             splitChars={[" ", "|"]}
-            data={Tags.map((tag) => tag.title)}
+            data={Tags}
             onChange={setTags}
             value={tags}
           />
 
           <Mantine.TextInput
             label={t_SearchOption("userName")}
-            variant="filled"
             onChange={(e) => setUserName(e.target.value)}
           />
 
@@ -139,7 +150,7 @@ export default function SearchModal() {
           <div className="m-auto">
             <Mantine.Button
               variant="contained"
-              className="bg-orange-200 hover:bg-orange-400 text-black"
+              className="bg-green-200 hover:bg-green-400 text-black transition-all"
               type="submit"
             >
               {t_SearchOption("search")}
