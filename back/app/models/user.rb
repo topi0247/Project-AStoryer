@@ -35,6 +35,8 @@ class User < ActiveRecord::Base
   # フォロワーを呼びたす
   has_many :followers, through: :follower_relationships, source: :follower
 
+  has_many :favorites, dependent: :destroy
+
   enum role: { general: 0, admin: 1 } # general: 一般ユーザー, admin: 管理者
 
   def self.from_omniauth(auth)

@@ -17,7 +17,7 @@ export function IconButtonList({
       <div className="hidden md:flex gap-2 justify-end items-center">
         <ul className="flex justify-center items-center">
           <li className="mx-2 h-full text-center">
-            <FavoriteButton state={buttonState.favorite} />
+            <FavoriteButton state={buttonState.favorite} postId={postId} />
           </li>
           <li className="mx-2 h-full text-center">
             <BookmarkButton state={buttonState.bookmark} />
@@ -50,7 +50,7 @@ export function FixedIconButtonList({
       <article className="fixed bottom-0 left-0 w-full md:hidden">
         <ul className="bg-white flex justify-center items-center py-3">
           <li className="h-full mx-2 text-center">
-            <FavoriteButton state={buttonState.favorite} />
+            <FavoriteButton state={buttonState.favorite} postId={postId} />
           </li>
           <li className="h-full mx-2 text-center">
             <BookmarkButton state={buttonState.bookmark} />

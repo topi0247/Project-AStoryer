@@ -7,20 +7,35 @@ import { IconButtonList, FixedIconButtonList } from "./iconButtonList";
 import { MdFavorite, MdOutlineFavoriteBorder, MdShare } from "rocketicons/md";
 import { FaBookmark, FaRegBookmark } from "rocketicons/fa";
 import { Button } from "@mantine/core";
+import { Delete2API, Post2API } from "@/lib";
 
-const FavoriteButton = ({ state }: { state: boolean }) => {
+const FavoriteButton = ({
+  state,
+  postId,
+}: {
+  state: boolean;
+  postId: number;
+}) => {
   const user = useRecoilValue(RecoilState.userState);
   const [favorite, setFavorite] = useState(state);
   const setModalOpen = useSetRecoilState(RecoilState.requireModalOpenState);
 
-  const handleFavorite = (value: boolean) => {
+  const handleFavorite = async (value: boolean) => {
     if (!user) {
       setModalOpen(true);
       return;
     }
 
-    // TODO : いいねの更新処理
-    setFavorite(!favorite);
+    if (value) {
+      const res = await Post2API("/favorites", {
+        favorite: { post_id: postId },
+      });
+      if (res.status != 200 || !res.data.success) return;
+    } else {
+      const res = await Delete2API(`/favorites/${postId}`);
+      if (res.status != 200 || !res.data.success) return;
+    }
+    setFavorite(value);
   };
 
   return (
