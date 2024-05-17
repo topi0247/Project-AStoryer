@@ -1,18 +1,20 @@
 "use client";
 
 import * as Mantine from "@mantine/core";
-import * as UI from "@/components/ui";
-import { IndexIllustData, IUserPageEdit } from "@/types";
+import { IndexIllustData } from "@/types";
 import { Illust } from "@/components/features/illusts";
 import { useTranslations } from "next-intl";
 import * as Users from "@/components/features/users";
 import { GetFromAPI } from "@/lib";
 import useSWR from "swr";
+import { useRecoilValue } from "recoil";
+import { userState } from "@/recoilState";
 
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 export default function UserPage({ params }: { params: { id: string } }) {
   const { id } = params;
+  const user = useRecoilValue(userState);
   const t_UserPage = useTranslations("UserPage");
   const { data, error } = useSWR(`/users/${id}`, fetcher);
 
@@ -20,6 +22,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
   if (!data) return <div>loading...</div>;
 
   const userProfile = {
+    id: data.id,
     name: data.name,
     headerImage: data.header_image,
     avatar: data.avatar,
@@ -79,7 +82,9 @@ export default function UserPage({ params }: { params: { id: string } }) {
 
                 <div className="w-full flex flex-col justify-start items-end md:items-start md:justify-start md:relative">
                   {/* ユーザー編集 */}
-                  <Users.UserEdit userProfile={userProfile} />
+                  {userProfile.id === user.id && (
+                    <Users.UserEdit userProfile={userProfile} />
+                  )}
                   <div className="hidden md:block md:h-1/3">
                     <h2 className="text-3xl">
                       <span className="pb-2 border-b-2 border-green-300 px-1 pr-3">
