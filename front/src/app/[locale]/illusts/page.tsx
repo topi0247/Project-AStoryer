@@ -23,7 +23,19 @@ export default function IllustsPage({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const searchWords = (searchParams.search as string)?.split(",") ?? [];
+  let searchWords = (searchParams.search as string)?.split(",") ?? [];
+  const postTitle = (searchParams.postTitle as string)?.split(",") ?? [];
+  const gameSystem = (searchParams.gameSystem as string)?.split(",") ?? [];
+  const synalioName = (searchParams.synalioName as string)?.split(",") ?? [];
+  const tags = (searchParams.tags as string)?.split(",") ?? [];
+  const userName = (searchParams.userName as string)?.split(",") ?? [];
+  searchWords.push(
+    ...postTitle,
+    ...gameSystem,
+    ...synalioName,
+    ...tags,
+    ...userName
+  );
   const sortBy = searchParams.sortBy as string | undefined;
   const t_Search = useTranslations("Search");
 
