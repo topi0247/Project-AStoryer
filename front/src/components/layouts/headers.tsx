@@ -37,9 +37,9 @@ export default function Headers() {
       const uid = params.get("uid");
       const client = params.get("client");
       const expiry = params.get("expiry");
-      if (!accessToken || !uid || !client || !expiry) return;
-
-      setAccessTokens(accessToken, client, uid, expiry);
+      if (accessToken && uid && client && expiry) {
+        setAccessTokens(accessToken, client, uid, expiry);
+      }
 
       const result = await autoLogin();
       if (result.success && result.user) {

@@ -1,4 +1,10 @@
 class Api::V1::FavoritesController < Api::V1::BasesController
+
+  def show
+    favorite = current_api_v1_user.favorites.find_by(post_id: params[:id])
+    render json: { isFavorite: favorite.present? }, status: :ok
+  end
+
   def create
     favorite = current_api_v1_user.favorites.build(post_id: favorite_params[:post_id])
     if favorite.save

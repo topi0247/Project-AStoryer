@@ -113,7 +113,6 @@ export default function IllustPage({
                 <div className="flex flex-col gap-2">
                   <IconButtonList
                     postId={id}
-                    buttonState={{ favorite: false, bookmark: false }} // TODO : いいね・ブックマークの状態
                     publicState={illustData.publish_state}
                   />
                   <h3 className="text-2xl font-semibold">{illustData.title}</h3>
@@ -330,11 +329,7 @@ export default function IllustPage({
         </article>
       </div>
 
-      <FixedIconButtonList
-        postId={id}
-        buttonState={{ favorite: false, bookmark: false }} // TODO : いいね・ブックマークの状態
-        publicState={illustData.publish_state}
-      />
+      <FixedIconButtonList postId={id} publicState={illustData.publish_state} />
     </article>
   );
 }

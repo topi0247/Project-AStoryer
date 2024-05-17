@@ -28,11 +28,7 @@ class Api::V1::PostsController < Api::V1::BasesController
       content = post.postable.image.attached? ? url_for(post.postable.image) : nil
     end
 
-    current_user_favorite = current_api_v1_user.favorites.find_by(post_id: post.id)
-
-    post_json = post.as_custom_show_json(content).merge(isFavorite: current_user_favorite.present?)
-
-    render json: post_json, status: :ok
+    render json: post.as_custom_show_json(content), status: :ok
   end
 
   def create
