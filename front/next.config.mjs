@@ -4,7 +4,7 @@ const withNextIntl = createNextIntlPlugin();
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['placehold.jp', 'aceternity.com'], // ダミー画像のURLを許可
+    domains: ['placehold.jp'], // ダミー画像のURLを許可
   }
 };
 
