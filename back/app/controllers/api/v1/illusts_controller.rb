@@ -10,6 +10,8 @@ class Api::V1::IllustsController < Api::V1::BasesController
       search_results = post_search.search_detail
     end
 
+    search_results ||= []
+
     posts_json = []
     if search_results.present?
       posts_json = search_results.map do |post|
