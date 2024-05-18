@@ -39,11 +39,12 @@ class PostSearch
       posts.order(published_at: :desc).distinct
     else
       # OR検索
+      or_posts = or_search(posts, post_title, tag_list, synalio_name, user_name)
       if game_system.present?
         game_systems = PostGameSystem.where(game_system_id: game_system.id)
-        posts = posts.or(Post.where(id: game_systems.map(&:post_id)).distinct)
+        system = Post.where(id: game_systems.map(&:post_id))
+        or_posts = or_posts ? or_posts.or(system) : system
       end
-      or_posts = or_search(posts, post_title, tag_list, synalio_name, user_name)
       posts = or_posts if or_posts
       posts.order(published_at: :desc)
     end
