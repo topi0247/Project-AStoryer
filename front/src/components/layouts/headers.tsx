@@ -55,7 +55,7 @@ export default function Headers() {
     e.preventDefault();
     if (!search) return;
     const searchWords = search.split(/\s|　/).join(",");
-    router.push(RouterPath.illustSearch(searchWords));
+    router.push(RouterPath.illustSearch(`search=${searchWords}`));
   };
 
   const handlePost = () => {

@@ -1,7 +1,7 @@
 import { Link } from "@/lib";
 import { RouterPath } from "@/settings";
 import { IPublicState, IndexIllustData } from "@/types";
-import { Image } from "@mantine/core";
+import { Avatar, Image } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 
@@ -73,14 +73,17 @@ export default function Illust({
       ) : (
         <div className="mt-2 flex ml-4 justify-start items-center gap-3">
           <Link href={`/users/${illust.user?.id}`}>
-            <Image
+            <Avatar
+              variant="default"
+              className="cursor-pointer"
+              radius="xl"
+              size="md"
               src={illust.user?.avatar}
               alt={illust.user?.name}
-              className="rounded-full aspect-square object-cover w-9"
             />
           </Link>
           <h4>
-            <Link href={`/illusts/${illust.id}`}>{illust.title}</Link>
+            <Link href={RouterPath.illust(illust.id)}>{illust.title}</Link>
           </h4>
         </div>
       )}

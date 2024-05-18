@@ -77,11 +77,11 @@ export default function SearchModal() {
     if (userName) query += getQuery(query, "userName", userName);
 
     // 検索タイプ取得
-    query += getQuery(query, "searchType", searchType);
+    if (searchType) query += getQuery(query, "searchType", searchType);
 
     close();
 
-    router.push(RouterPath.illustDetailSearch(query));
+    router.push(RouterPath.illustSearch(query));
   };
 
   const getQuery = (query: string, key: string, value: string | number) => {
