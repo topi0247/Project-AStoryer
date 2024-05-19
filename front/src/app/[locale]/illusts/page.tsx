@@ -136,9 +136,10 @@ export default function IllustsPage() {
         )}
       </article>
 
-      <article className="w-full mb-8">
+      {/* TODO : 初期時点ではページネーションするほど投稿がないので一旦非表示 */}
+      {/* <article className="w-full mb-8">
         <Pagination adjust={0} />
-      </article>
+      </article> */}
     </>
   );
 }
