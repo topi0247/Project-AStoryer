@@ -52,8 +52,8 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
   const [postIllust, setPostIllust] = useState<string[]>([]);
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const [tags, setTags] = useState<string[]>([]);
-  const setOpenModal = useSetRecoilState(modalOpenState);
   const router = useRouter();
   const user = useRecoilValue(userState);
   const t_PostIllustEdit = useTranslations("PostIllustEdit");
@@ -182,6 +182,8 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
     } catch (e) {
       setErrorMessage(t_EditGeneral("deleteError"));
       return;
+    } finally {
+      setOpenModal(false);
     }
   };
 
@@ -417,7 +419,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
         </Mantine.Container>
       </article>
 
-      <TransitionsModal onClose={handleModalClose}>
+      <Mantine.Modal opened={openModal} onClose={handleModalClose}>
         {errorMessage === "" ? (
           isDelete ? (
             <>
@@ -501,7 +503,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
         ) : (
           <p className="text-black text-center">{errorMessage}</p>
         )}
-      </TransitionsModal>
+      </Mantine.Modal>
     </>
   );
 }
