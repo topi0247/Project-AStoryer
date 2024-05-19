@@ -14,7 +14,7 @@ export default function Footers() {
         <p className="md:hidden text-sm">©2024 AStoryer -あすとりや-</p>
       </div>
       <section className="text-sm md:text-normal md:mr-8 md:flex md:flex-col md:gap-3">
-        <nav>
+        {/* <nav>
           <ul className="flex flex-col gap-1 md:gap-3 md:flex-row">
             <li>
               <Link href="/about" className="hover:opacity-80 transition-all">
@@ -43,7 +43,7 @@ export default function Footers() {
               </Link>
             </li>
           </ul>
-        </nav>
+        </nav> */}
         <p className="hidden md:block">©2024 AStoryer -あすとりや-</p>
       </section>
     </footer>

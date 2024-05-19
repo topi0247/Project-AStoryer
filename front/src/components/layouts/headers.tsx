@@ -78,16 +78,9 @@ export default function Headers() {
   return (
     <>
       <header className="p-2 flex justify-center md:justify-between items-center ml-2 md:mx-8 md:my-2">
-        <h1>
-          <Link href={RouterPath.home}>
-            <Image
-              src="/logo.png"
-              width={150}
-              height={300}
-              style={{ width: "150px", height: "auto" }}
-              alt="logo"
-              priority={true}
-            />
+        <h1 className="text-3xl font-semibold">
+          <Link href="/" className="flex flex-col justify-center items-center">
+            AStoryer <span className="text-sm">- あすとりや -</span>
           </Link>
         </h1>
         <div className="md:flex md:items-center md:justify-center md:gap-8">
@@ -178,7 +171,9 @@ export function AccountMenu({
         />
       </Mantine.Menu.Target>
       <Mantine.Menu.Dropdown>
-        <Mantine.Menu.Item onClick={() => handleLink(RouterPath.users(1))}>
+        <Mantine.Menu.Item
+          onClick={() => handleLink(RouterPath.users(user.id))}
+        >
           <div className="flex justify-start items-center">
             <Mantine.Avatar
               alt="icon"
@@ -190,7 +185,7 @@ export function AccountMenu({
             <span className="ml-4">{user.name}</span>
           </div>
         </Mantine.Menu.Item>
-        <div className="flex justify-center items-center">
+        {/* <div className="flex justify-center items-center">
           <Mantine.Menu.Item
             onClick={() => handleLink(RouterPath.users(user.id))}
           >
@@ -207,19 +202,19 @@ export function AccountMenu({
               <span>{user.follower_count}</span>
             </div>
           </Mantine.Menu.Item>
-        </div>
+        </div> */}
         <Mantine.Menu.Item
           onClick={() => handleLink(RouterPath.users(user.id))}
           leftSection={<VscAccount />}
         >
           {t_Menu("myPage")}
         </Mantine.Menu.Item>
-        <Mantine.Menu.Item
+        {/* <Mantine.Menu.Item
           onClick={() => handleLink(RouterPath.bookmark(user.id))}
           leftSection={<FaRegBookmark />}
         >
           {t_Menu("bookmark")}
-        </Mantine.Menu.Item>
+        </Mantine.Menu.Item> */}
         <Mantine.Menu.Item
           onClick={() => handleLink(RouterPath.account)}
           leftSection={<IoMdSettings />}

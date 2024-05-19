@@ -264,11 +264,11 @@ export default function IllustPostPage() {
                       value={IPublicState.URL}
                       style={{ cursor: "pointer" }}
                     />
-                    <Mantine.Radio
+                    {/* <Mantine.Radio
                       label={t_PostGeneral("followerPublish")}
                       value={IPublicState.Follower}
                       style={{ cursor: "pointer" }}
-                    />
+                    /> */}
                     <Mantine.Radio
                       label={t_PostGeneral("private")}
                       value={IPublicState.Private}

@@ -82,9 +82,9 @@ export default function UserPage({ params }: { params: { id: string } }) {
 
                 <div className="w-full flex flex-col justify-start items-end md:items-start md:justify-start md:relative">
                   {/* ユーザー編集 */}
-                  {userProfile.id === user.id && (
+                  {/* {userProfile.id === user.id && (
                     <Users.UserEdit userProfile={userProfile} />
-                  )}
+                  )} */}
                   <div className="hidden md:block md:h-1/3">
                     <h2 className="text-3xl">
                       <span className="pb-2 border-b-2 border-green-300 px-1 pr-3">
