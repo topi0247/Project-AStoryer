@@ -158,7 +158,7 @@ export default function IllustPage({
                     {illustData.tags.map((tag: string, i: number) => (
                       <Link
                         key={i}
-                        href={RouterPath.illustSearch(`tags=${illustData.tag}`)}
+                        href={RouterPath.illustSearch(`tags=${tag}`)}
                         className="text-blue-600 hover:underline hover:opacity-60 transition-all"
                       >
                         #{tag}
