@@ -17,15 +17,15 @@ export function IconButtonList({
           <li className="mx-2 h-full text-center">
             <FavoriteButton postId={postId} />
           </li>
-          <li className="mx-2 h-full text-center">
+          {/* <li className="mx-2 h-full text-center">
             <BookmarkButton postId={postId} />
-          </li>
+          </li> */}
           {/* 公開範囲が全体のときのみシェア可能 */}
-          {publicState === IPublicState.All && (
+          {/* {publicState === IPublicState.All && (
             <li className="mx-2 h-full text-center">
               <ShareButton />
             </li>
-          )}
+          )} */}
         </ul>
       </div>
       <RequiredLoginModal />
@@ -48,15 +48,15 @@ export function FixedIconButtonList({
           <li className="h-full mx-2 text-center">
             <FavoriteButton postId={postId} />
           </li>
-          <li className="h-full mx-2 text-center">
+          {/* <li className="h-full mx-2 text-center">
             <BookmarkButton postId={postId} />
-          </li>
+          </li> */}
           {/* 公開範囲が全体のときのみシェア可能 */}
-          {publicState === IPublicState.All && (
+          {/* {publicState === IPublicState.All && (
             <li className="h-full mx-2 text-center">
               <ShareButton />
             </li>
-          )}
+          )} */}
         </ul>
       </article>
       <RequiredLoginModal />
