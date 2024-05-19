@@ -89,12 +89,15 @@ export default function IllustsPage() {
             <ul className="flex justify-start items-center flex-wrap gap-2 flex-row">
               {searchWords.map((word, index) => (
                 <li key={index}>
-                  <Link
+                  {/* <Link
                     href={RouterPath.illustSearch(`search=${word}`)}
                     className="py-1 px-2 rounded transition-all shadow-md bg-orange-200 hover:bg-orange-400 text-black"
                   >
                     {word}
-                  </Link>
+                  </Link> */}
+                  <p className="py-1 px-2 rounded shadow-md bg-orange-200 text-black">
+                    {word}
+                  </p>
                 </li>
               ))}
             </ul>
