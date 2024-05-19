@@ -33,7 +33,7 @@ export default function SearchModal() {
   const t_SearchOption = useTranslations("SearchOption");
   const [opened, { open, close }] = useDisclosure(false);
   const [postTitle, setPostTitle] = useState("");
-  const [gameSystem, setGameSystem] = useState<string | null>("");
+  const [gameSystem, setGameSystem] = useState<string>("");
   const [synalioName, setSynalioName] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [userName, setUserName] = useState("");
@@ -50,8 +50,8 @@ export default function SearchModal() {
     );
   };
 
-  if (getFetcherError()) return <div>error</div>;
-  if (disableData()) return <div>Now Loading</div>;
+  if (getFetcherError()) return;
+  if (disableData()) return;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,11 +77,11 @@ export default function SearchModal() {
     if (userName) query += getQuery(query, "userName", userName);
 
     // 検索タイプ取得
-    query += getQuery(query, "searchType", searchType);
+    if (searchType) query += getQuery(query, "searchType", searchType);
 
     close();
 
-    router.push(RouterPath.illustDetailSearch(query));
+    router.push(RouterPath.illustSearch(query));
   };
 
   const getQuery = (query: string, key: string, value: string | number) => {
@@ -92,7 +92,8 @@ export default function SearchModal() {
     <>
       <Mantine.Button
         variant="contained"
-        className="bg-orange-200 hover:bg-orange-400 text-black transition-all"
+        //className="bg-orange-200 hover:bg-orange-400 text-black transition-all"
+        className="bg-green-200 hover:bg-green-400 text-black transition-all"
         onClick={open}
       >
         {t_Search("detailsSearch")}
@@ -107,8 +108,9 @@ export default function SearchModal() {
           <Mantine.TextInput
             label={t_SearchOption("postTitle")}
             onChange={(e) => setPostTitle(e.target.value)}
+            value={postTitle}
           />
-          <Mantine.Select
+          <Mantine.Autocomplete
             label={t_SearchOption("gameSystem")}
             onChange={setGameSystem}
             data={GameSystems}
@@ -135,7 +137,8 @@ export default function SearchModal() {
             onChange={(e) => setUserName(e.target.value)}
           />
 
-          <Mantine.Radio.Group value={searchType} onChange={setSearchType}>
+          {/* TODO : OR検索がうまくできないので後回し */}
+          {/* <Mantine.Radio.Group value={searchType} onChange={setSearchType}>
             <Mantine.Group className="flex justify-center items-center">
               <Mantine.Radio
                 label={t_SearchOption("andSearch")}
@@ -146,7 +149,7 @@ export default function SearchModal() {
                 value={SearchType.OR}
               />
             </Mantine.Group>
-          </Mantine.Radio.Group>
+          </Mantine.Radio.Group> */}
           <div className="m-auto">
             <Mantine.Button
               variant="contained"

@@ -31,6 +31,16 @@ class Post < ApplicationRecord
   validates :caption, length: { maximum: 10_000 }
   enum publish_state: { draft: 0, all_publish: 1, only_url: 2, only_follower: 3, private_publish:4 }
 
+  scope :search_by_title, ->(post_title) { where("title LIKE ?", "%#{post_title}%") }
+  scope :search_by_tags, -> (tag_list) {
+    tag_list.map {|tag| joins(:tags).where("tags.name LIKE ?", "%#{tag}%") }.reduce(:or)
+  }
+  scope :search_by_synalio, ->(synalio_name) { joins(:synalios).where("synalios.name LIKE ?", "%#{synalio_name}%") }
+  scope :search_by_user, ->(user_name) { joins(:user).where("users.name LIKE ?", "%#{user_name}%") }
+  scope :only_publish, -> { where(publish_state: 'all_publish') }
+
+  scope :useful_joins, -> { joins(:user, :tags, :synalios) }
+
   # 公開可能か
   def publishable?(current_user=nil)
     case publish_state

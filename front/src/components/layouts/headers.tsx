@@ -14,6 +14,7 @@ import { FaRegBookmark } from "rocketicons/fa";
 import { MdLogout } from "rocketicons/md";
 import { RouterPath } from "@/settings";
 import SpHeaders from "./spHeaders";
+import { SearchModal } from "../ui";
 
 export default function Headers() {
   const [user, setUser] = useRecoilState(RecoilState.userState);
@@ -55,7 +56,7 @@ export default function Headers() {
     e.preventDefault();
     if (!search) return;
     const searchWords = search.split(/\s|　/).join(",");
-    router.push(RouterPath.illustSearch(searchWords));
+    router.push(RouterPath.illustSearch(`search=${searchWords}`));
   };
 
   const handlePost = () => {
@@ -91,7 +92,8 @@ export default function Headers() {
         </h1>
         <div className="md:flex md:items-center md:justify-center md:gap-8">
           <div className="hidden md:flex md:flex-col md:justify-end md:items-start">
-            <form
+            {/* TODO : OR検索がうまくできないので一旦後回し */}
+            {/* <form
               className="md:flex md:justify-center md:items-center gap-2"
               onSubmit={handleSearch}
             >
@@ -114,7 +116,8 @@ export default function Headers() {
               >
                 {t_Header("searchButton")}
               </Mantine.Button>
-            </form>
+            </form> */}
+            <SearchModal />
           </div>
           {user.name ? (
             <>

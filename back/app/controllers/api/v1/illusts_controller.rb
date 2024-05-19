@@ -3,7 +3,7 @@ class Api::V1::IllustsController < Api::V1::BasesController
 
   def index
     post_search = PostSearch.new(search_params)
-    search_results = []
+    search_results = nil
     if search_params[:search_word].present?
       search_results = post_search.search_word
     else
