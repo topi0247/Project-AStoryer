@@ -6,16 +6,13 @@ import { Pagination, SearchModal, ToggleSort } from "@/components/ui";
 import { Illust } from "@/components/features/illusts";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { RouterPath } from "@/settings";
 
-export default function IllustsPage({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
+export default function IllustsPage() {
   const [searchWords, setSearchWords] = useState<string[]>([]);
   const [illusts, setIllusts] = useState<IndexIllustData[]>([]);
   const [totalCount, setTotalCount] = useState(0);
-  const sortBy = searchParams.sortBy as string | undefined;
+  // const sortBy = searchParams.sortBy as string | undefined;
   const t_Search = useTranslations("Search");
   const params = useSearchParams();
 
@@ -26,7 +23,8 @@ export default function IllustsPage({
     const synalioName = params.get("synalioName")?.split(",") ?? [];
     const tags = params.get("tags")?.split(",") ?? [];
     const userName = params.get("userName")?.split(",") ?? [];
-    const search_type = params.get("searchType") ?? "";
+    // TODO : OR検索がうまくできないのでAND検索のみ
+    const search_type = "AND"; //params.get("searchType") ?? "";
     const newSearchWords = [
       ...words,
       ...postTitle,
@@ -92,10 +90,7 @@ export default function IllustsPage({
               {searchWords.map((word, index) => (
                 <li key={index}>
                   <Link
-                    href={
-                      `/illusts?search=${word}` +
-                      (sortBy ? `&sortBy=${sortBy}` : "")
-                    }
+                    href={RouterPath.illustSearch(`search=${word}`)}
                     className="py-1 px-2 rounded transition-all shadow-md bg-orange-200 hover:bg-orange-400 text-black"
                   >
                     {word}
@@ -110,17 +105,19 @@ export default function IllustsPage({
               <span className="text-2xl font-semibold"> {totalCount} </span>
               {t_Search("posts")}
             </h4>
-            <div>
+            {/* TODO : OR検索ができないので後で実装 */}
+            {/* <div>
               <SearchModal />
-            </div>
+            </div> */}
           </div>
         </section>
       </article>
 
       <article className="container my-8 m-auto">
-        <div className="w-full mb-8 text-end">
+        {/* TODO : 初期段階では投稿数が少ないのでソートは無し */}
+        {/* <div className="w-full mb-8 text-end">
           <ToggleSort searchWords={searchWords} />
-        </div>
+        </div> */}
         {totalCount === 0 ? (
           <p>お探しの条件では投稿されていないようです。</p>
         ) : (
