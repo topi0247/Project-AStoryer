@@ -273,7 +273,7 @@ export default function IllustPage({
           <section className="bg-white p-4 rounded flex flex-col gap-4">
             <h3 className="text-xl">{t_ShowPost("postUser")}</h3>
             <div className="flex gap-4 justify-start items-center">
-              <Link href="/users/1">
+              <Link href={RouterPath.users(illustData.user.id)}>
                 <Mantine.Avatar
                   variant="default"
                   radius="xl"
@@ -283,7 +283,10 @@ export default function IllustPage({
                 />
               </Link>
               <div className="w-full flex flex-col gap-2">
-                <Link href="/users/1" className="text-xl">
+                <Link
+                  href={RouterPath.users(illustData.user.id)}
+                  className="text-xl"
+                >
                   {illustData.user.name}
                 </Link>
                 {/* {follow ? (

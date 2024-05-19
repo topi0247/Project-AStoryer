@@ -45,7 +45,6 @@ export default function Headers() {
       const result = await autoLogin();
       if (result.success && result.user) {
         setUser(result.user);
-        router.push(RouterPath.illustIndex);
         return;
       }
     };

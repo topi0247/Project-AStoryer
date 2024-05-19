@@ -135,6 +135,7 @@ export default function SearchModal() {
           <Mantine.TextInput
             label={t_SearchOption("userName")}
             onChange={(e) => setUserName(e.target.value)}
+            value={userName}
           />
 
           {/* TODO : OR検索がうまくできないので後回し */}
