@@ -135,7 +135,9 @@ export default function IllustPage({
                   <div className="text-sm flex justify-center items-center md:justify-start gap-2">
                     {illustData.game_systems && (
                       <Link
-                        href={`/illusts?search=${illustData.game_systems}`}
+                        href={RouterPath.illustSearch(
+                          `gameSystem=${illustData.game_systems}`
+                        )}
                         className="bg-blue-200 rounded-lg px-2 py-1 hover:opacity-60 transition-all"
                       >
                         {illustData.game_systems}
@@ -143,7 +145,9 @@ export default function IllustPage({
                     )}
                     {illustData.synalio && (
                       <Link
-                        href={`/illusts?search=${illustData.synalio}`}
+                        href={RouterPath.illustSearch(
+                          `synalioName=${illustData.synalio}`
+                        )}
                         className="bg-green-200 rounded-lg px-2 py-1 hover:opacity-60 transition-all"
                       >
                         {illustData.synalio}
@@ -154,7 +158,7 @@ export default function IllustPage({
                     {illustData.tags.map((tag: string, i: number) => (
                       <Link
                         key={i}
-                        href={`/illusts?search=${tag}`}
+                        href={RouterPath.illustSearch(`tags=${illustData.tag}`)}
                         className="text-blue-600 hover:underline hover:opacity-60 transition-all"
                       >
                         #{tag}
@@ -212,11 +216,9 @@ export default function IllustPage({
                     src={illustData.user.avatar}
                   />
                   <div className="flex flex-col gap-2 w-full">
-                    <span className="p-0 m-0 font-semibold">ユーザー名</span>
+                    <span className="p-0 m-0 font-semibold"></span>
                     <Mantine.Textarea
-                      aria-label="コメント"
                       minRows={3}
-                      placeholder="コメント"
                       className="w-full bg-gray-200 rounded p-2 focus:outline-none resize-none"
                       autosize
                     />
@@ -237,7 +239,7 @@ export default function IllustPage({
               </div>
             </section>
 
-            <section>
+            {/* <section>
               <ul className="bg-slate-100 rounded p-3 flex flex-col">
                 {Array.from({ length: 10 }).map((_, i) => (
                   <li
@@ -263,7 +265,7 @@ export default function IllustPage({
                   </li>
                 ))}
               </ul>
-            </section>
+            </section> */}
           </article>
         </div>
 
@@ -284,7 +286,7 @@ export default function IllustPage({
                 <Link href="/users/1" className="text-xl">
                   {illustData.user.name}
                 </Link>
-                {follow ? (
+                {/* {follow ? (
                   <Mantine.Button
                     variant="outlined"
                     size="small"
@@ -302,10 +304,10 @@ export default function IllustPage({
                   >
                     {t_ShowPost("follow")}
                   </Mantine.Button>
-                )}
+                )} */}
               </div>
             </div>
-            <div className="flex flex-wrap gap-3">
+            {/* <div className="flex flex-wrap gap-3">
               <Link href="" className="bg-slate-300 rounded px-2">
                 X
               </Link>
@@ -321,7 +323,7 @@ export default function IllustPage({
               <Link href="" className="bg-slate-300 rounded px-2">
                 {t_ShowPost("other")}
               </Link>
-            </div>
+            </div> */}
             <div>
               <p>{illustData.user.profile}</p>
             </div>

@@ -8,8 +8,8 @@ const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 export default function Home() {
   const { data, error } = useSWR("/posts", fetcher);
-  if (error) return <div>error</div>;
-  if (!data) return <div>loading...</div>;
+  if (error) return;
+  if (!data) return;
 
   const illusts = data.map(
     (illust: {
@@ -33,5 +33,9 @@ export default function Home() {
     })
   );
 
-  return <HomeParallax illusts={illusts} />;
+  return (
+    <>
+      <HomeParallax illusts={illusts} />
+    </>
+  );
 }
