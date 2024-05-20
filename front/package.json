@@ -19,6 +19,8 @@
     "@mantine/modals": "^7.9.0",
     "@mantine/notifications": "^7.8.1",
     "@mantine/spotlight": "^7.8.1",
+    "@next/third-parties": "^14.2.3",
+    "@vercel/analytics": "^1.2.2",
     "axios": "^1.6.8",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.0.2",
