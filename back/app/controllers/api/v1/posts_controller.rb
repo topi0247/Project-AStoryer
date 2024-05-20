@@ -131,7 +131,8 @@ class Api::V1::PostsController < Api::V1::BasesController
     begin
       @post.destroy!
       render json: { title: @post.title }, status: :ok
-    rescue
+    rescue => e
+      logger.error(e.message)
       render json: { error: 'Not Found' }, status: :not_found
     end
   end
