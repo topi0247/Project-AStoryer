@@ -24,11 +24,11 @@ class PostSearch
     if search_type == 'AND'
       # ゲームシステムで検索
       posts = and_search(post_title, tag_list, synalio_name, user_name, game_system)
-      return posts.order(published_at: :desc).distinct if posts.exists?
+      return posts.order(published_at: :desc) if posts.exists?
     else
       # OR検索
       posts = or_search(post_title, tag_list, synalio_name, user_name, game_system)
-      return posts.order(published_at: :desc).distinct if posts.exists?
+      return posts.order(published_at: :desc) if posts.exists?
     end
   end
 
