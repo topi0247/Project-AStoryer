@@ -129,8 +129,6 @@ class Api::V1::PostsController < Api::V1::BasesController
 
   def destroy
     begin
-      post_game_systems = PostGameSystem.where(post_id: @post.id)
-      post_game_systems.destroy_all
       @post.destroy!
       render json: { title: @post.title }, status: :ok
     rescue => e
