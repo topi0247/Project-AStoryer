@@ -22,10 +22,10 @@ class Post < ApplicationRecord
   has_many :tags, through: :post_tags, source: :tag
   has_many :post_synalios, dependent: :destroy
   has_many :synalios, through: :post_synalios, source: :synalio
-  include ActiveHash::Associations
-  has_many :post_game_systems, dependent: :destroy
-
   has_many :favorites, dependent: :destroy
+  has_many :post_game_systems, dependent: :destroy
+  # include ActiveHash::Associations
+
 
   validates :title, presence: true, length: { maximum: 20 }
   validates :caption, length: { maximum: 10_000 }
