@@ -13,7 +13,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { FaImage } from "rocketicons/fa";
-import useSWR, { mutate, useSWRConfig } from "swr";
+import useSWR, { mutate } from "swr";
 
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
@@ -27,7 +27,6 @@ const fetcherGameSystems = (url: string) =>
 
 export default function IllustEditPage({ params }: { params: { id: string } }) {
   const { id } = params;
-  const { cache } = useSWRConfig();
   const { data, error } = useSWR(`/posts/${id}/edit`, fetcher);
   const illustData = data
     ? ({
@@ -153,9 +152,8 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
         setErrorMessage(t_EditGeneral("updateError"));
         return;
       }
-      cache.delete(`/posts/${id}/edit`);
-      cache.delete(`/posts/${id}`);
-      router.push(RouterPath.users(user.id));
+      mutate(`/posts/${id}/edit`);
+      mutate(`/posts/${id}`);
     } catch (e) {
       setErrorMessage(t_EditGeneral("updateError"));
       return;
@@ -204,10 +202,8 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
     setIsDelete(false);
     setIsDeleteConfirmation(false);
     setDeleteConfirmationError("");
-    if (form.values.publishRange !== IPublicState.Draft && !isDelete) {
-      router.push(RouterPath.users(user.id));
-    }
     setOpenModal(false);
+    router.back();
   };
 
   return (
