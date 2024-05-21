@@ -11,6 +11,7 @@ import * as Mantine from "@mantine/core";
 import { Link } from "@/lib";
 import { RouterPath } from "@/settings";
 import { IHomeIllustData } from "@/types";
+import { useMediaQuery } from "@mantine/hooks";
 
 export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
   const firstRow = illusts.slice(0, 5);
@@ -22,15 +23,17 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
     target: ref,
     offset: ["start start", "end start"],
   });
+  const theme = Mantine.useMantineTheme();
+  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
 
   const springConfig = { stiffness: 300, damping: 30, bounce: 100 };
 
   const translateX = useSpring(
-    useTransform(scrollYProgress, [0, 1], [0, 1000]),
+    useTransform(scrollYProgress, [0, 1], [0, 250]),
     springConfig
   );
   const translateXReverse = useSpring(
-    useTransform(scrollYProgress, [0, 1], [0, -1000]),
+    useTransform(scrollYProgress, [0, 1], [0, -250]),
     springConfig
   );
   const rotateX = useSpring(
@@ -46,13 +49,17 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
     springConfig
   );
   const translateY = useSpring(
-    useTransform(scrollYProgress, [0, 0.2], [-700, 500]),
+    useTransform(
+      scrollYProgress,
+      [0, 0.2],
+      [mobile ? -500 : -1000, mobile ? 50 : 500]
+    ),
     springConfig
   );
   return (
     <div
       ref={ref}
-      className="h-[300vh] py-40 overflow-hidden  antialiased relative flex flex-col self-auto [perspective:1000px] [transform-style:preserve-3d]"
+      className="md:h-[325vh] py-40 overflow-hidden antialiased relative flex flex-col self-auto [perspective:1000px] [transform-style:preserve-3d]"
     >
       <Header />
       <motion.div
@@ -73,7 +80,7 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
             />
           ))}
         </motion.div>
-        <motion.div className="flex flex-row space-x-6 md:space-x-20 mb-5 md:mb-20">
+        <motion.div className="flex flex-row space-x-6 md:space-x-10 mb-5 md:mb-10">
           {secondRow.map((illust) => (
             <IllustCard
               illust={illust}
@@ -82,7 +89,7 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
             />
           ))}
         </motion.div>
-        <motion.div className="flex flex-row-reverse space-x-reverse space-x-6 md:space-x-20 mb-5 md:mb-20">
+        <motion.div className="flex flex-row-reverse space-x-reverse space-x-6 md:space-x-10 mb-5 md:mb-20">
           {thirdRow.map((illust) => (
             <IllustCard
               illust={illust}
@@ -91,7 +98,7 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
             />
           ))}
         </motion.div>
-        <motion.div className="flex flex-row space-x-6 md:space-x-20">
+        <motion.div className="flex flex-row space-x-6 md:space-x-10">
           {fourRow.map((illust) => (
             <IllustCard
               illust={illust}
@@ -108,12 +115,18 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
 export const Header = () => {
   // TODO : ロゴアイコンを入れたい
   return (
-    <div className="max-w-7xl relative mx-auto py-20 md:py-40 px-4 w-full  left-0 top-0">
-      <h1 className="text-2xl md:text-7xl font-bold">
-        AStoryer
-        <br />- あすとりや -
-      </h1>
-      <p className="max-w-2xl text-base md:text-xl mt-8">TRPG創作投稿サイト</p>
+    <div className="max-w-7xl relative mx-auto py-20 md:py-40 px-4 w-full left-0 top-0 z-10">
+      <div className="flex flex-col justify-center items-start">
+        <h1 className="text-4xl md:text-7xl font-bold flex flex-col gap-2 justify-center items-center">
+          AStoryer
+          <span className="text-sm md:text-xl">- あすとりや - ver. β</span>
+        </h1>
+      </div>
+      <p className="max-w-2xl text-base md:text-xl mt-8">
+        <span className="border-b-2 border-green-300 px-2">
+          TRPG創作投稿サイト
+        </span>
+      </p>
     </div>
   );
 };

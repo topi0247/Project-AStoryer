@@ -6,7 +6,6 @@ import { Link, useRouter } from "@/lib";
 import * as RecoilState from "@/recoilState";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { IoMdSearch, IoMdSettings } from "rocketicons/io";
 import { VscAccount } from "rocketicons/vsc";
 import * as Mantine from "@mantine/core";
@@ -14,7 +13,7 @@ import { FaRegBookmark } from "rocketicons/fa";
 import { MdLogout } from "rocketicons/md";
 import { RouterPath } from "@/settings";
 import SpHeaders from "./spHeaders";
-import { SearchModal } from "../ui";
+import { LoginLink, SearchModal } from "../ui";
 
 export default function Headers() {
   const [user, setUser] = useRecoilState(RecoilState.userState);
@@ -78,11 +77,14 @@ export default function Headers() {
     <>
       <header className="p-2 flex justify-center md:justify-between items-center ml-2 md:mx-8 md:my-2">
         <h1 className="text-3xl font-semibold">
-          <Link href="/" className="flex flex-col justify-center items-center">
+          <Link
+            href={RouterPath.home}
+            className="flex flex-col justify-center items-center"
+          >
             AStoryer <span className="text-sm">- あすとりや -</span>
           </Link>
         </h1>
-        <div className="md:flex md:items-center md:justify-center md:gap-8">
+        <div className="ml-8 md:ml-0 md:flex md:items-center md:justify-center md:gap-8">
           <div className="hidden md:flex md:flex-col md:justify-end md:items-start">
             {/* TODO : OR検索がうまくできないので一旦後回し */}
             {/* <form
@@ -125,12 +127,7 @@ export default function Headers() {
               </div>
             </>
           ) : (
-            <Link
-              href="/login"
-              className="text-sm md:text-normal p-2 px-3 rounded bg-orange-200 hover:bg-orange-400 text-black  transition-all hover:text-white"
-            >
-              {t_Header("signUpOrLogin")}
-            </Link>
+            <LoginLink />
           )}
         </div>
       </header>
