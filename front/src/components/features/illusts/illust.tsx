@@ -1,9 +1,11 @@
 import { Link } from "@/lib";
+import { userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
 import { IPublicState, IndexIllustData } from "@/types";
 import { Avatar, Image } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
+import { useRecoilValue } from "recoil";
 
 // aタグの中にsvgを入れるとHydrationエラーになるので動的読み込みを行う
 // SSRはしない
@@ -20,6 +22,7 @@ export default function Illust({
   isUserPage?: boolean;
 }) {
   const t_General = useTranslations("General");
+  const user = useRecoilValue(userState);
 
   const getPublishRange = () => {
     switch (illust.publishRange) {
@@ -54,20 +57,24 @@ export default function Illust({
       </Link>
       {isUserPage ? (
         <>
-          <div className="absolute bottom-0 right-0 text-sm text-end">
-            <Link
-              href={RouterPath.illustEdit(illust.id)}
-              className="px-2 py-1 bg-slate-600 text-white rounded-l"
-            >
-              {t_General("edit")}
-            </Link>
-          </div>
-          {illust.publishRange && (
-            <div className="absolute top-0 right-0 text-sm text-end">
-              <p className="px-2 py-1 bg-sky-300 bg-opacity-50 text-white rounded-l">
-                {getPublishRange()}
-              </p>
-            </div>
+          {user?.id === illust.user?.id && (
+            <>
+              <div className="absolute bottom-0 right-0 text-sm text-end">
+                <Link
+                  href={RouterPath.illustEdit(illust.id)}
+                  className="px-2 py-1 bg-slate-600 text-white rounded-l"
+                >
+                  {t_General("edit")}
+                </Link>
+              </div>
+              {illust.publishRange && (
+                <div className="absolute top-0 right-0 text-sm text-end">
+                  <p className="px-2 py-1 bg-sky-300 bg-opacity-50 text-white rounded-l">
+                    {getPublishRange()}
+                  </p>
+                </div>
+              )}
+            </>
           )}
         </>
       ) : (
