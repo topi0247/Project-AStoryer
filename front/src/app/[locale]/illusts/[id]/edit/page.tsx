@@ -13,7 +13,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { FaImage } from "rocketicons/fa";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR, { mutate } from "swr";
 
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
@@ -27,7 +27,6 @@ const fetcherGameSystems = (url: string) =>
 
 export default function IllustEditPage({ params }: { params: { id: string } }) {
   const { id } = params;
-  const { cache } = useSWRConfig();
   const { data, error } = useSWR(`/posts/${id}/edit`, fetcher);
   const illustData = data
     ? ({
@@ -69,12 +68,13 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
 
   const form = useForm({
     initialValues: {
-      postIllust: illustData?.image,
-      title: illustData?.title,
-      caption: illustData?.caption,
-      publishRange: illustData?.publish_state,
-      synalioTitle: illustData?.synalio,
-      gameSystem: illustData?.game_system,
+      postIllust: illustData?.image || [],
+      title: illustData?.title || "",
+      caption: illustData?.caption || "",
+      publishRange: illustData?.publish_state || "",
+      synalioTitle: illustData?.synalio || "",
+      gameSystem: illustData?.game_system || "",
+      tags: illustData?.tags || [],
     },
     validate: {
       postIllust: () => {
@@ -100,6 +100,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
       return;
     }
     setPostIllust(illustData.image ?? []);
+    setTags(illustData.tags ?? []);
     form.setValues({
       postIllust: illustData.image,
       title: illustData?.title,
@@ -151,8 +152,8 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
         setErrorMessage(t_EditGeneral("updateError"));
         return;
       }
-      cache.delete(`/posts/${id}/edit`);
-      cache.delete(`/posts/${id}`);
+      mutate(`/posts/${id}/edit`);
+      mutate(`/posts/${id}`);
     } catch (e) {
       setErrorMessage(t_EditGeneral("updateError"));
       return;
@@ -178,7 +179,8 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
         setErrorMessage(t_EditGeneral("deleteError"));
         return;
       }
-      router.push(RouterPath.users(user.id));
+      mutate(`/posts/${id}/edit`);
+      mutate(`/posts/${id}`);
     } catch (e) {
       setErrorMessage(t_EditGeneral("deleteError"));
       return;
@@ -200,10 +202,8 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
     setIsDelete(false);
     setIsDeleteConfirmation(false);
     setDeleteConfirmationError("");
-    if (form.values.publishRange !== IPublicState.Draft && !isDelete) {
-      router.push(RouterPath.users(user.id));
-    }
     setOpenModal(false);
+    router.back();
   };
 
   return (
@@ -325,7 +325,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
               </section>
               <section className="flex gap-5 flex-col md:flex-row md:items-center md:gap-2 w-full ">
                 <div className="md:w-1/3">
-                  <Mantine.Select
+                  <Mantine.Autocomplete
                     name="gameSystem"
                     label={t_PostGeneral("gameSystem")}
                     data={GameSystems}
