@@ -13,7 +13,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { FaImage } from "rocketicons/fa";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR, { mutate, useSWRConfig } from "swr";
 
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
@@ -69,12 +69,13 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
 
   const form = useForm({
     initialValues: {
-      postIllust: illustData?.image,
-      title: illustData?.title,
-      caption: illustData?.caption,
-      publishRange: illustData?.publish_state,
-      synalioTitle: illustData?.synalio,
-      gameSystem: illustData?.game_system,
+      postIllust: illustData?.image || [],
+      title: illustData?.title || "",
+      caption: illustData?.caption || "",
+      publishRange: illustData?.publish_state || "",
+      synalioTitle: illustData?.synalio || "",
+      gameSystem: illustData?.game_system || "",
+      tags: illustData?.tags || [],
     },
     validate: {
       postIllust: () => {
@@ -100,6 +101,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
       return;
     }
     setPostIllust(illustData.image ?? []);
+    setTags(illustData.tags ?? []);
     form.setValues({
       postIllust: illustData.image,
       title: illustData?.title,
@@ -153,6 +155,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
       }
       cache.delete(`/posts/${id}/edit`);
       cache.delete(`/posts/${id}`);
+      router.push(RouterPath.users(user.id));
     } catch (e) {
       setErrorMessage(t_EditGeneral("updateError"));
       return;
@@ -178,7 +181,8 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
         setErrorMessage(t_EditGeneral("deleteError"));
         return;
       }
-      router.push(RouterPath.users(user.id));
+      mutate(`/posts/${id}/edit`);
+      mutate(`/posts/${id}`);
     } catch (e) {
       setErrorMessage(t_EditGeneral("deleteError"));
       return;
