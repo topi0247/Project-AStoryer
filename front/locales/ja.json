@@ -115,7 +115,8 @@
   "PostIllust": {
     "title": "イラスト投稿",
     "upload": "イラストアップロード",
-    "uploadValid": "イラストをアップロードしてください"
+    "uploadValid": "イラストをアップロードしてください",
+    "maxSize": "※ファイルサイズは10MBまでです"
   },
   "PostIllustEdit": {
     "title": "イラスト編集",

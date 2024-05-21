@@ -43,6 +43,8 @@ export default function IllustPostPage() {
   const t_PostGeneral = useTranslations("PostGeneral");
   const TITLE_MAX_LENGTH = 20;
   const CAPTION_MAX_LENGTH = 10000;
+  const MEGA_BITE = 1024 ** 2;
+  const MAX_SIZE = 10 * MEGA_BITE;
 
   const form = useForm({
     initialValues: {
@@ -160,10 +162,11 @@ export default function IllustPostPage() {
                   {t_PostIllust("upload")}
                   <span className="text-red-600">*</span>
                 </label>
+                <p className="text-sm">{t_PostIllust("maxSize")}</p>
                 <Dropzone
                   name="postIllust"
                   onDrop={(files) => handleDrop(files)}
-                  maxSize={5 * 1024 ** 2}
+                  maxSize={MAX_SIZE}
                   accept={IMAGE_MIME_TYPE}
                   style={{
                     height: mobile ? "15rem" : "30rem",
