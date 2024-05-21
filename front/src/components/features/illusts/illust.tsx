@@ -57,7 +57,7 @@ export default function Illust({
       </Link>
       {isUserPage ? (
         <>
-          {user?.id === illust.user?.id && (
+          {illust.publishRange && (
             <>
               <div className="absolute bottom-0 right-0 text-sm text-end">
                 <Link
@@ -67,13 +67,11 @@ export default function Illust({
                   {t_General("edit")}
                 </Link>
               </div>
-              {illust.publishRange && (
-                <div className="absolute top-0 right-0 text-sm text-end">
-                  <p className="px-2 py-1 bg-sky-300 bg-opacity-50 text-white rounded-l">
-                    {getPublishRange()}
-                  </p>
-                </div>
-              )}
+              <div className="absolute top-0 right-0 text-sm text-end">
+                <p className="px-2 py-1 bg-sky-300 bg-opacity-50 text-white rounded-l">
+                  {getPublishRange()}
+                </p>
+              </div>
             </>
           )}
         </>
