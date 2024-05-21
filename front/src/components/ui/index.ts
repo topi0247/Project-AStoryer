@@ -8,6 +8,7 @@ import {
 } from "./iconsButton/iconButtonList";
 import Collapse from "./collapse";
 import Pagination from "./pagination";
+import LoginLink from "./loginLink";
 
 export {
   TransitionsModal,
@@ -19,4 +20,5 @@ export {
   RequiredLoginModal,
   Collapse,
   Pagination,
+  LoginLink,
 };
