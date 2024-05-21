@@ -41,7 +41,7 @@ export const useAuth = () => {
   ) => {
     try {
       const response = await Post2API(
-        "/auth/sign_in",
+        "/auth",
         JSON.stringify({
           name,
           email,
