@@ -329,7 +329,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
               </section>
               <section className="flex gap-5 flex-col md:flex-row md:items-center md:gap-2 w-full ">
                 <div className="md:w-1/3">
-                  <Mantine.Select
+                  <Mantine.Autocomplete
                     name="gameSystem"
                     label={t_PostGeneral("gameSystem")}
                     data={GameSystems}
