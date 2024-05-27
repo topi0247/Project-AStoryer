@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_27_094133) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_27_094814) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -48,17 +48,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_27_094133) do
     t.string "uid", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
     t.uuid "user_uuid", null: false
-    t.index ["user_id"], name: "index_authentications_on_user_id"
     t.index ["user_uuid"], name: "index_authentications_on_user_uuid"
   end
 
   create_table "favorites", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
-    t.bigint "post_id"
     t.uuid "user_uuid", null: false
     t.uuid "post_uuid", null: false
     t.index ["post_uuid"], name: "index_favorites_on_post_uuid"
@@ -82,7 +78,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_27_094133) do
 
   create_table "post_game_systems", force: :cascade do |t|
     t.integer "game_system_id", null: false
-    t.bigint "post_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "post_uuid", null: false
@@ -92,10 +87,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_27_094133) do
   create_table "post_synalios", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "post_id", null: false
     t.bigint "synalio_id", null: false
     t.uuid "post_uuid", null: false
-    t.index ["post_id"], name: "index_post_synalios_on_post_id"
     t.index ["synalio_id"], name: "index_post_synalios_on_synalio_id"
   end
 
@@ -103,21 +96,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_27_094133) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "tag_id"
-    t.bigint "post_id"
     t.uuid "post_uuid", null: false
     t.index ["post_uuid"], name: "index_post_tags_on_post_uuid"
     t.index ["tag_id"], name: "index_post_tags_on_tag_id"
   end
 
   create_table "posts", primary_key: "uuid", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.bigserial "id", null: false
     t.string "title", null: false
     t.string "caption"
     t.integer "publish_state"
     t.datetime "published_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
     t.string "postable_type", null: false
     t.bigint "postable_id", null: false
     t.uuid "user_uuid", null: false
@@ -132,7 +122,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_27_094133) do
     t.text "text"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
     t.uuid "user_uuid", null: false
     t.index ["user_uuid"], name: "index_profiles_on_user_uuid"
   end
@@ -140,8 +129,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_27_094133) do
   create_table "relationships", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "follower_id", null: false
-    t.bigint "followed_id", null: false
     t.uuid "follower_uuid", null: false
     t.uuid "followed_uuid", null: false
     t.index ["followed_uuid"], name: "index_relationships_on_followed_uuid"
@@ -165,7 +152,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_27_094133) do
     t.integer "notice_kind", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
     t.bigint "notice_id"
     t.uuid "user_uuid", null: false
     t.index ["notice_id"], name: "index_user_notices_on_notice_id"
@@ -173,7 +159,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_27_094133) do
   end
 
   create_table "users", primary_key: "uuid", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.bigserial "id", null: false
     t.string "provider", null: false
     t.string "uid", default: "", null: false
     t.string "encrypted_password", default: "", null: false
