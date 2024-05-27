@@ -14,20 +14,20 @@ export default function Home() {
 
   const illusts = data.map(
     (illust: {
-      id: number;
+      uuid: string;
       title: string;
       data: string[];
       user: {
-        id: number;
+        uuid: string;
         name: string;
         avatar: string;
       };
     }) => ({
-      id: illust.id,
+      uuid: illust.uuid,
       title: illust.title,
       image: illust.data[0],
       user: {
-        id: illust.user.id,
+        uuid: illust.user.uuid,
         name: illust.user.name,
         avatar: illust.user.avatar,
       },

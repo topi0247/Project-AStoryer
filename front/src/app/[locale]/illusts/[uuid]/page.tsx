@@ -15,12 +15,12 @@ import { RouterPath } from "@/settings";
 const fetcherIllust = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 export default function IllustPage({
-  params: { id },
+  params: { uuid },
 }: {
-  params: { id: number };
+  params: { uuid: string };
 }) {
   const { data: illustData, error: illustError } = useSWR(
-    `/posts/${id}`,
+    `/posts/${uuid}`,
     fetcherIllust
   );
   const [expansionMode, setExpansionMode] = useState(false);
@@ -112,7 +112,7 @@ export default function IllustPage({
               <div className="flex flex-col gap-3">
                 <div className="flex flex-col gap-2">
                   <IconButtonList
-                    postId={id}
+                    postUuid={uuid}
                     publicState={illustData.publish_state}
                   />
                   <h3 className="text-2xl font-semibold">{illustData.title}</h3>
@@ -273,7 +273,7 @@ export default function IllustPage({
           <section className="bg-white p-4 rounded flex flex-col gap-4">
             <h3 className="text-xl">{t_ShowPost("postUser")}</h3>
             <div className="flex gap-4 justify-start items-center">
-              <Link href={RouterPath.users(illustData.user.id)}>
+              <Link href={RouterPath.users(illustData.user.uuid)}>
                 <Mantine.Avatar
                   variant="default"
                   radius="xl"
@@ -284,7 +284,7 @@ export default function IllustPage({
               </Link>
               <div className="w-full flex flex-col gap-2">
                 <Link
-                  href={RouterPath.users(illustData.user.id)}
+                  href={RouterPath.users(illustData.user.uuid)}
                   className="text-xl"
                 >
                   {illustData.user.name}
@@ -334,7 +334,10 @@ export default function IllustPage({
         </article>
       </div>
 
-      <FixedIconButtonList postId={id} publicState={illustData.publish_state} />
+      <FixedIconButtonList
+        postUuid={uuid}
+        publicState={illustData.publish_state}
+      />
     </article>
   );
 }

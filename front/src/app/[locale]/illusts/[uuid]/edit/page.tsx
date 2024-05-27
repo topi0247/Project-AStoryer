@@ -25,9 +25,13 @@ const fetcherSynalios = (url: string) =>
 const fetcherGameSystems = (url: string) =>
   GetFromAPI(url).then((res) => res.data);
 
-export default function IllustEditPage({ params }: { params: { id: string } }) {
-  const { id } = params;
-  const { data, error } = useSWR(`/posts/${id}/edit`, fetcher);
+export default function IllustEditPage({
+  params,
+}: {
+  params: { uuid: string };
+}) {
+  const { uuid } = params;
+  const { data, error } = useSWR(`/posts/${uuid}/edit`, fetcher);
   const illustData = data
     ? ({
         title: data.title,
@@ -146,14 +150,14 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
     };
 
     try {
-      const res = await Put2API(`/posts/${id}`, JSON.stringify(update));
+      const res = await Put2API(`/posts/${uuid}`, JSON.stringify(update));
       setErrorMessage("");
       if (res.status != 200) {
         setErrorMessage(t_EditGeneral("updateError"));
         return;
       }
-      mutate(`/posts/${id}/edit`);
-      mutate(`/posts/${id}`);
+      mutate(`/posts/${uuid}/edit`);
+      mutate(`/posts/${uuid}`);
     } catch (e) {
       setErrorMessage(t_EditGeneral("updateError"));
       return;
@@ -174,13 +178,13 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
     }
 
     try {
-      const res = await Delete2API(`/posts/${id}`);
+      const res = await Delete2API(`/posts/${uuid}`);
       if (res.status != 200) {
         setErrorMessage(t_EditGeneral("deleteError"));
         return;
       }
-      mutate(`/posts/${id}/edit`);
-      mutate(`/posts/${id}`);
+      mutate(`/posts/${uuid}/edit`);
+      mutate(`/posts/${uuid}`);
     } catch (e) {
       setErrorMessage(t_EditGeneral("deleteError"));
       return;
@@ -486,7 +490,7 @@ export default function IllustEditPage({ params }: { params: { id: string } }) {
                     <Mantine.Button
                       className="bg-green-300 hover:bg-green-500 transition-all text-black"
                       onClick={() => {
-                        router.push(RouterPath.illust(Number(id)));
+                        router.push(RouterPath.illust(uuid));
                         setOpenModal(false);
                       }}
                     >

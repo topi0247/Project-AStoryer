@@ -13,8 +13,8 @@ import useSWR, { useSWRConfig } from "swr";
 const fetcherFavorite = (url: string) =>
   GetFromAPI(url).then((res) => res.data);
 
-const FavoriteButton = ({ postId }: { postId: number }) => {
-  const { data, error } = useSWR(`/favorites/${postId}`, fetcherFavorite);
+const FavoriteButton = ({ postUuid }: { postUuid: string }) => {
+  const { data, error } = useSWR(`/favorites/${postUuid}`, fetcherFavorite);
   const { cache } = useSWRConfig();
   const user = useRecoilValue(RecoilState.userState);
   const [favorite, setFavorite] = useState(false);
@@ -27,21 +27,21 @@ const FavoriteButton = ({ postId }: { postId: number }) => {
   }, [data]);
 
   const handleFavorite = async (value: boolean) => {
-    if (user.id < 0) {
+    if (user.uuid === "") {
       setModalOpen(true);
       return;
     }
 
     if (value) {
       const res = await Post2API("/favorites", {
-        favorite: { post_id: postId },
+        favorite: { post_id: postUuid },
       });
       if (res.status != 200 || !res.data.success) return;
     } else {
-      const res = await Delete2API(`/favorites/${postId}`);
+      const res = await Delete2API(`/favorites/${postUuid}`);
       if (res.status != 200 || !res.data.success) return;
     }
-    cache.delete(`/favorites/${postId}`);
+    cache.delete(`/favorites/${postUuid}`);
     setFavorite(value);
   };
 
@@ -69,13 +69,13 @@ const FavoriteButton = ({ postId }: { postId: number }) => {
   );
 };
 
-const BookmarkButton = ({ postId }: { postId: number }) => {
+const BookmarkButton = ({ postUuid }: { postUuid: string }) => {
   const user = useRecoilValue(RecoilState.userState);
   const [bookmark, setBookmark] = useState(false);
   const setModalOpen = useSetRecoilState(RecoilState.requireModalOpenState);
 
   const handleBookmark = (value: boolean) => {
-    if (user.id < 0) {
+    if (user.uuid === "") {
       setModalOpen(true);
       return;
     }
