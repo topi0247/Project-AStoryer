@@ -1,12 +1,6 @@
 "use client";
 import React from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useSpring,
-  MotionValue,
-} from "framer-motion";
+import * as FramerMotion from "framer-motion";
 import * as Mantine from "@mantine/core";
 import { Link } from "@/lib";
 import { RouterPath } from "@/settings";
@@ -19,7 +13,7 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
   const thirdRow = illusts.slice(10, 15);
   const fourRow = illusts.slice(15, 20);
   const ref = React.useRef(null);
-  const { scrollYProgress } = useScroll({
+  const { scrollYProgress } = FramerMotion.useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
@@ -28,28 +22,28 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
 
   const springConfig = { stiffness: 300, damping: 30, bounce: 100 };
 
-  const translateX = useSpring(
-    useTransform(scrollYProgress, [0, 1], [0, 250]),
+  const translateX = FramerMotion.useSpring(
+    FramerMotion.useTransform(scrollYProgress, [0, 1], [0, 250]),
     springConfig
   );
-  const translateXReverse = useSpring(
-    useTransform(scrollYProgress, [0, 1], [0, -250]),
+  const translateXReverse = FramerMotion.useSpring(
+    FramerMotion.useTransform(scrollYProgress, [0, 1], [0, -250]),
     springConfig
   );
-  const rotateX = useSpring(
-    useTransform(scrollYProgress, [0, 0.2], [15, 0]),
+  const rotateX = FramerMotion.useSpring(
+    FramerMotion.useTransform(scrollYProgress, [0, 0.2], [15, 0]),
     springConfig
   );
-  const opacity = useSpring(
-    useTransform(scrollYProgress, [0, 0.2], [0.2, 1]),
+  const opacity = FramerMotion.useSpring(
+    FramerMotion.useTransform(scrollYProgress, [0, 0.2], [0.2, 1]),
     springConfig
   );
-  const rotateZ = useSpring(
-    useTransform(scrollYProgress, [0, 0.2], [20, 0]),
+  const rotateZ = FramerMotion.useSpring(
+    FramerMotion.useTransform(scrollYProgress, [0, 0.2], [20, 0]),
     springConfig
   );
-  const translateY = useSpring(
-    useTransform(
+  const translateY = FramerMotion.useSpring(
+    FramerMotion.useTransform(
       scrollYProgress,
       [0, 0.2],
       [mobile ? -500 : -1000, mobile ? 50 : 500]
@@ -62,7 +56,7 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
       className="md:h-[325vh] py-40 overflow-hidden antialiased relative flex flex-col self-auto [perspective:1000px] [transform-style:preserve-3d]"
     >
       <Header />
-      <motion.div
+      <FramerMotion.motion.div
         style={{
           rotateX,
           rotateZ,
@@ -71,7 +65,7 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
         }}
         className=""
       >
-        <motion.div className="flex flex-row-reverse space-x-reverse space-x-6 md:space-x-20 mb-5 md:mb-20">
+        <FramerMotion.motion.div className="flex flex-row-reverse space-x-reverse space-x-6 md:space-x-20 mb-5 md:mb-20">
           {firstRow.map((illust) => (
             <IllustCard
               illust={illust}
@@ -79,8 +73,8 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
               key={illust.id}
             />
           ))}
-        </motion.div>
-        <motion.div className="flex flex-row space-x-6 md:space-x-10 mb-5 md:mb-10">
+        </FramerMotion.motion.div>
+        <FramerMotion.motion.div className="flex flex-row space-x-6 md:space-x-10 mb-5 md:mb-10">
           {secondRow.map((illust) => (
             <IllustCard
               illust={illust}
@@ -88,8 +82,8 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
               key={illust.id}
             />
           ))}
-        </motion.div>
-        <motion.div className="flex flex-row-reverse space-x-reverse space-x-6 md:space-x-10 mb-5 md:mb-20">
+        </FramerMotion.motion.div>
+        <FramerMotion.motion.div className="flex flex-row-reverse space-x-reverse space-x-6 md:space-x-10 mb-5 md:mb-20">
           {thirdRow.map((illust) => (
             <IllustCard
               illust={illust}
@@ -97,8 +91,8 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
               key={illust.id}
             />
           ))}
-        </motion.div>
-        <motion.div className="flex flex-row space-x-6 md:space-x-10">
+        </FramerMotion.motion.div>
+        <FramerMotion.motion.div className="flex flex-row space-x-6 md:space-x-10">
           {fourRow.map((illust) => (
             <IllustCard
               illust={illust}
@@ -106,20 +100,18 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
               key={illust.id}
             />
           ))}
-        </motion.div>
-      </motion.div>
+        </FramerMotion.motion.div>
+      </FramerMotion.motion.div>
     </div>
   );
 };
 
 export const Header = () => {
-  // TODO : ロゴアイコンを入れたい
   return (
     <div className="max-w-7xl relative mx-auto py-20 md:py-40 px-4 w-full left-0 top-0 z-10">
       <div className="flex flex-col justify-center items-start">
-        <h1 className="text-4xl md:text-7xl font-bold flex flex-col gap-2 justify-center items-center">
-          AStoryer
-          <span className="text-sm md:text-xl">- あすとりや - ver. β</span>
+        <h1>
+          <Mantine.Image src="/assets/AppLogo.png" />
         </h1>
       </div>
       <p className="max-w-2xl text-base md:text-xl mt-8">
@@ -136,10 +128,10 @@ export const IllustCard = ({
   translate,
 }: {
   illust: IHomeIllustData;
-  translate: MotionValue<number>;
+  translate: FramerMotion.MotionValue<number>;
 }) => {
   return (
-    <motion.div
+    <FramerMotion.motion.div
       style={{
         x: translate,
       }}
@@ -180,6 +172,6 @@ export const IllustCard = ({
           </Link>
         </div>
       </div>
-    </motion.div>
+    </FramerMotion.motion.div>
   );
 };
