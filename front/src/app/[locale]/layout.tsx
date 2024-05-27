@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import "@/styles/globals.css";
 import AppProviders from "@/providers";
 import { MainLayout } from "@/components/layouts";
@@ -6,9 +5,34 @@ import { ColorSchemeScript } from "@mantine/core";
 import { Analytics } from "@vercel/analytics/react";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Settings } from "@/settings";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "AStoryer - あすとりや -",
+  title: {
+    template: "%s | AStoryer - あすとりや -",
+    default: "AStoryer - あすとりや -",
+  },
+  description: "TRPGの創作物を投稿できるサービス",
+  alternates: {
+    canonical: Settings.APP_URL,
+  },
+  openGraph: {
+    title: "AStoryer - あすとりや -",
+    description: "TRPGの創作物を投稿できるサービス",
+    url: Settings.APP_URL,
+    siteName: "AStoryer - あすとりや -",
+    images: `${Settings.APP_URL}/assets/OGP.webp`,
+    type: "website",
+  },
+  icons: {
+    icon: `${Settings.APP_URL}/favicon.ico`,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AStoryer - あすとりや -",
+    description: "TRPGの創作物を投稿できるサービス",
+    images: `${Settings.APP_URL}/assets/OGP.webp`,
+  },
 };
 
 export default function RootLayout({

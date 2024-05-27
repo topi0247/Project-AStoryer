@@ -75,13 +75,13 @@ export default function Headers() {
 
   return (
     <>
-      <header className="p-2 flex justify-center md:justify-between items-center ml-2 md:mx-8 md:my-2">
-        <h1 className="text-3xl font-semibold">
+      <header className="p-2 flex justify-center md:justify-between items-center md:mx-8 md:my-2">
+        <h1>
           <Link
             href={RouterPath.home}
-            className="flex flex-col justify-center items-center"
+            className="flex flex-col justify-center items-center w-32 h-auto object-contain"
           >
-            AStoryer <span className="text-sm">- あすとりや -</span>
+            <Mantine.Image src="/assets/AppLogo.png" />
           </Link>
         </h1>
         <div className="ml-8 md:ml-0 md:flex md:items-center md:justify-center md:gap-8">

@@ -14,7 +14,6 @@ const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 export default function UserPage({ params }: { params: { id: string } }) {
   const { id } = params;
-  const user = useRecoilValue(userState);
   const t_UserPage = useTranslations("UserPage");
   const { data, error } = useSWR(`/users/${id}`, fetcher);
 
