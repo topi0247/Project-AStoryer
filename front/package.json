@@ -20,6 +20,8 @@
     "@mantine/notifications": "^7.8.1",
     "@mantine/spotlight": "^7.8.1",
     "@next/third-parties": "^14.2.3",
+    "@sentry/nextjs": "^8",
+    "@sentry/wizard": "^3.22.3",
     "@vercel/analytics": "^1.2.2",
     "axios": "^1.6.8",
     "clsx": "^2.1.1",
