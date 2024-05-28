@@ -24,8 +24,6 @@ class Post < ApplicationRecord
   has_many :synalios, through: :post_synalios, source: :synalio
   has_many :favorites, primary_key: :uuid, foreign_key: :post_uuid, dependent: :destroy
   has_many :post_game_systems, foreign_key: :post_uuid, dependent: :destroy
-  # include ActiveHash::Associations
-
 
   validates :title, presence: true, length: { maximum: 20 }
   validates :caption, length: { maximum: 10_000 }
@@ -40,6 +38,14 @@ class Post < ApplicationRecord
   scope :only_publish, -> { where(publish_state: 'all_publish') }
 
   scope :useful_joins, -> { joins(:user, :tags, :synalios) }
+
+  # ゲームシステムでの検索
+  def self.search_by_game_system(game_system_name)
+    game_system = GameSystem.find_by(name: game_system_name)
+    return none unless game_system
+
+    joins(:post_game_systems).where(post_game_systems: { game_system_id: game_system.id })
+  end
 
   # 公開可能か
   def publishable?(current_user=nil)

@@ -10,6 +10,8 @@
 #
 class PostGameSystem < ApplicationRecord
   belongs_to :post, foreign_key: :post_uuid
+  # NOTE : ActiveHashの関連付けはこれ以下のものに適応されるようなので、
+  #        ActiveHashの関連付けでないものは上に書く
   extend ActiveHash::Associations::ActiveRecordExtensions
   belongs_to_active_hash :game_system
 end
