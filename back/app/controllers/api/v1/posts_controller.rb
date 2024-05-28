@@ -17,7 +17,7 @@ class Api::V1::PostsController < Api::V1::BasesController
   end
 
   def show
-    post = Post.includes(:postable, :tags, :synalios, :user).find_by(id: params[:id])
+    post = Post.includes(:postable, :tags, :synalios, :user).find_by_short_uuid(params[:id])
 
     if post.nil? || !post.publishable?(current_api_v1_user)
       render json: { error: 'Not Found' }, status: :not_found and return
@@ -64,7 +64,7 @@ class Api::V1::PostsController < Api::V1::BasesController
         # TODO : 中間テーブルが上手く作られないので、Postを先に作ったあとに中間テーブルを作成している
         post.create_game_systems(post_params[:game_systems])
 
-        render json: { id: post.id }, status: :created
+        render json: { uuid: post.uuid }, status: :created
       rescue => e
         Rails.logger.error(post.errors.full_messages) if post.errors.any?
         render json: { error: e.message }, status: :bad_request
@@ -73,7 +73,7 @@ class Api::V1::PostsController < Api::V1::BasesController
   end
 
   def edit
-    post = current_api_v1_user.posts.includes(:postable, :tags, :synalios).find_by(id: params[:id])
+    post = current_api_v1_user.posts.includes(:postable, :tags, :synalios).find_by(uuid: params[:uuid])
 
     if post.nil?
       render json: { error: 'Not Found' }, status: :not_found and return
@@ -117,7 +117,7 @@ class Api::V1::PostsController < Api::V1::BasesController
         @post.update_game_systems(post_params[:game_systems])
 
         if @post.update!(post_params.except(:postable_attributes, :tags, :synalios, :game_systems))
-          render json: { id: @post.id }, status: :ok
+          render json: { uuid: @post.uuid }, status: :ok
         else
           render json: { error: @post.errors.full_messages }, status: :unprocessable_entity
         end
@@ -144,6 +144,6 @@ class Api::V1::PostsController < Api::V1::BasesController
   end
 
   def set_post
-    @post = current_api_v1_user.posts.find(params[:id])
+    @post = current_api_v1_user.posts.find_by(uuid: params[:id])
   end
 end

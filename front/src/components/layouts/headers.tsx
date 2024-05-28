@@ -64,7 +64,7 @@ export default function Headers() {
   const handleLogout = async () => {
     const result = await logout();
     setUser({
-      id: -1,
+      uuid: "",
       name: "",
       avatar: "",
       following_count: 0,
@@ -168,7 +168,7 @@ export function AccountMenu({
       </Mantine.Menu.Target>
       <Mantine.Menu.Dropdown>
         <Mantine.Menu.Item
-          onClick={() => handleLink(RouterPath.users(user.id))}
+          onClick={() => handleLink(RouterPath.users(user.uuid))}
         >
           <div className="flex justify-start items-center">
             <Mantine.Avatar
@@ -183,7 +183,7 @@ export function AccountMenu({
         </Mantine.Menu.Item>
         {/* <div className="flex justify-center items-center">
           <Mantine.Menu.Item
-            onClick={() => handleLink(RouterPath.users(user.id))}
+            onClick={() => handleLink(RouterPath.users(user.uuid))}
           >
             <div className="flex flex-col justify-center items-center">
               <span className="text-center">{t_Menu("follow")}</span>
@@ -191,7 +191,7 @@ export function AccountMenu({
             </div>
           </Mantine.Menu.Item>
           <Mantine.Menu.Item
-            onClick={() => handleLink(RouterPath.users(user.id))}
+            onClick={() => handleLink(RouterPath.users(user.uuid))}
           >
             <div className="flex flex-col justify-center items-center">
               <span>{t_Menu("follower")}</span>
@@ -200,13 +200,13 @@ export function AccountMenu({
           </Mantine.Menu.Item>
         </div> */}
         <Mantine.Menu.Item
-          onClick={() => handleLink(RouterPath.users(user.id))}
+          onClick={() => handleLink(RouterPath.users(user.uuid))}
           leftSection={<VscAccount />}
         >
           {t_Menu("myPage")}
         </Mantine.Menu.Item>
         {/* <Mantine.Menu.Item
-          onClick={() => handleLink(RouterPath.bookmark(user.id))}
+          onClick={() => handleLink(RouterPath.bookmark(user.uuid))}
           leftSection={<FaRegBookmark />}
         >
           {t_Menu("bookmark")}

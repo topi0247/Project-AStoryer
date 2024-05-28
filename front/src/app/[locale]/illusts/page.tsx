@@ -52,20 +52,20 @@ export default function IllustsPage() {
     setIllusts(
       result.data.illusts.map(
         (illust: {
-          id: number;
+          uuid: string;
           title: string;
           data: string[];
           user: {
-            id: number;
+            uuid: string;
             name: string;
             avatar: string;
           };
         }) => ({
-          id: illust.id,
+          uuid: illust.uuid,
           title: illust.title,
           image: illust.data[0],
           user: {
-            id: illust.user.id,
+            uuid: illust.user.uuid,
             name: illust.user.name,
             avatar: illust.user.avatar,
           },
@@ -127,7 +127,7 @@ export default function IllustsPage() {
           <div className="grid grid-cols-2 mx-4 md:mx-auto md:grid-cols-4 gap-2">
             <>
               {illusts.map((illust: IndexIllustData) => (
-                <div key={illust.id} className="mb-8">
+                <div key={illust.uuid} className="mb-8">
                   <Illust illust={illust} isUserPage={false} />
                 </div>
               ))}

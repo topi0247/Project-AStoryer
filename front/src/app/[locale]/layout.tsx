@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     type: "website",
   },
   icons: {
-    icon: `${Settings.APP_URL}/favicon.ico`,
+    icon: `${Settings.APP_URL}/assets/favicon.ico`,
   },
   twitter: {
     card: "summary_large_image",

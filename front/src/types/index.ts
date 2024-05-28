@@ -1,20 +1,20 @@
 export interface IHomeIllustData {
-  id: number;
+  uuid: string;
   title: string;
   image: string;
   user: {
-    id: number;
+    uuid: string;
     name: string;
     avatar: string;
   };
 }
 
 export interface IndexIllustData {
-  id: number;
+  uuid: string;
   title: string;
   image: string;
   user?: {
-    id: number;
+    uuid: string;
     name: string;
     avatar: string;
   };
@@ -23,7 +23,7 @@ export interface IndexIllustData {
 }
 
 export interface IEditIllustData {
-  id: number;
+  uuid: string;
   title: string;
   caption?: string;
   image?: string[];
@@ -39,7 +39,7 @@ export interface IButtonState {
 }
 
 export interface IUser {
-  id: number;
+  uuid: string;
   name: string;
   avatar: string;
   following_count: number;

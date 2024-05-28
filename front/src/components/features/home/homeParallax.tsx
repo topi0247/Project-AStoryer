@@ -70,7 +70,7 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
             <IllustCard
               illust={illust}
               translate={translateX}
-              key={illust.id}
+              key={illust.uuid}
             />
           ))}
         </FramerMotion.motion.div>
@@ -79,7 +79,7 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
             <IllustCard
               illust={illust}
               translate={translateXReverse}
-              key={illust.id}
+              key={illust.uuid}
             />
           ))}
         </FramerMotion.motion.div>
@@ -88,7 +88,7 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
             <IllustCard
               illust={illust}
               translate={translateX}
-              key={illust.id}
+              key={illust.uuid}
             />
           ))}
         </FramerMotion.motion.div>
@@ -97,7 +97,7 @@ export const HomeParallax = ({ illusts }: { illusts: IHomeIllustData[] }) => {
             <IllustCard
               illust={illust}
               translate={translateXReverse}
-              key={illust.id}
+              key={illust.uuid}
             />
           ))}
         </FramerMotion.motion.div>
@@ -142,7 +142,7 @@ export const IllustCard = ({
       className="group/illust h-32 md:h-96 w-32 md:w-96 relative flex-shrink-0"
     >
       <Link
-        href={RouterPath.illust(illust.id)}
+        href={RouterPath.illust(illust.uuid)}
         className="block group-hover/illust:shadow-2xl "
       >
         <Mantine.Image
@@ -158,7 +158,7 @@ export const IllustCard = ({
         <h2 className="text-xl my-3">{illust.title}</h2>
         <div>
           <Link
-            href={RouterPath.users(Number(illust.user.id))}
+            href={RouterPath.users(illust.user.uuid)}
             className="flex justify-start icon-outlined gap-2"
           >
             <Mantine.Avatar

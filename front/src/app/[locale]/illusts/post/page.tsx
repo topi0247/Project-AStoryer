@@ -34,7 +34,7 @@ export default function IllustPostPage() {
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const [postIllust, setPostIllust] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
-  const [postId, setPostId] = useState<number>(0);
+  const [postUuid, setPostUuid] = useState<string>("");
   const [modalOpen, setModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
@@ -120,7 +120,7 @@ export default function IllustPostPage() {
         return;
       }
 
-      setPostId(res.data.id);
+      setPostUuid(res.data.uuid);
     } catch (e) {
       const state = publishRange === IPublicState.Draft ? "保存" : "投稿";
       setErrorMessage(`${state}に失敗しました`);
@@ -141,7 +141,7 @@ export default function IllustPostPage() {
   const handleModalClose = () => {
     setModalOpen(false);
     if (errorMessage === "") {
-      router.push(RouterPath.users(user.id));
+      router.push(RouterPath.users(user.uuid));
     }
   };
 
@@ -329,7 +329,7 @@ export default function IllustPostPage() {
                 <>
                   <Mantine.Button
                     className="bg-green-300 text-black"
-                    onClick={() => router.push(RouterPath.illust(postId))}
+                    onClick={() => router.push(RouterPath.illust(postUuid))}
                   >
                     {t_PostGeneral("showPost")}
                   </Mantine.Button>

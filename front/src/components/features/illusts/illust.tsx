@@ -42,7 +42,7 @@ export default function Illust({
   return (
     <section className="relative overflow-hidden">
       <Link
-        href={RouterPath.illust(illust.id)}
+        href={RouterPath.illust(illust.uuid)}
         className="relative z-0 hover:opacity-70 transition-all"
       >
         <Image
@@ -61,7 +61,7 @@ export default function Illust({
             <>
               <div className="absolute bottom-0 right-0 text-sm text-end">
                 <Link
-                  href={RouterPath.illustEdit(illust.id)}
+                  href={RouterPath.illustEdit(illust.uuid)}
                   className="px-2 py-1 bg-slate-600 text-white rounded-l"
                 >
                   {t_General("edit")}
@@ -77,7 +77,7 @@ export default function Illust({
         </>
       ) : (
         <div className="mt-2 flex ml-4 justify-start items-center gap-3">
-          <Link href={`/users/${illust.user?.id}`}>
+          <Link href={`/users/${illust.user?.uuid}`}>
             <Avatar
               variant="default"
               className="cursor-pointer"
@@ -88,7 +88,7 @@ export default function Illust({
             />
           </Link>
           <h4>
-            <Link href={RouterPath.illust(illust.id)}>{illust.title}</Link>
+            <Link href={RouterPath.illust(illust.uuid)}>{illust.title}</Link>
           </h4>
         </div>
       )}

@@ -111,7 +111,7 @@ export default function SpHeaders({
               className="absolute top-0 left-0 w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
               animate={{ x: avatarIconPos.x, y: avatarIconPos.y }}
               transition={{ type: "spring" }}
-              onClick={() => handleLink(RouterPath.users(user.id))}
+              onClick={() => handleLink(RouterPath.users(user.uuid))}
             >
               <VscAccount className="w-full h-full icon-white" />
             </motion.button>

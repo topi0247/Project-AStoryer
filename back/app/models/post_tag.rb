@@ -6,9 +6,9 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  tag_id     :bigint
-#  post_id    :bigint
+#  post_uuid  :uuid             not null
 #
 class PostTag < ApplicationRecord
-  belongs_to :post
+  belongs_to :post, foreign_key: :post_uuid
   belongs_to :tag
 end

@@ -2,30 +2,28 @@
 #
 # Table name: posts
 #
-#  id            :bigint           not null, primary key
 #  title         :string           not null
 #  caption       :string
 #  publish_state :integer
 #  published_at  :datetime
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  user_id       :bigint
 #  postable_type :string           not null
 #  postable_id   :bigint           not null
+#  uuid          :uuid             not null, primary key
+#  user_uuid     :uuid             not null
 #
 class Post < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, foreign_key: :user_uuid
   belongs_to :postable, polymorphic: true
   accepts_nested_attributes_for :postable
 
-  has_many :post_tags, dependent: :destroy
+  has_many :post_tags, primary_key: :uuid, foreign_key: :post_uuid, dependent: :destroy
   has_many :tags, through: :post_tags, source: :tag
-  has_many :post_synalios, dependent: :destroy
+  has_many :post_synalios, primary_key: :uuid, foreign_key: :post_uuid, dependent: :destroy
   has_many :synalios, through: :post_synalios, source: :synalio
-  has_many :favorites, dependent: :destroy
-  has_many :post_game_systems, dependent: :destroy
-  # include ActiveHash::Associations
-
+  has_many :favorites, primary_key: :uuid, foreign_key: :post_uuid, dependent: :destroy
+  has_many :post_game_systems, foreign_key: :post_uuid, dependent: :destroy
 
   validates :title, presence: true, length: { maximum: 20 }
   validates :caption, length: { maximum: 10_000 }
@@ -40,6 +38,30 @@ class Post < ApplicationRecord
   scope :only_publish, -> { where(publish_state: 'all_publish') }
 
   scope :useful_joins, -> { joins(:user, :tags, :synalios) }
+
+  # uuidの短縮
+  def short_uuid
+    # base64で短縮
+    # - を削除したあと16進数に変換、パディングの=を削除
+    Base64.urlsafe_encode64([uuid.delete('-')].pack("H*")).tr('=', '')
+  end
+
+  # 短縮uuidから検索
+  def self.find_by_short_uuid(short_uuid)
+    # base64でデコード
+    # uuidは「8-4-4-4-12」の形式（例：550e8400-e29b-41d4-a716-446655440000）
+    # なので16進数から変換して-を挿入
+    decode_uuid = Base64.urlsafe_decode64(short_uuid).unpack1("H*").insert(8, '-').insert(13, '-').insert(18, '-').insert(23, '-')
+    find_by(uuid: decode_uuid)
+  end
+
+  # ゲームシステムでの検索
+  def self.search_by_game_system(game_system_name)
+    game_system = GameSystem.find_by(name: game_system_name)
+    return none unless game_system
+
+    joins(:post_game_systems).where(post_game_systems: { game_system_id: game_system.id })
+  end
 
   # 公開可能か
   def publishable?(current_user=nil)
@@ -110,7 +132,6 @@ class Post < ApplicationRecord
   end
 
   # システムの取得
-  # TODO : ActiveHashがActiveRecordライクに出来ていないので仮
   def get_game_systems
     post_game_systems.map { |pgs| GameSystem.find(pgs.game_system_id)}
   end
@@ -153,11 +174,11 @@ class Post < ApplicationRecord
   # 未検索時用のカスタムjson
   def as_custom_index_json(content)
     {
-      id: id,
+      uuid: short_uuid,
       title: title,
       data: [content],
       user: {
-        id: user.id,
+        uuid: user.short_uuid,
         name: user.name,
         avatar: user.profile&.avatar&.url,
       }
@@ -167,7 +188,7 @@ class Post < ApplicationRecord
   # 表示用のカスタムjson
   def as_custom_show_json(content)
     {
-      id: id,
+      uuid: short_uuid,
       title: title,
       caption: caption,
       synalio: synalios.map(&:name).first,
@@ -175,7 +196,7 @@ class Post < ApplicationRecord
       tags: tags.map(&:name),
       data: [content],
       user: {
-        id: user.id,
+        uuid: user.short_uuid,
         name: user.name,
         profile: user.profile&.text,
         avatar: user.profile&.avatar&.url,
@@ -188,7 +209,7 @@ class Post < ApplicationRecord
   # 編集用のカスタムjson
   def as_custom_edit_json(content)
     {
-      id: id,
+      uuid: short_uuid,
       title: title,
       caption: caption,
       synalio: synalios.map(&:name).first,

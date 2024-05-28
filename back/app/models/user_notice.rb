@@ -6,11 +6,11 @@
 #  notice_kind :integer          not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
-#  user_id     :bigint
 #  notice_id   :bigint
+#  user_uuid   :uuid             not null
 #
 class UserNotice < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, foreign_key: :user_uuid
   belongs_to :notice
   enum notice_kind: { app: 0, email: 1 }
 end
