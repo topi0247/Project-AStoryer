@@ -6,8 +6,8 @@
 #  notice_kind :integer          not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
-#  user_id     :bigint
 #  notice_id   :bigint
+#  user_uuid   :uuid             not null
 #
 class UserNoticeSerializer
   include JSONAPI::Serializer

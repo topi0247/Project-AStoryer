@@ -2,28 +2,28 @@
 #
 # Table name: posts
 #
-#  id            :bigint           not null, primary key
 #  title         :string           not null
 #  caption       :string
 #  publish_state :integer
 #  published_at  :datetime
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  user_id       :bigint
 #  postable_type :string           not null
 #  postable_id   :bigint           not null
+#  uuid          :uuid             not null, primary key
+#  user_uuid     :uuid             not null
 #
 class Post < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, foreign_key: :user_uuid
   belongs_to :postable, polymorphic: true
   accepts_nested_attributes_for :postable
 
-  has_many :post_tags, dependent: :destroy
+  has_many :post_tags, primary_key: :uuid, foreign_key: :post_uuid, dependent: :destroy
   has_many :tags, through: :post_tags, source: :tag
-  has_many :post_synalios, dependent: :destroy
+  has_many :post_synalios, primary_key: :uuid, foreign_key: :post_uuid, dependent: :destroy
   has_many :synalios, through: :post_synalios, source: :synalio
-  has_many :favorites, dependent: :destroy
-  has_many :post_game_systems, dependent: :destroy
+  has_many :favorites, primary_key: :uuid, foreign_key: :post_uuid, dependent: :destroy
+  has_many :post_game_systems, foreign_key: :post_uuid, dependent: :destroy
   # include ActiveHash::Associations
 
 
@@ -153,11 +153,11 @@ class Post < ApplicationRecord
   # 未検索時用のカスタムjson
   def as_custom_index_json(content)
     {
-      id: id,
+      uuid: uuid,
       title: title,
       data: [content],
       user: {
-        id: user.id,
+        uuid: user.uuid,
         name: user.name,
         avatar: user.profile&.avatar&.url,
       }
@@ -167,7 +167,7 @@ class Post < ApplicationRecord
   # 表示用のカスタムjson
   def as_custom_show_json(content)
     {
-      id: id,
+      uuid: uuid,
       title: title,
       caption: caption,
       synalio: synalios.map(&:name).first,
@@ -175,7 +175,7 @@ class Post < ApplicationRecord
       tags: tags.map(&:name),
       data: [content],
       user: {
-        id: user.id,
+        uuid: user.uuid,
         name: user.name,
         profile: user.profile&.text,
         avatar: user.profile&.avatar&.url,
@@ -188,7 +188,7 @@ class Post < ApplicationRecord
   # 編集用のカスタムjson
   def as_custom_edit_json(content)
     {
-      id: id,
+      uuid: uuid,
       title: title,
       caption: caption,
       synalio: synalios.map(&:name).first,

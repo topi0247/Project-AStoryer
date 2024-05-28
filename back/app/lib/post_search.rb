@@ -46,8 +46,8 @@ class PostSearch
     if game_system.present?
       game_system = GameSystem.find_by_name(game_system)
       if game_system.present?
-        game_system_posts = PostGameSystem.where(game_system_id: game_system.id).pluck(:post_id)
-        posts = posts.where(id: game_system_posts)
+        game_system_posts = PostGameSystem.where(game_system_id: game_system.id).pluck(:post_uuid)
+        posts = posts.where(uuid: game_system_posts)
       end
     end
     posts
@@ -81,8 +81,8 @@ class PostSearch
     if game_system.present?
       game_system = GameSystem.find_by_name(game_system)
       if game_system.present?
-        game_system_posts = PostGameSystem.where(game_system_id: game_system.id).pluck(:post_id)
-        or_posts = or_posts.present? ? or_posts.or(base_posts.where(id: game_system_posts)) : base_posts.where(id: game_system_posts)
+        game_system_posts = PostGameSystem.where(game_system_id: game_system.id).pluck(:post_uuid)
+        or_posts = or_posts.present? ? or_posts.or(base_posts.where(uuid: game_system_posts)) : base_posts.where(uuid: game_system_posts)
       end
     end
     or_posts = or_posts if or_posts.present?

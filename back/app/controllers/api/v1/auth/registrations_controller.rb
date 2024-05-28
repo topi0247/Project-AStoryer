@@ -7,13 +7,13 @@ class Api::V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsCon
         if resource.persisted?
           if resource.active_for_authentication?
             # 認証テーブルにデータを追加
-            Authentication.create!(user_id: resource.id, provider: 'email', uid: resource.email)
+            Authentication.create!(user_uuid: resource.uuid, provider: 'email', uid: resource.email)
 
             # 通知設定のテーブル作成
             notice_app = Notice.create!
-            UserNotice.create!(user_id: resource.id, notice_id: notice_app.id,notice_kind: UserNotice.notice_kinds[:app])
+            UserNotice.create!(user_uuid: resource.uuid, notice_id: notice_app.id,notice_kind: UserNotice.notice_kinds[:app])
             notice_email = Notice.create!
-            UserNotice.create!(user_id: resource.id, notice_id: notice_email.id,notice_kind: UserNotice.notice_kinds[:email])
+            UserNotice.create!(user_uuid: resource.uuid, notice_id: notice_email.id,notice_kind: UserNotice.notice_kinds[:email])
 
             # 自動ログイン
             sign_in(resource)
