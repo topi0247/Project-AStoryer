@@ -39,6 +39,22 @@ class User < ActiveRecord::Base
 
   enum role: { general: 0, admin: 1 } # general: 一般ユーザー, admin: 管理者
 
+  # uuidの短縮
+  def short_uuid
+    # base64で短縮
+    # - を削除したあと16進数に変換、パディングの=を削除
+    Base64.urlsafe_encode64([uuid.delete('-')].pack("H*")).tr('=', '')
+  end
+
+  # 短縮uuidから検索
+  def self.find_by_short_uuid(short_uuid)
+    # base64でデコード
+    # uuidは「8-4-4-4-12」の形式（例：550e8400-e29b-41d4-a716-446655440000）
+    # なので16進数から変換して-を挿入
+    decode_uuid = Base64.urlsafe_decode64(short_uuid).unpack1("H*").insert(8, '-').insert(13, '-').insert(18, '-').insert(23, '-')
+    find_by(uuid: decode_uuid)
+  end
+
   def self.from_omniauth(auth)
     transaction do
       user = find_by(email: auth.info.email)
@@ -74,7 +90,7 @@ class User < ActiveRecord::Base
 
   def as_header_json
     {
-      uuid: uuid,
+      uuid: short_uuid,
       name: name,
       avatar: profile&.avatar&.url,
       header_image: profile&.header_image&.url,
@@ -85,7 +101,7 @@ class User < ActiveRecord::Base
 
   def as_custom_json(posts = [])
     {
-      uuid: uuid,
+      uuid: short_uuid,
       name: name,
       avatar: profile&.avatar&.url,
       header_image: profile&.header_image&.url,

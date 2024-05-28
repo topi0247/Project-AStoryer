@@ -178,7 +178,7 @@ class Post < ApplicationRecord
       title: title,
       data: [content],
       user: {
-        uuid: user.uuid,
+        uuid: user.short_uuid,
         name: user.name,
         avatar: user.profile&.avatar&.url,
       }
@@ -196,7 +196,7 @@ class Post < ApplicationRecord
       tags: tags.map(&:name),
       data: [content],
       user: {
-        uuid: user.uuid,
+        uuid: user.short_uuid,
         name: user.name,
         profile: user.profile&.text,
         avatar: user.profile&.avatar&.url,
