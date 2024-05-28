@@ -17,7 +17,7 @@ class Api::V1::PostsController < Api::V1::BasesController
   end
 
   def show
-    post = Post.includes(:postable, :tags, :synalios, :user).find_by(uuid: params[:id])
+    post = Post.includes(:postable, :tags, :synalios, :user).find_by_short_uuid(params[:id])
 
     if post.nil? || !post.publishable?(current_api_v1_user)
       render json: { error: 'Not Found' }, status: :not_found and return

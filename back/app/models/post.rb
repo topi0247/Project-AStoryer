@@ -39,6 +39,22 @@ class Post < ApplicationRecord
 
   scope :useful_joins, -> { joins(:user, :tags, :synalios) }
 
+  # uuidの短縮
+  def short_uuid
+    # base64で短縮
+    # - を削除したあと16進数に変換、パディングの=を削除
+    Base64.urlsafe_encode64([uuid.delete('-')].pack("H*")).tr('=', '')
+  end
+
+  # 短縮uuidから検索
+  def self.find_by_short_uuid(short_uuid)
+    # base64でデコード
+    # uuidは「8-4-4-4-12」の形式（例：550e8400-e29b-41d4-a716-446655440000）
+    # なので16進数から変換して-を挿入
+    decode_uuid = Base64.urlsafe_decode64(short_uuid).unpack1("H*").insert(8, '-').insert(13, '-').insert(18, '-').insert(23, '-')
+    find_by(uuid: decode_uuid)
+  end
+
   # ゲームシステムでの検索
   def self.search_by_game_system(game_system_name)
     game_system = GameSystem.find_by(name: game_system_name)
@@ -116,7 +132,6 @@ class Post < ApplicationRecord
   end
 
   # システムの取得
-  # TODO : ActiveHashがActiveRecordライクに出来ていないので仮
   def get_game_systems
     post_game_systems.map { |pgs| GameSystem.find(pgs.game_system_id)}
   end
@@ -159,7 +174,7 @@ class Post < ApplicationRecord
   # 未検索時用のカスタムjson
   def as_custom_index_json(content)
     {
-      uuid: uuid,
+      uuid: short_uuid,
       title: title,
       data: [content],
       user: {
@@ -173,7 +188,7 @@ class Post < ApplicationRecord
   # 表示用のカスタムjson
   def as_custom_show_json(content)
     {
-      uuid: uuid,
+      uuid: short_uuid,
       title: title,
       caption: caption,
       synalio: synalios.map(&:name).first,
@@ -194,7 +209,7 @@ class Post < ApplicationRecord
   # 編集用のカスタムjson
   def as_custom_edit_json(content)
     {
-      uuid: uuid,
+      uuid: short_uuid,
       title: title,
       caption: caption,
       synalio: synalios.map(&:name).first,
