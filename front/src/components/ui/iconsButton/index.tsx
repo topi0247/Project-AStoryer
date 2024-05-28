@@ -34,7 +34,7 @@ const FavoriteButton = ({ postUuid }: { postUuid: string }) => {
 
     if (value) {
       const res = await Post2API("/favorites", {
-        favorite: { post_id: postUuid },
+        favorite: { post_uuid: postUuid },
       });
       if (res.status != 200 || !res.data.success) return;
     } else {

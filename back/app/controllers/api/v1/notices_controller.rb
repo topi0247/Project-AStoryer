@@ -2,9 +2,9 @@ class Api::V1::NoticesController < Api::V1::BasesController
   def update
     success = true
     notice_params.each do |notice_param|
-      notice = current_api_v1_user.notices.find(notice_param["uuid"])
+      notice = current_api_v1_user.notices.find(notice_param["id"])
       begin
-        notice.update!(notice_param.except("uuid"))
+        notice.update!(notice_param.except("id"))
       rescue => e
         Rails.logger.error(e)
         success = false
@@ -21,6 +21,6 @@ class Api::V1::NoticesController < Api::V1::BasesController
   private
 
   def notice_params
-    params.permit(app: [:favorite, :bookmark, :comment, :follower, :uuid], email: [:favorite, :bookmark, :comment, :follower, :uuid]).to_h.values.flatten
+    params.permit(app: [:favorite, :bookmark, :comment, :follower, :id], email: [:favorite, :bookmark, :comment, :follower, :id]).to_h.values.flatten
   end
 end
