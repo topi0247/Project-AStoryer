@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       resources :game_systems, only: %i[index]
       resources :users, only: %i[show]
       resources :favorites, only: %i[show create destroy]
+      resources :bookmarks, only: %i[show create destroy]
     end
   end
 end

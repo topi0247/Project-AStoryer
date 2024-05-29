@@ -115,6 +115,7 @@ export default function IllustPage({
                     postUuid={uuid}
                     publicState={illustData.publish_state}
                     title={illustData.title}
+                    postUserUuid={illustData.user.uuid}
                   />
                   <h3 className="text-2xl font-semibold">{illustData.title}</h3>
                   <Mantine.Button

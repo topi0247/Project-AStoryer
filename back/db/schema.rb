@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_27_094814) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_29_081804) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -50,6 +50,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_27_094814) do
     t.datetime "updated_at", null: false
     t.uuid "user_uuid", null: false
     t.index ["user_uuid"], name: "index_authentications_on_user_uuid"
+  end
+
+  create_table "bookmarks", force: :cascade do |t|
+    t.uuid "user_uuid", null: false
+    t.uuid "post_uuid", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_uuid", "post_uuid"], name: "index_bookmarks_on_user_uuid_and_post_uuid", unique: true
   end
 
   create_table "favorites", force: :cascade do |t|
@@ -176,6 +184,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_27_094814) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "authentications", "users", column: "user_uuid", primary_key: "uuid"
+  add_foreign_key "bookmarks", "posts", column: "post_uuid", primary_key: "uuid"
+  add_foreign_key "bookmarks", "users", column: "user_uuid", primary_key: "uuid"
   add_foreign_key "favorites", "posts", column: "post_uuid", primary_key: "uuid"
   add_foreign_key "favorites", "users", column: "user_uuid", primary_key: "uuid"
   add_foreign_key "post_game_systems", "posts", column: "post_uuid", primary_key: "uuid"
