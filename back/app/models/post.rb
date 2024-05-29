@@ -23,6 +23,7 @@ class Post < ApplicationRecord
   has_many :post_synalios, primary_key: :uuid, foreign_key: :post_uuid, dependent: :destroy
   has_many :synalios, through: :post_synalios, source: :synalio
   has_many :favorites, primary_key: :uuid, foreign_key: :post_uuid, dependent: :destroy
+  has_many :bookmarks, primary_key: :uuid, foreign_key: :post_uuid, dependent: :destroy
   has_many :post_game_systems, foreign_key: :post_uuid, dependent: :destroy
 
   validates :title, presence: true, length: { maximum: 20 }

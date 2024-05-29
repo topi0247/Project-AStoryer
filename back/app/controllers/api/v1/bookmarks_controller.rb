@@ -1,18 +1,18 @@
-class Api::V1::FavoritesController < Api::V1::BasesController
+class Api::V1::BookmarksController < Api::V1::BasesController
   before_action :set_post_uuid
 
   def show
-    favorite = current_api_v1_user.favorites.find_by(post_uuid: @uuid)
-    if favorite.present?
-      render json: { isFavorite: true }, status: :ok
+    bookmark = current_api_v1_user.bookmarks.find_by(post_uuid: @uuid)
+    if bookmark.present?
+      render json: { isBookmark: true }, status: :ok
     else
-      render json: { isFavorite: false }, status: :ok
+      render json: { isBookmark: false }, status: :ok
     end
   end
 
   def create
-    favorite = current_api_v1_user.favorites.build(post_uuid: @uuid)
-    if favorite.save
+    bookmark = current_api_v1_user.bookmarks.build(post_uuid: @uuid)
+    if bookmark.save
       render json: { success: true }, status: :ok
     else
       render json: { success: false }, status: :internal_server_error
@@ -20,8 +20,8 @@ class Api::V1::FavoritesController < Api::V1::BasesController
   end
 
   def destroy
-    favorite = current_api_v1_user.favorites.find_by(post_uuid: @uuid)
-    if favorite.destroy
+    bookmark = current_api_v1_user.bookmarks.find_by(post_uuid: @uuid)
+    if bookmark.destroy
       render json: { success: true }, status: :ok
     else
       render json: { success: false }, status: :internal_server_error
@@ -31,11 +31,11 @@ class Api::V1::FavoritesController < Api::V1::BasesController
   private
 
   def favorite_params
-    params.require(:favorite).permit(:post_uuid)
+    params.require(:bookmark).permit(:post_uuid)
   end
 
   def set_post_uuid
-    if params[:favorite].blank?
+    if params[:bookmark].blank?
       @uuid = Post.find_by_short_uuid(params[:id]).uuid
     else
       @uuid = Post.find_by_short_uuid(favorite_params[:post_uuid]).uuid

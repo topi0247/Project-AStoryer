@@ -36,6 +36,7 @@ class User < ActiveRecord::Base
   has_many :followers, through: :follower_relationships, source: :follower
 
   has_many :favorites, primary_key: :uuid, foreign_key: :user_uuid, dependent: :destroy
+  has_many :bookmarks, primary_key: :uuid, foreign_key: :user_uuid, dependent: :destroy
 
   enum role: { general: 0, admin: 1 } # general: 一般ユーザー, admin: 管理者
 

@@ -11,7 +11,13 @@ import { MdFavorite, MdOutlineFavoriteBorder } from "rocketicons/md";
 const fetcherFavorite = (url: string) =>
   GetFromAPI(url).then((res) => res.data);
 
-export default function FavoriteButton({ postUuid }: { postUuid: string }) {
+export default function FavoriteButton({
+  postUuid,
+  postUserUuid,
+}: {
+  postUuid: string;
+  postUserUuid: string;
+}) {
   const { data, error } = useSWR(`/favorites/${postUuid}`, fetcherFavorite);
   const user = useRecoilValue(RecoilState.userState);
   const [favorite, setFavorite] = useState(false);
@@ -24,7 +30,6 @@ export default function FavoriteButton({ postUuid }: { postUuid: string }) {
   }, [data]);
 
   if (!data || error) return;
-  if (data.post_user_uuid === user.uuid) return;
 
   const handleFavorite = async (value: boolean) => {
     if (user.uuid === "") {
