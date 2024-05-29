@@ -1,8 +1,7 @@
 "use client";
 
-import { TransitionsModal } from "@/components/ui";
 import { Delete2API, GetFromAPI, Put2API, useRouter } from "@/lib";
-import { modalOpenState, userState } from "@/recoilState";
+import { userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
 import { IEditIllustData, IPublicState } from "@/types";
 import * as Mantine from "@mantine/core";
@@ -14,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { FaImage } from "rocketicons/fa";
 import useSWR, { mutate } from "swr";
+import { XShare } from "@/components/features/illusts";
 
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
@@ -134,7 +134,6 @@ export default function IllustEditPage({
   const handleSubmit = async () => {
     const { title, caption, publishRange, synalioTitle, gameSystem } =
       form.getValues();
-    form.getValues();
 
     const update = {
       post: {
@@ -185,6 +184,7 @@ export default function IllustEditPage({
       }
       mutate(`/posts/${uuid}/edit`);
       mutate(`/posts/${uuid}`);
+      router.push(RouterPath.users(user.uuid));
     } catch (e) {
       setErrorMessage(t_EditGeneral("deleteError"));
       return;
@@ -496,9 +496,7 @@ export default function IllustEditPage({
                     >
                       {t_PostGeneral("showPost")}
                     </Mantine.Button>
-                    <Mantine.Button className="bg-black hover:bg-gray-400 transition-all text-white">
-                      {t_PostGeneral("XShare")}
-                    </Mantine.Button>
+                    <XShare postUuid={uuid} title={form.getValues().title} />
                   </>
                 )}
               </Mantine.Group>

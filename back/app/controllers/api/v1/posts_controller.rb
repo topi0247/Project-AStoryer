@@ -73,7 +73,7 @@ class Api::V1::PostsController < Api::V1::BasesController
   end
 
   def edit
-    post = current_api_v1_user.posts.includes(:postable, :tags, :synalios).find_by(uuid: params[:uuid])
+    post = current_api_v1_user.posts.includes(:postable, :tags, :synalios).find_by_short_uuid(params[:id])
 
     if post.nil?
       render json: { error: 'Not Found' }, status: :not_found and return
@@ -144,6 +144,6 @@ class Api::V1::PostsController < Api::V1::BasesController
   end
 
   def set_post
-    @post = current_api_v1_user.posts.find_by(uuid: params[:id])
+    @post = current_api_v1_user.posts.find_by_short_uuid(params[:id])
   end
 end

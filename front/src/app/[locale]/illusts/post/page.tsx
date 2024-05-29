@@ -1,5 +1,6 @@
 "use client";
 
+import { XShare } from "@/components/features/illusts";
 import { GetFromAPI, Post2API, useRouter } from "@/lib";
 import { userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
@@ -333,9 +334,7 @@ export default function IllustPostPage() {
                   >
                     {t_PostGeneral("showPost")}
                   </Mantine.Button>
-                  <Mantine.Button className="bg-black text-white">
-                    {t_PostGeneral("XShare")}
-                  </Mantine.Button>
+                  <XShare postUuid={postUuid} title={form.getValues().title} />
                 </>
               )}
             </Mantine.Group>
