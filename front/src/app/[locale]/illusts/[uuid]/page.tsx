@@ -5,7 +5,7 @@ import { useSetRecoilState } from "recoil";
 import * as RecoilState from "@/recoilState";
 import { GetFromAPI, Link, useRouter } from "@/lib";
 import * as Mantine from "@mantine/core";
-import { FixedIconButtonList, IconButtonList } from "@/components/ui";
+import { IconButtonList } from "@/components/ui";
 import { useTranslations } from "next-intl";
 import { useMediaQuery } from "@mantine/hooks";
 import { MdCollections } from "rocketicons/md";
@@ -334,11 +334,6 @@ export default function IllustPage({
           </section>
         </article>
       </div>
-
-      {/* <FixedIconButtonList
-        postUuid={uuid}
-        publicState={illustData.publish_state}
-      /> */}
     </article>
   );
 }
