@@ -207,6 +207,7 @@ export default function IllustPostPage() {
               <section>
                 <Mantine.TextInput
                   withAsterisk
+                  maxLength={TITLE_MAX_LENGTH}
                   label={t_PostGeneral("title")}
                   name="title"
                   {...form.getInputProps("title")}
@@ -219,6 +220,7 @@ export default function IllustPostPage() {
                   size="sm"
                   radius="xs"
                   rows={5}
+                  maxLength={CAPTION_MAX_LENGTH}
                   {...form.getInputProps("caption")}
                 />
               </section>

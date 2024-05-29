@@ -23,6 +23,9 @@ export default function FavoriteButton({ postUuid }: { postUuid: string }) {
     }
   }, [data]);
 
+  if (!data || error) return;
+  if (data.post_user_uuid === user.uuid) return;
+
   const handleFavorite = async (value: boolean) => {
     if (user.uuid === "") {
       setModalOpen(true);
@@ -51,7 +54,7 @@ export default function FavoriteButton({ postUuid }: { postUuid: string }) {
           color="pink"
           className="p-0"
         >
-          <MdFavorite className="icon-red-400" />
+          <MdFavorite className="icon-red-xl" />
         </Button>
       ) : (
         <Button
@@ -59,7 +62,7 @@ export default function FavoriteButton({ postUuid }: { postUuid: string }) {
           variant="transparent"
           className="p-0"
         >
-          <MdOutlineFavoriteBorder className="icon-gray-500" />
+          <MdOutlineFavoriteBorder className="icon-gray-xl" />
         </Button>
       )}
     </>

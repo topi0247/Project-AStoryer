@@ -122,6 +122,8 @@ class Api::V1::PostsController < Api::V1::BasesController
           render json: { error: @post.errors.full_messages }, status: :unprocessable_entity
         end
       rescue => e
+        Rails.logger.error(e.message)
+        Rails.logger.error(e.backtrace.join("\n"))
         render json: { error: e.message }, status: :bad_request
       end
     end

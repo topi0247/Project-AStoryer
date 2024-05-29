@@ -69,6 +69,10 @@ export default function IllustEditPage({
   const [deleteConfirmationError, setDeleteConfirmationError] =
     useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const TITLE_MAX_LENGTH = 20;
+  const CAPTION_MAX_LENGTH = 10000;
+  const MEGA_BITE = 1024 ** 2;
+  const MAX_SIZE = 10 * MEGA_BITE;
 
   const form = useForm({
     initialValues: {
@@ -245,7 +249,7 @@ export default function IllustEditPage({
                     <Dropzone
                       name="postIllust"
                       onDrop={(files) => handleDrop(files)}
-                      maxSize={5 * 1024 ** 2}
+                      maxSize={MAX_SIZE}
                       accept={IMAGE_MIME_TYPE}
                       style={{
                         height: mobile ? "15rem" : "30rem",
@@ -302,6 +306,7 @@ export default function IllustEditPage({
               <section>
                 <Mantine.TextInput
                   withAsterisk
+                  maxLength={TITLE_MAX_LENGTH}
                   label={t_PostGeneral("title")}
                   name="title"
                   {...form.getInputProps("title")}
@@ -314,6 +319,7 @@ export default function IllustEditPage({
                   size="sm"
                   radius="xs"
                   rows={5}
+                  maxLength={CAPTION_MAX_LENGTH}
                   {...form.getInputProps("caption")}
                 />
               </section>

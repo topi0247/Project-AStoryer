@@ -114,6 +114,7 @@ export default function IllustPage({
                   <IconButtonList
                     postUuid={uuid}
                     publicState={illustData.publish_state}
+                    title={illustData.title}
                   />
                   <h3 className="text-2xl font-semibold">{illustData.title}</h3>
                   <Mantine.Button
@@ -334,10 +335,10 @@ export default function IllustPage({
         </article>
       </div>
 
-      <FixedIconButtonList
+      {/* <FixedIconButtonList
         postUuid={uuid}
         publicState={illustData.publish_state}
-      />
+      /> */}
     </article>
   );
 }

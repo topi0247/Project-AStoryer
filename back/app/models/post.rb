@@ -92,6 +92,9 @@ class Post < ApplicationRecord
 
   # タグの更新
   def update_tags(new_tags)
+    # 登録しているタグと一致するか
+    return unless new_tags.all? { |tag| tags.exists?(name: tag) }
+
     # 登録しているタグを一旦全部消す
     post_tags.destroy_all
 
@@ -110,6 +113,9 @@ class Post < ApplicationRecord
 
   # シナリオの更新
   def update_synalios(new_synalios)
+    # 登録しているシステムと一致するか
+    return unless new_synalios.all? { |synalio| synalios.exists?(name: synalio) }
+
     post_synalios.destroy_all
     create_synalios(new_synalios)
   end
@@ -120,7 +126,7 @@ class Post < ApplicationRecord
     new_game_systems.each do |game_system|
       system = GameSystem.find_by(name: game_system)
       if system.present?
-        PostGameSystem.create!(post_id: id, game_system_id: system.id)
+        PostGameSystem.create!(post_uuid: id, game_system_id: system.id)
       end
     end
   end
@@ -202,6 +208,7 @@ class Post < ApplicationRecord
         avatar: user.profile&.avatar&.url,
         follower: user.followers.count
       },
+      publish_state: publish_state,
       published_at: published_at.strftime('%Y/%m/%d %H:%M:%S'),
     }
   end

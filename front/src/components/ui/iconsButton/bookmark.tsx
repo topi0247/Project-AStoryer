@@ -27,7 +27,7 @@ export default function BookmarkButton({ postUuid }: { postUuid: string }) {
           variant="transparent"
           className="p-0"
         >
-          <FaBookmark className="icon-sky-500" />
+          <FaBookmark className="icon-sky-xl" />
         </Button>
       ) : (
         <Button
@@ -35,7 +35,7 @@ export default function BookmarkButton({ postUuid }: { postUuid: string }) {
           variant="transparent"
           className="p-0"
         >
-          <FaRegBookmark className="icon-gray-500" />
+          <FaRegBookmark className="icon-gray-xl" />
         </Button>
       )}
     </>
