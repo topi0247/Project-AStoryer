@@ -11,7 +11,7 @@ class Api::V1::UsersController < Api::V1::BasesController
     posts = []
     # ログインユーザーと表示ユーザーが同じ場合は全ての投稿を取得
     if(current_api_v1_user && current_api_v1_user.uuid == user.uuid)
-      posts = user.posts.map do |post|
+      posts = user.posts.order(published_at: :desc).map do |post|
         {
           uuid: post.short_uuid,
           title: post.title,
@@ -22,7 +22,7 @@ class Api::V1::UsersController < Api::V1::BasesController
     else
       # ログインユーザーと表示ユーザーが異なる場合は公開投稿のみ取得
       # TODO : フォロワーの場合はフォロワー公開も取得
-      posts = user.posts.where(publish_state: 'all_publish').map do |post|
+      posts = user.posts.where(publish_state: 'all_publish').order(published_at: :desc).map do |post|
         {
           uuid: post.short_uuid,
           title: post.title,

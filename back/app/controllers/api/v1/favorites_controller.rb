@@ -2,8 +2,8 @@ class Api::V1::FavoritesController < Api::V1::BasesController
   before_action :set_post_uuid
 
   def show
-    favorite = current_api_v1_user.favorites.find_by(post_uuid: @uuid)
-    render json: { isFavorite: favorite.present? }, status: :ok
+    favorite = current_api_v1_user.favorites.includes(:users).find_by(post_uuid: @uuid)
+    render json: { isFavorite: favorite.present?, post_user_uuid: favorite.post.user_uuid  }, status: :ok
   end
 
   def create
