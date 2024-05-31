@@ -1,8 +1,12 @@
 class Api::V1::UsersController < Api::V1::BasesController
   skip_before_action :authenticate_api_v1_user!, only: %i[show bookmarks]
-  before_action :set_user, only: %i[show bookmarks]
+  before_action :set_user, only: %i[show postsIllust bookmarks]
 
   def show
+    render json: @user.as_custom_json, status: :ok
+  end
+
+  def postsIllust
     posts = []
     # ログインユーザーと表示ユーザーが同じ場合は全ての投稿を取得
     if(current_api_v1_user && current_api_v1_user.uuid == @user.uuid)
@@ -25,8 +29,7 @@ class Api::V1::UsersController < Api::V1::BasesController
         }
       end
     end
-
-    render json: @user.as_custom_json(posts), status: :ok
+    render json: posts, status: :ok
   end
 
   def bookmarks
