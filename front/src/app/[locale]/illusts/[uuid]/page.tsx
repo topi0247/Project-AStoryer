@@ -106,7 +106,7 @@ export default function IllustPage({
                   withIndicators
                 >
                   {illustData.data.map((img: string, i: number) => (
-                    <Carousel.Slide>
+                    <Carousel.Slide key={i}>
                       <Mantine.Button
                         variant={mobile ? "transparent" : "filled"}
                         color={mobile ? "transparent" : "gray"}
