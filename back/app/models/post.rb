@@ -37,6 +37,7 @@ class Post < ApplicationRecord
   scope :search_by_synalio, ->(synalio_name) { joins(:synalios).where("synalios.name LIKE ?", "%#{synalio_name}%") }
   scope :search_by_user, ->(user_name) { joins(:user).where("users.name LIKE ?", "%#{user_name}%") }
   scope :only_publish, -> { where(publish_state: 'all_publish') }
+  scope :publish_at_desc, -> { order(published_at: :desc) }
 
   scope :useful_joins, -> { joins(:user, :tags, :synalios) }
 
