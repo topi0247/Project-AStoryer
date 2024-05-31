@@ -1,14 +1,10 @@
 "use client";
 
 import * as Mantine from "@mantine/core";
-import { IndexIllustData } from "@/types";
-import { Illust } from "@/components/features/illusts";
 import { useTranslations } from "next-intl";
 import * as Users from "@/components/features/users";
 import { GetFromAPI } from "@/lib";
 import useSWR from "swr";
-import { useRecoilValue } from "recoil";
-import { userState } from "@/recoilState";
 
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
@@ -34,22 +30,6 @@ export default function UserPage({ params }: { params: { uuid: string } }) {
     },
     profile: data.profile,
   };
-
-  const illusts = data.posts.map(
-    (illust: {
-      uuid: string;
-      title: string;
-      data: string;
-      publish_state?: string;
-    }) => {
-      return {
-        uuid: illust.uuid,
-        title: illust.title,
-        image: illust.data,
-        publishRange: illust.publish_state ?? null,
-      };
-    }
-  );
 
   return (
     <>
@@ -167,22 +147,7 @@ export default function UserPage({ params }: { params: { uuid: string } }) {
 
       {/* イラスト一覧 */}
       <article className="mb-16">
-        <section id="tabs" className="mx-2 md:container md:m-auto md:mb-8">
-          <Users.UserTabs />
-        </section>
-        <section className="container my-2 m-auto">
-          <div className="grid grid-cols-2 md:mx-auto md:grid-cols-4 mx-2 gap-1">
-            {illusts.map((illust: IndexIllustData) => (
-              <div key={illust.uuid}>
-                <Illust illust={illust} />
-              </div>
-            ))}
-          </div>
-        </section>
-        {/* TODO : スタート時は投稿数が少ないことからページネーションは後で実装 */}
-        {/* <section className="mt-4">
-          <UI.Pagination elementName="#tabs" adjust={-20} />
-        </section> */}
+        <Users.IllustIndex uuid={uuid} />
       </article>
     </>
   );

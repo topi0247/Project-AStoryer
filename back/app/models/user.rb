@@ -37,6 +37,7 @@ class User < ActiveRecord::Base
 
   has_many :favorites, primary_key: :uuid, foreign_key: :user_uuid, dependent: :destroy
   has_many :bookmarks, primary_key: :uuid, foreign_key: :user_uuid, dependent: :destroy
+  has_many :bookmark_posts, through: :bookmarks, source: :post
 
   enum role: { general: 0, admin: 1 } # general: 一般ユーザー, admin: 管理者
 
@@ -109,7 +110,6 @@ class User < ActiveRecord::Base
       profile: profile&.text,
       following_count: following.count || 0,
       follower_count: followers.count || 0,
-      posts: posts,
     }
   end
 end

@@ -151,7 +151,7 @@ export function AccountMenu({
   const router = useRouter();
 
   const handleLink = (path: string) => {
-    router.push(`/${path}`);
+    router.push(`${path}`);
   };
 
   return (
@@ -205,12 +205,12 @@ export function AccountMenu({
         >
           {t_Menu("myPage")}
         </Mantine.Menu.Item>
-        {/* <Mantine.Menu.Item
+        <Mantine.Menu.Item
           onClick={() => handleLink(RouterPath.bookmark(user.uuid))}
           leftSection={<FaRegBookmark />}
         >
           {t_Menu("bookmark")}
-        </Mantine.Menu.Item> */}
+        </Mantine.Menu.Item>
         <Mantine.Menu.Item
           onClick={() => handleLink(RouterPath.account)}
           leftSection={<IoMdSettings />}

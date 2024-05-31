@@ -15,5 +15,5 @@ export const RouterPath = {
   illustEdit: (uuid: string) => `/illusts/${uuid}/edit`,
   users: (uuid: string) => `/users/${uuid}`,
   account: "/account",
-  bookmark: (uuid: string) => `/users/${uuid}?bookmark=true`,
+  bookmark: (uuid: string) => `/users/${uuid}?tab=bookmark`,
 };

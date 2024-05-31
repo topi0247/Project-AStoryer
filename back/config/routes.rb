@@ -14,7 +14,12 @@ Rails.application.routes.draw do
       resources :tags, only: %i[index create]
       resources :synalios, only: %i[index]
       resources :game_systems, only: %i[index]
-      resources :users, only: %i[show]
+      resources :users, only: %i[show] do
+        member do
+          get 'bookmarks'
+          get 'postsIllust'
+        end
+      end
       resources :favorites, only: %i[show create destroy]
       resources :bookmarks, only: %i[show create destroy]
     end
