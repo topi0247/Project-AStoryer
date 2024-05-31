@@ -15,13 +15,18 @@ export default function IllustIndex({ uuid }: { uuid: string }) {
 
   useEffect(() => {
     const search = window.location.search;
+    if (
+      (isBookmark && search === "?tab=bookmark") ||
+      (!isBookmark && search === "")
+    )
+      return;
     setIsBookmark(search === "?tab=bookmark");
     setUrl(
       search === "?tab=bookmark"
         ? `/users/${uuid}/bookmarks`
         : `/users/${uuid}/postsIllust`
     );
-  }, [uuid]);
+  }, [uuid, window.location.search]);
 
   useEffect(() => {
     setUrl(

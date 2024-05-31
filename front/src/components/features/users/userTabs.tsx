@@ -1,12 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Mantine from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/lib";
 import { RouterPath } from "@/settings";
 
 enum Tab {
-  post = "myPage",
+  post = "post",
   bookmark = "bookmark",
 }
 
@@ -24,6 +24,10 @@ export default function UserTabs({
   );
   const t_UserPage = useTranslations("UserPage");
   const router = useRouter();
+
+  useEffect(() => {
+    setValue(isBookmark ? Tab.bookmark : Tab.post);
+  }, [isBookmark]);
 
   const handleChange = (newValue: string | null) => {
     if (newValue === value) return;
