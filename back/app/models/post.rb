@@ -202,7 +202,7 @@ class Post < ApplicationRecord
       synalio: synalios.map(&:name).first,
       game_systems: get_game_systems.map(&:name).first,
       tags: tags.map(&:name),
-      data: [content],
+      data: content,
       user: {
         uuid: user.short_uuid,
         name: user.name,

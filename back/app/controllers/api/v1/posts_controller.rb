@@ -30,6 +30,7 @@ class Api::V1::PostsController < Api::V1::BasesController
         content << url_for(image)
       end
     end
+    Rails.logger.debug(post.as_custom_show_json(content))
 
     render json: post.as_custom_show_json(content), status: :ok
   end
@@ -64,7 +65,7 @@ class Api::V1::PostsController < Api::V1::BasesController
         # 保存
         post.save!
 
-        render json: { uuid: post.uuid }, status: :created
+        render json: { uuid: post.short_uuid }, status: :created
       rescue => e
         Rails.logger.error(post.errors.full_messages) if post.errors.any?
         render json: { error: e.message }, status: :bad_request

@@ -49,7 +49,7 @@ export default function Illust({
           src={illust.image}
           loading="lazy"
           alt={illust.title}
-          className="aspect-square object-cover z-10 bg-white"
+          className="aspect-square object-cover z-10 bg-white object-top"
         />
         {illust.count && illust.count > 1 && (
           <MdCollections className="absolute top-2 right-2 text-white" />

@@ -11,10 +11,16 @@ class Api::V1::UsersController < Api::V1::BasesController
     # ログインユーザーと表示ユーザーが同じ場合は全ての投稿を取得
     if(current_api_v1_user && current_api_v1_user.uuid == @user.uuid)
       posts = @user.posts.publish_at_desc.map do |post|
+        content = []
+        if post.illust?
+          post.postable.image.each do |image|
+            content << url_for(image)
+          end
+        end
         {
           uuid: post.short_uuid,
           title: post.title,
-          data: url_for(post.postable.image),
+          data: content,
           publish_state: post.publish_state,
         }
       end
@@ -22,10 +28,16 @@ class Api::V1::UsersController < Api::V1::BasesController
       # ログインユーザーと表示ユーザーが異なる場合は公開投稿のみ取得
       # TODO : フォロワーの場合はフォロワー公開も取得
       posts = @user.posts.only_publish.publish_at_desc.map do |post|
+        content = []
+        if post.illust?
+          post.postable.image.each do |image|
+            content << url_for(image)
+          end
+        end
         {
           uuid: post.short_uuid,
           title: post.title,
-          data: post.illust? ? url_for(post.postable.image) : nil,
+          data: content
         }
       end
     end
