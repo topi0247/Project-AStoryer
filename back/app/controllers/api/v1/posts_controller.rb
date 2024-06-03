@@ -9,7 +9,8 @@ class Api::V1::PostsController < Api::V1::BasesController
     posts_json = posts.map do |post|
       content = nil
       if post.illust?
-        content = url_for(post.postable.image)
+        # 一覧では最初の画像のみ表示
+        content = url_for(post.postable.image.first)
       end
       post.as_custom_index_json(content)
     end
@@ -23,9 +24,11 @@ class Api::V1::PostsController < Api::V1::BasesController
       render json: { error: 'Not Found' }, status: :not_found and return
     end
 
-    content = nil
+    content = []
     if post.illust?
-      content = post.postable.image.attached? ? url_for(post.postable.image) : nil
+      post.postable.image.each do |image|
+        content << url_for(image)
+      end
     end
 
     render json: post.as_custom_show_json(content), status: :ok
@@ -40,6 +43,8 @@ class Api::V1::PostsController < Api::V1::BasesController
         post.create_tags(post_params[:tags])
         # シナリオ名の登録
         post.create_synalios(post_params[:synalios])
+        # システムの登録
+        post.create_game_systems(post_params[:game_systems])
 
         # 下書き以外は投稿日時保存
         if !post.draft?
@@ -53,16 +58,11 @@ class Api::V1::PostsController < Api::V1::BasesController
 
         # イラストの場合
         if post.illust?
-          image = post_params[:postable_attributes].first
-          post.postable.active_storage_upload(image)
+          post.postable.active_storage_upload(post_params[:postable_attributes])
         end
 
         # 保存
         post.save!
-
-        # システムの登録
-        # TODO : 中間テーブルが上手く作られないので、Postを先に作ったあとに中間テーブルを作成している
-        post.create_game_systems(post_params[:game_systems])
 
         render json: { uuid: post.uuid }, status: :created
       rescue => e
@@ -142,7 +142,7 @@ class Api::V1::PostsController < Api::V1::BasesController
   private
 
   def post_params
-    params.require(:post).permit(:title, :caption, :publish_state, :postable_type,postable_attributes: [], tags: [], synalios: [], game_systems: [])
+    params.require(:post).permit(:title, :caption, :publish_state, :postable_type, postable_attributes: [], tags: [], synalios: [], game_systems: [])
   end
 
   def set_post
