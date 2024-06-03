@@ -202,9 +202,12 @@ export default function IllustPostPage() {
                 ) : (
                   <div className="w-full bg-slate-400 p-5 rounded grid grid-cols-2 gap-4 md:grid-cols-4">
                     {postIllust.map((image: string, i: number) => (
-                      <div className="relative w-full h-full max-h-28 flex justify-center items-center">
+                      <div
+                        className="relative w-full h-full max-h-28 flex justify-center items-center"
+                        key={i}
+                      >
                         <Mantine.Button
-                          className="absolute -top-3 -right-3 rounded-full bg-white  transition-all h-6 w-6 p-0 border border-red-400"
+                          className="absolute -top-3 -right-3 rounded-full bg-white transition-all h-6 w-6 p-0 border border-red-400 hover:bg-red-400"
                           onClick={() => {
                             postIllust.splice(i, 1);
                             form.setValues({ postIllust: postIllust });
@@ -219,7 +222,7 @@ export default function IllustPostPage() {
                         />
                       </div>
                     ))}
-                    {postIllust.length < 10 && (
+                    {postIllust.length < MAX_COUNT && (
                       <Dropzone
                         name="postIllust"
                         multiple
