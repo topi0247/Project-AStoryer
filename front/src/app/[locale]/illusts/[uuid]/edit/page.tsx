@@ -3,7 +3,7 @@
 import { Delete2API, GetFromAPI, Put2API, useRouter } from "@/lib";
 import { userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
-import { IEditIllustData, IPublicState } from "@/types";
+import { IEditIllust, IEditIllustData, IPublicState } from "@/types";
 import * as Mantine from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
@@ -14,6 +14,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { FaImage } from "rocketicons/fa";
 import useSWR, { mutate } from "swr";
 import { XShare } from "@/components/features/illusts";
+import { IoMdClose } from "rocketicons/io";
 
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
@@ -52,7 +53,8 @@ export default function IllustEditPage({
     "/game_systems",
     fetcherGameSystems
   );
-  const [postIllust, setPostIllust] = useState<string[]>([]);
+  const [postIllust, setPostIllust] = useState<IEditIllust[]>([]);
+  const [isInitialSetIllust, setIsInitialSetIllust] = useState<boolean>(false);
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -73,6 +75,7 @@ export default function IllustEditPage({
   const CAPTION_MAX_LENGTH = 10000;
   const MEGA_BITE = 1024 ** 2;
   const MAX_SIZE = 10 * MEGA_BITE;
+  const MAX_COUNT = 12;
 
   const form = useForm({
     initialValues: {
@@ -85,9 +88,11 @@ export default function IllustEditPage({
       tags: illustData?.tags || [],
     },
     validate: {
-      postIllust: () => {
-        if (postIllust.length === 0) {
+      postIllust: (value: IEditIllust[]) => {
+        if (value.length === 0) {
           return t_PostIllustEdit("uploadValid");
+        } else if (value.length > MAX_COUNT) {
+          return t_PostIllustEdit("countValid");
         }
       },
       title: (value) => {
@@ -104,19 +109,24 @@ export default function IllustEditPage({
   });
 
   useEffect(() => {
-    if (Object.keys(illustData).length === 0 || postIllust.length > 0) {
+    if (isInitialSetIllust || illustData.image === undefined) {
       return;
     }
-    setPostIllust(illustData.image ?? []);
+    const illusts = illustData.image?.map((image: IEditIllust) => {
+      return { body: image.body, position: image.position };
+    });
+    setPostIllust(illusts ?? []);
     setTags(illustData.tags ?? []);
     form.setValues({
-      postIllust: illustData.image,
-      title: illustData?.title,
-      caption: illustData?.caption,
-      publishRange: illustData?.publish_state,
-      synalioTitle: illustData?.synalio,
-      gameSystem: illustData?.game_system,
+      postIllust: illustData.image ?? [],
+      title: illustData?.title ?? "",
+      caption: illustData?.caption ?? "",
+      publishRange: illustData?.publish_state ?? "",
+      synalioTitle: illustData?.synalio ?? "",
+      gameSystem: illustData?.game_system ?? "",
+      tags: illustData?.tags ?? [],
     });
+    setIsInitialSetIllust(illustData.image ? true : false);
   }, [illustData]);
 
   const getFetcherError = () => {
@@ -198,12 +208,16 @@ export default function IllustEditPage({
   };
 
   const handleDrop = (files: File[]) => {
-    // TODO : 一枚のみ対応、後々複数枚対応する
-    const reader = new FileReader();
-    reader.onload = () => {
-      setPostIllust([reader.result as string]);
-    };
-    reader.readAsDataURL(files[0]);
+    for (const file of files) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target) {
+          postIllust.push({ body: e.target.result as string, position: -1 });
+          form.setValues({ postIllust: postIllust });
+        }
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleModalClose = () => {
@@ -246,40 +260,56 @@ export default function IllustEditPage({
                       {t_PostIllustEdit("upload")}
                       <span className="text-red-600">*</span>
                     </label>
-                    <Dropzone
-                      name="postIllust"
-                      onDrop={(files) => handleDrop(files)}
-                      maxSize={MAX_SIZE}
-                      accept={IMAGE_MIME_TYPE}
-                      style={{
-                        height: mobile ? "15rem" : "30rem",
-                        width: "auto",
-                        margin: "0 auto",
-                        position: "relative",
-                        cursor: "pointer",
-                      }}
-                      {...form.getInputProps("postIllust")}
-                    >
-                      <Dropzone.Idle>
-                        {postIllust.length > 0 && (
+                    <div className="w-full bg-slate-400 p-5 rounded grid grid-cols-2 gap-4 md:grid-cols-4">
+                      {postIllust.map((image: IEditIllust, i: number) => (
+                        <div
+                          className="relative w-full h-full max-h-28 flex justify-center items-center"
+                          key={i}
+                        >
+                          <Mantine.Button
+                            className="absolute -top-3 -right-3 rounded-full bg-white transition-all h-6 w-6 p-0 border border-red-400 hover:bg-red-400"
+                            onClick={() => {
+                              postIllust.splice(i, 1);
+                              form.setValues({ postIllust: postIllust });
+                            }}
+                          >
+                            <IoMdClose className="icon-red-sm p-0" />
+                          </Mantine.Button>
                           <Mantine.Image
-                            src={postIllust[0]}
-                            h={mobile ? "15rem" : "30rem"}
-                            w="auto"
-                            m="auto"
-                            fit="cover"
-                            className="opacity-50"
+                            src={image.body}
+                            key={i}
+                            className="object-cover w-full h-full rounded"
                           />
-                        )}
-                        <FaImage
-                          className="icon-black opacity-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                        </div>
+                      ))}
+                      {postIllust.length < MAX_COUNT && (
+                        <Dropzone
+                          name="postIllust"
+                          multiple
+                          onDrop={(files) => handleDrop(files)}
+                          maxSize={MAX_SIZE}
+                          accept={IMAGE_MIME_TYPE}
                           style={{
-                            width: "3rem",
-                            height: "3rem",
+                            position: "relative",
+                            cursor: "pointer",
+                            borderRadius: "4px",
+                            height: "110px",
+                            border: "2px dashed rgb(148 163 184)",
                           }}
-                        />
-                      </Dropzone.Idle>
-                    </Dropzone>
+                          {...form.getInputProps("postIllust")}
+                        >
+                          <Dropzone.Idle>
+                            <FaImage
+                              className="icon-black opacity-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                              style={{
+                                width: "3rem",
+                                height: "3rem",
+                              }}
+                            />
+                          </Dropzone.Idle>
+                        </Dropzone>
+                      )}
+                    </div>
                     {form.errors.postIllust && (
                       <p className="text-sm text-red-500">
                         {form.errors.postIllust}
@@ -289,13 +319,20 @@ export default function IllustEditPage({
                 ) : (
                   <>
                     {postIllust.length > 0 && (
-                      <Mantine.Image
-                        src={postIllust[0]}
-                        h={mobile ? "15rem" : "30rem"}
-                        w="auto"
-                        m="auto"
-                        fit="cover"
-                      />
+                      <div className="w-full bg-slate-400 p-5 rounded grid grid-cols-2 gap-4 md:grid-cols-4">
+                        {postIllust.map((image: IEditIllust, i: number) => (
+                          <div
+                            className="relative w-full h-full max-h-28 flex justify-center items-center"
+                            key={i}
+                          >
+                            <Mantine.Image
+                              src={image.body}
+                              key={i}
+                              className="object-cover w-full h-full rounded"
+                            />
+                          </div>
+                        ))}
+                      </div>
                     )}
                     <p className="text-center text-sm">
                       ※{t_PostIllustEdit("illustPostAttention")}

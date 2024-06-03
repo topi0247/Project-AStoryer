@@ -1,5 +1,5 @@
 class Api::V1::UsersController < Api::V1::BasesController
-  skip_before_action :authenticate_api_v1_user!, only: %i[show bookmarks]
+  skip_before_action :authenticate_api_v1_user!, only: %i[show postsIllust bookmarks]
   before_action :set_user, only: %i[show postsIllust bookmarks]
 
   def show
@@ -11,11 +11,9 @@ class Api::V1::UsersController < Api::V1::BasesController
     # ログインユーザーと表示ユーザーが同じ場合は全ての投稿を取得
     if(current_api_v1_user && current_api_v1_user.uuid == @user.uuid)
       posts = @user.posts.publish_at_desc.map do |post|
-        content = []
+        content = nil
         if post.illust?
-          post.postable.image.each do |image|
-            content << url_for(image)
-          end
+          content = url_for(post.postable.get_first_image)
         end
         {
           uuid: post.short_uuid,
@@ -28,11 +26,9 @@ class Api::V1::UsersController < Api::V1::BasesController
       # ログインユーザーと表示ユーザーが異なる場合は公開投稿のみ取得
       # TODO : フォロワーの場合はフォロワー公開も取得
       posts = @user.posts.only_publish.publish_at_desc.map do |post|
-        content = []
+        content = nil
         if post.illust?
-          post.postable.image.each do |image|
-            content << url_for(image)
-          end
+          content = url_for(post.postable.get_first_image)
         end
         {
           uuid: post.short_uuid,
@@ -58,7 +54,7 @@ class Api::V1::UsersController < Api::V1::BasesController
       {
         uuid: post.short_uuid,
         title:post.title,
-        data: post.illust? ? url_for(post.postable.image) : nil,
+        data: post.illust? ? url_for(post.postable.get_first_image) : nil,
       }
     end
 

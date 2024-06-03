@@ -124,7 +124,10 @@
     "title": "イラスト編集",
     "illustPostAttention": "一度公開したイラストは変更できません",
     "upload": "イラストアップロード",
-    "uploadValid": "イラストをアップロードしてください"
+    "uploadValid": "イラストをアップロードしてください",
+    "countValid": "投稿できる枚数は12枚までです",
+    "maxSize": "※ファイルサイズは10MBまでです",
+    "maxCount": "※最大12枚までアップロードできます"
   },
   "PostGeneral": {
     "title": "タイトル",

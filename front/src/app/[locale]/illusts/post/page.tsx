@@ -4,7 +4,7 @@ import { XShare } from "@/components/features/illusts";
 import { GetFromAPI, Post2API, useRouter } from "@/lib";
 import { userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
-import { IPublicState } from "@/types";
+import { IPublicState, IEditIllust } from "@/types";
 import * as Mantine from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
@@ -34,7 +34,6 @@ export default function IllustPostPage() {
   );
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
-  const [postIllust, setPostIllust] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [postUuid, setPostUuid] = useState<string>("");
   const [modalOpen, setModalOpen] = useState(false);
@@ -51,7 +50,7 @@ export default function IllustPostPage() {
 
   const form = useForm({
     initialValues: {
-      postIllust: postIllust,
+      postIllust: [] as IEditIllust[],
       title: "",
       caption: "",
       publishRange: "" as IPublicState,
@@ -59,10 +58,10 @@ export default function IllustPostPage() {
       gameSystem: "",
     },
     validate: {
-      postIllust: () => {
-        if (postIllust.length === 0) {
+      postIllust: (value: IEditIllust[]) => {
+        if (value.length === 0) {
           return t_PostIllust("uploadValid");
-        } else if (postIllust.length > MAX_COUNT) {
+        } else if (value.length > MAX_COUNT) {
           return t_PostIllust("countValid");
         }
       },
@@ -100,8 +99,14 @@ export default function IllustPostPage() {
   if (disableData()) return <div>Now Loading</div>;
 
   const handleSubmit = async () => {
-    const { title, caption, publishRange, synalioTitle, gameSystem } =
-      form.getValues();
+    const {
+      title,
+      postIllust,
+      caption,
+      publishRange,
+      synalioTitle,
+      gameSystem,
+    } = form.getValues();
     const post = {
       post: {
         postable_attributes: postIllust,
@@ -135,11 +140,12 @@ export default function IllustPostPage() {
   };
 
   const handleDrop = (files: File[]) => {
+    const postIllust = form.values.postIllust;
     for (const file of files) {
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target) {
-          postIllust.push(e.target.result as string);
+          postIllust.push({ body: e.target.result as string, position: -1 });
           form.setValues({ postIllust: postIllust });
         }
       };
@@ -173,7 +179,7 @@ export default function IllustPostPage() {
                 </label>
                 <p className="text-sm">{t_PostIllust("maxSize")}</p>
                 <p className="text-sm">{t_PostIllust("maxCount")}</p>
-                {postIllust.length === 0 ? (
+                {form.getValues().postIllust.length === 0 ? (
                   <Dropzone
                     name="postIllust"
                     multiple
@@ -201,28 +207,31 @@ export default function IllustPostPage() {
                   </Dropzone>
                 ) : (
                   <div className="w-full bg-slate-400 p-5 rounded grid grid-cols-2 gap-4 md:grid-cols-4">
-                    {postIllust.map((image: string, i: number) => (
-                      <div
-                        className="relative w-full h-full max-h-28 flex justify-center items-center"
-                        key={i}
-                      >
-                        <Mantine.Button
-                          className="absolute -top-3 -right-3 rounded-full bg-white transition-all h-6 w-6 p-0 border border-red-400 hover:bg-red-400"
-                          onClick={() => {
-                            postIllust.splice(i, 1);
-                            form.setValues({ postIllust: postIllust });
-                          }}
-                        >
-                          <IoMdClose className="icon-red-sm p-0" />
-                        </Mantine.Button>
-                        <Mantine.Image
-                          src={image}
+                    {form
+                      .getValues()
+                      .postIllust.map((image: IEditIllust, i: number) => (
+                        <div
+                          className="relative w-full h-full max-h-28 flex justify-center items-center"
                           key={i}
-                          className="object-cover w-full h-full rounded"
-                        />
-                      </div>
-                    ))}
-                    {postIllust.length < MAX_COUNT && (
+                        >
+                          <Mantine.Button
+                            className="absolute -top-3 -right-3 rounded-full bg-white transition-all h-6 w-6 p-0 border border-red-400 hover:bg-red-400"
+                            onClick={() => {
+                              let postIllust = form.getValues().postIllust;
+                              postIllust.splice(i, 1);
+                              form.setValues({ postIllust: postIllust });
+                            }}
+                          >
+                            <IoMdClose className="icon-red-sm p-0" />
+                          </Mantine.Button>
+                          <Mantine.Image
+                            src={image.body}
+                            key={i}
+                            className="object-cover w-full h-full rounded"
+                          />
+                        </div>
+                      ))}
+                    {form.getValues().postIllust.length < MAX_COUNT && (
                       <Dropzone
                         name="postIllust"
                         multiple

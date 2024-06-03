@@ -29,7 +29,7 @@ export default function Illust({
       case IPublicState.All:
         return "全体公開";
       case IPublicState.Draft:
-        return "非公開";
+        return "下書き";
       case IPublicState.URL:
         return "URLを知っている人";
       case IPublicState.Private:
