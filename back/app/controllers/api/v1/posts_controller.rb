@@ -10,7 +10,7 @@ class Api::V1::PostsController < Api::V1::BasesController
       content = nil
       if post.illust?
         # 一覧では最初の画像のみ表示
-        content = url_for(post.postable.image.first)
+        content = url_for(post.postable.get_first_image)
       end
       post.as_custom_index_json(content)
     end
@@ -26,8 +26,8 @@ class Api::V1::PostsController < Api::V1::BasesController
 
     content = []
     if post.illust?
-      post.postable.image.each do |image|
-        content << url_for(image)
+      post.postable.illust_attachments.order(position: :asc).each do |image|
+        content << url_for(image.image)
       end
     end
     Rails.logger.debug(post.as_custom_show_json(content))
@@ -55,11 +55,11 @@ class Api::V1::PostsController < Api::V1::BasesController
         # 投稿タイプに応じたクラス
         postable_type = post.initialize_postable(post_params[:postable_type])
         # 投稿タイプのクラスをインスタンス
-        post.postable = postable_type.new
+        post.postable = postable_type.create!
 
         # イラストの場合
-        if post.illust?
-          post.postable.active_storage_upload(post_params[:postable_attributes])
+        if post.illust? && !post.postable.active_storage_upload(post_params[:postable_attributes])
+          raise "画像の保存に失敗しました"
         end
 
         # 保存
@@ -80,9 +80,11 @@ class Api::V1::PostsController < Api::V1::BasesController
       render json: { error: 'Not Found' }, status: :not_found and return
     end
 
-    content = nil
+    content = []
     if post.illust?
-      content = post.postable.image.attached? ? url_for(post.postable.image) : nil
+      post.postable.illust_attachments.each do |image|
+        content << url_for(image.image)
+      end
     end
 
     render json: post.as_custom_edit_json(content), status: :ok
@@ -94,14 +96,8 @@ class Api::V1::PostsController < Api::V1::BasesController
         # 投稿データのメインコンテンツの更新が可能か
         if @post.main_content_updatable?
           # イラスト
-          if @post.illust?
-            # 送られてきた画像の1つだけ
-            # TODO : 複数画像は後に実装
-            image = post_params[:postable_attributes].first
-            # 画像データがURLでない場合は新規登録
-            if url_for(@post.postable.image) != image
-              @post.postable.active_storage_upload(image)
-            end
+          if @post.illust? && !@post.postable.active_storage_upload(post_params[:postable_attributes])
+            raise "画像の保存に失敗しました"
           end
         end
 
@@ -118,7 +114,7 @@ class Api::V1::PostsController < Api::V1::BasesController
         @post.update_game_systems(post_params[:game_systems])
 
         if @post.update!(post_params.except(:postable_attributes, :tags, :synalios, :game_systems))
-          render json: { uuid: @post.uuid }, status: :ok
+          render json: { uuid: @post.short_uuid }, status: :ok
         else
           render json: { error: @post.errors.full_messages }, status: :unprocessable_entity
         end
