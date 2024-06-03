@@ -9,24 +9,26 @@
 #
 class Illust < ApplicationRecord
   has_one :post, as: :postable, primary_key: :uuid, foreign_key: :user_uuid, dependent: :destroy
-  has_one_attached :image
+  has_many_attached :image
 
-  def active_storage_upload(data_image)
-    # 送信されるデータは data: から始まるためエンコードデータのみ抽出
-    base64_data = data_image
-    if data_image.start_with?('data:image')
-      base64_data = data_image.split(",")[1]
+  def active_storage_upload(data_images)
+    data_images.each do |data_image|
+      # 送信されるデータは data: から始まるためエンコードデータのみ抽出
+      base64_data = data_image
+      if data_image.start_with?('data:image')
+        base64_data = data_image.split(",")[1]
+      end
+      decoded_image = Base64.decode64(base64_data)
+      # MiniMagickでwebpに軽量化
+      img = MiniMagick::Image.read(decoded_image)
+      img.format 'webp'
+
+      blob = ActiveStorage::Blob.create_and_upload!(
+        io: StringIO.new(img.to_blob),
+        filename: SecureRandom.uuid,
+        content_type: 'image/webp'
+      )
+      image.attach(blob)
     end
-    decoded_image = Base64.decode64(base64_data)
-    # MiniMagickでwebpに軽量化
-    img = MiniMagick::Image.read(decoded_image)
-    img.format 'webp'
-
-    blob = ActiveStorage::Blob.create_and_upload!(
-      io: StringIO.new(img.to_blob),
-      filename: SecureRandom.uuid,
-      content_type: 'image/webp'
-    )
-    image.attach(blob)
   end
 end

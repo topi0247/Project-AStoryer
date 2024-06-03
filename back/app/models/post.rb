@@ -128,7 +128,7 @@ class Post < ApplicationRecord
     new_game_systems.each do |game_system|
       system = GameSystem.find_by(name: game_system)
       if system.present?
-        PostGameSystem.create!(post_uuid: id, game_system_id: system.id)
+        PostGameSystem.build(post_uuid: id, game_system_id: system.id)
       end
     end
   end
@@ -202,7 +202,7 @@ class Post < ApplicationRecord
       synalio: synalios.map(&:name).first,
       game_systems: get_game_systems.map(&:name).first,
       tags: tags.map(&:name),
-      data: [content],
+      data: content,
       user: {
         uuid: user.short_uuid,
         name: user.name,
@@ -226,7 +226,7 @@ class Post < ApplicationRecord
       publish_state: publish_state,
       type: get_postable,
       tags: tags.map(&:name),
-      data: [content]
+      data: content
     }
   end
 end

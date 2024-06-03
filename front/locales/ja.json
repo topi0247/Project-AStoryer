@@ -116,7 +116,9 @@
     "title": "イラスト投稿",
     "upload": "イラストアップロード",
     "uploadValid": "イラストをアップロードしてください",
-    "maxSize": "※ファイルサイズは10MBまでです"
+    "countValid": "投稿できる枚数は12枚までです",
+    "maxSize": "※ファイルサイズは10MBまでです",
+    "maxCount": "※最大12枚までアップロードできます"
   },
   "PostIllustEdit": {
     "title": "イラスト編集",

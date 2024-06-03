@@ -76,7 +76,7 @@ export default function IllustPage({
         <div className="flex flex-col gap-8 md:w-full">
           <div>
             <section className="bg-gray-400 max-h-[90vh] w-full flex justify-center items-center mb-4 overflow-hidden">
-              {illustData.data.length > 1 ? (
+              {illustData.data.length === 1 ? (
                 <Mantine.Button
                   variant={mobile ? "transparent" : "filled"}
                   color={mobile ? "transparent" : "gray"}
@@ -137,7 +137,7 @@ export default function IllustPage({
                 padding="sm"
               >
                 <Mantine.Image
-                  src={illustData.data[0]}
+                  src={illustData.data[clickImage]}
                   alt={illustData.title}
                   fit="contain"
                   style={{
