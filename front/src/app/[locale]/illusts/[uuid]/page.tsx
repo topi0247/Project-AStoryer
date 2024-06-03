@@ -5,27 +5,29 @@ import { useSetRecoilState } from "recoil";
 import * as RecoilState from "@/recoilState";
 import { GetFromAPI, Link, useRouter } from "@/lib";
 import * as Mantine from "@mantine/core";
-import { FixedIconButtonList, IconButtonList } from "@/components/ui";
+import { IconButtonList } from "@/components/ui";
 import { useTranslations } from "next-intl";
 import { useMediaQuery } from "@mantine/hooks";
-import { MdCollections } from "rocketicons/md";
 import useSWR from "swr";
 import { RouterPath } from "@/settings";
+import { Carousel } from "@mantine/carousel";
+import "@mantine/carousel/styles.css";
 
 const fetcherIllust = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 export default function IllustPage({
-  params: { id },
+  params: { uuid },
 }: {
-  params: { id: number };
+  params: { uuid: string };
 }) {
   const { data: illustData, error: illustError } = useSWR(
-    `/posts/${id}`,
+    `/posts/${uuid}`,
     fetcherIllust
   );
   const [expansionMode, setExpansionMode] = useState(false);
   const [openCaption, setOpenCaption] = useState(false);
   const [follow, setFollow] = useState(false);
+  const [clickImage, setClickImage] = useState(0);
   const setModalOpen = useSetRecoilState(RecoilState.modalOpenState);
   const t_ShowPost = useTranslations("ShowPost");
   const theme = Mantine.useMantineTheme();
@@ -63,34 +65,71 @@ export default function IllustPage({
     // TODO : コメントの送信処理
   };
 
+  const handleZoomImage = (i: number) => {
+    setClickImage(i);
+    setExpansionMode(true);
+  };
+
   return (
     <article className="max-w-[1200px] w-11/12 m-auto">
       <div className="flex flex-col md:flex-row justify-start items-start md:gap-6 container my-8 px-4 m-auto">
         <div className="flex flex-col gap-8 md:w-full">
           <div>
             <section className="bg-gray-400 max-h-[90vh] w-full flex justify-center items-center mb-4 overflow-hidden">
-              <Mantine.Button
-                variant={mobile ? "transparent" : "filled"}
-                color={mobile ? "transparent" : "gray"}
-                type="button"
-                className="block h-full cursor-pointer transition-all hover:opacity-75 relative"
-                onClick={() => setExpansionMode(true)}
-                style={{ width: "100%", padding: 0 }}
-              >
-                <Mantine.Image
-                  src={illustData.data[0]} // TODO : 画像の複数枚に対応する
-                  alt={illustData.title}
-                  fit="contain"
-                  style={{
-                    width: "100%",
-                    maxHeight: "90vh",
-                    height: "auto",
-                  }}
-                />
-                {illustData.data.length > 1 && (
-                  <MdCollections className="absolute top-2 right-2 icon-gray" />
-                )}
-              </Mantine.Button>
+              {illustData.data.length === 1 ? (
+                <Mantine.Button
+                  variant={mobile ? "transparent" : "filled"}
+                  color={mobile ? "transparent" : "gray"}
+                  type="button"
+                  className="block h-full cursor-zoom-in transition-all relative"
+                  onClick={() => handleZoomImage(0)}
+                  style={{ width: "100%", padding: 0 }}
+                >
+                  <Mantine.Image
+                    src={illustData.data[0]}
+                    alt={illustData.title}
+                    fit="contain"
+                    style={{
+                      width: "100%",
+                      maxHeight: "90vh",
+                      height: "auto",
+                    }}
+                  />
+                </Mantine.Button>
+              ) : (
+                <Carousel
+                  slideSize="100%"
+                  slideGap="sm"
+                  controlsOffset="xs"
+                  controlSize={21}
+                  dragFree
+                  withIndicators
+                >
+                  {illustData.data.map((img: string, i: number) => (
+                    <Carousel.Slide key={i}>
+                      <Mantine.Button
+                        variant={mobile ? "transparent" : "filled"}
+                        color={mobile ? "transparent" : "gray"}
+                        type="button"
+                        className="block h-full transition-all relative"
+                        onClick={() => handleZoomImage(i)}
+                        style={{ width: "100%", padding: 0 }}
+                      >
+                        <Mantine.Image
+                          src={img}
+                          alt={illustData.title}
+                          fit="contain"
+                          style={{
+                            width: "100%",
+                            maxHeight: "90vh",
+                            height: "auto",
+                          }}
+                        />
+                      </Mantine.Button>
+                    </Carousel.Slide>
+                  ))}
+                </Carousel>
+              )}
               <Mantine.Modal
                 opened={expansionMode}
                 onClose={() => setExpansionMode(false)}
@@ -98,7 +137,7 @@ export default function IllustPage({
                 padding="sm"
               >
                 <Mantine.Image
-                  src={illustData.data[0]}
+                  src={illustData.data[clickImage]}
                   alt={illustData.title}
                   fit="contain"
                   style={{
@@ -112,8 +151,10 @@ export default function IllustPage({
               <div className="flex flex-col gap-3">
                 <div className="flex flex-col gap-2">
                   <IconButtonList
-                    postId={id}
+                    postUuid={uuid}
                     publicState={illustData.publish_state}
+                    title={illustData.title}
+                    postUserUuid={illustData.user.uuid}
                   />
                   <h3 className="text-2xl font-semibold">{illustData.title}</h3>
                   <Mantine.Button
@@ -273,7 +314,7 @@ export default function IllustPage({
           <section className="bg-white p-4 rounded flex flex-col gap-4">
             <h3 className="text-xl">{t_ShowPost("postUser")}</h3>
             <div className="flex gap-4 justify-start items-center">
-              <Link href={RouterPath.users(illustData.user.id)}>
+              <Link href={RouterPath.users(illustData.user.uuid)}>
                 <Mantine.Avatar
                   variant="default"
                   radius="xl"
@@ -284,7 +325,7 @@ export default function IllustPage({
               </Link>
               <div className="w-full flex flex-col gap-2">
                 <Link
-                  href={RouterPath.users(illustData.user.id)}
+                  href={RouterPath.users(illustData.user.uuid)}
                   className="text-xl"
                 >
                   {illustData.user.name}
@@ -333,8 +374,6 @@ export default function IllustPage({
           </section>
         </article>
       </div>
-
-      <FixedIconButtonList postId={id} publicState={illustData.publish_state} />
     </article>
   );
 }

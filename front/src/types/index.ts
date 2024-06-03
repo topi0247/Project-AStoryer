@@ -1,20 +1,20 @@
 export interface IHomeIllustData {
-  id: number;
+  uuid: string;
   title: string;
   image: string;
   user: {
-    id: number;
+    uuid: string;
     name: string;
     avatar: string;
   };
 }
 
 export interface IndexIllustData {
-  id: number;
+  uuid: string;
   title: string;
   image: string;
   user?: {
-    id: number;
+    uuid: string;
     name: string;
     avatar: string;
   };
@@ -22,11 +22,16 @@ export interface IndexIllustData {
   publishRange?: string;
 }
 
+export interface IEditIllust {
+  body: string;
+  position: number;
+}
+
 export interface IEditIllustData {
-  id: number;
+  uuid: string;
   title: string;
   caption?: string;
-  image?: string[];
+  image?: IEditIllust[];
   tags?: string[];
   synalio?: string;
   publish_state: IPublicState;
@@ -39,7 +44,7 @@ export interface IButtonState {
 }
 
 export interface IUser {
-  id: number;
+  uuid: string;
   name: string;
   avatar: string;
   following_count: number;

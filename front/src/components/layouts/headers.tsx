@@ -64,7 +64,7 @@ export default function Headers() {
   const handleLogout = async () => {
     const result = await logout();
     setUser({
-      id: -1,
+      uuid: "",
       name: "",
       avatar: "",
       following_count: 0,
@@ -75,13 +75,13 @@ export default function Headers() {
 
   return (
     <>
-      <header className="p-2 flex justify-center md:justify-between items-center ml-2 md:mx-8 md:my-2">
-        <h1 className="text-3xl font-semibold">
+      <header className="p-2 flex justify-center md:justify-between items-center md:mx-8 md:my-2">
+        <h1>
           <Link
             href={RouterPath.home}
-            className="flex flex-col justify-center items-center"
+            className="flex flex-col justify-center items-center w-32 h-auto object-contain"
           >
-            AStoryer <span className="text-sm">- あすとりや -</span>
+            <Mantine.Image src="/assets/AppLogo.png" />
           </Link>
         </h1>
         <div className="ml-8 md:ml-0 md:flex md:items-center md:justify-center md:gap-8">
@@ -151,7 +151,7 @@ export function AccountMenu({
   const router = useRouter();
 
   const handleLink = (path: string) => {
-    router.push(`/${path}`);
+    router.push(`${path}`);
   };
 
   return (
@@ -168,7 +168,7 @@ export function AccountMenu({
       </Mantine.Menu.Target>
       <Mantine.Menu.Dropdown>
         <Mantine.Menu.Item
-          onClick={() => handleLink(RouterPath.users(user.id))}
+          onClick={() => handleLink(RouterPath.users(user.uuid))}
         >
           <div className="flex justify-start items-center">
             <Mantine.Avatar
@@ -183,7 +183,7 @@ export function AccountMenu({
         </Mantine.Menu.Item>
         {/* <div className="flex justify-center items-center">
           <Mantine.Menu.Item
-            onClick={() => handleLink(RouterPath.users(user.id))}
+            onClick={() => handleLink(RouterPath.users(user.uuid))}
           >
             <div className="flex flex-col justify-center items-center">
               <span className="text-center">{t_Menu("follow")}</span>
@@ -191,7 +191,7 @@ export function AccountMenu({
             </div>
           </Mantine.Menu.Item>
           <Mantine.Menu.Item
-            onClick={() => handleLink(RouterPath.users(user.id))}
+            onClick={() => handleLink(RouterPath.users(user.uuid))}
           >
             <div className="flex flex-col justify-center items-center">
               <span>{t_Menu("follower")}</span>
@@ -200,17 +200,17 @@ export function AccountMenu({
           </Mantine.Menu.Item>
         </div> */}
         <Mantine.Menu.Item
-          onClick={() => handleLink(RouterPath.users(user.id))}
+          onClick={() => handleLink(RouterPath.users(user.uuid))}
           leftSection={<VscAccount />}
         >
           {t_Menu("myPage")}
         </Mantine.Menu.Item>
-        {/* <Mantine.Menu.Item
-          onClick={() => handleLink(RouterPath.bookmark(user.id))}
+        <Mantine.Menu.Item
+          onClick={() => handleLink(RouterPath.bookmark(user.uuid))}
           leftSection={<FaRegBookmark />}
         >
           {t_Menu("bookmark")}
-        </Mantine.Menu.Item> */}
+        </Mantine.Menu.Item>
         <Mantine.Menu.Item
           onClick={() => handleLink(RouterPath.account)}
           leftSection={<IoMdSettings />}

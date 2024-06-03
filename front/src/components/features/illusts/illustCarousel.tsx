@@ -28,7 +28,7 @@ export default function IllustCarousel({
         className="h-full"
       >
         {illustsData.map((illust: IndexIllustData) => (
-          <Carousel.Slide key={illust.id} className="flex justify-center">
+          <Carousel.Slide key={illust.uuid} className="flex justify-center">
             <Illust illust={illust} isUserPage={false} />
           </Carousel.Slide>
         ))}

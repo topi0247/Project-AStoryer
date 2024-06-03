@@ -7,10 +7,10 @@
 #  uid        :string           default(""), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  user_id    :bigint
+#  user_uuid  :uuid             not null
 #
 class Authentication < ActiveRecord::Base
-  belongs_to :user
+  belongs_to :user, primary_key: :uuid, foreign_key: :user_uuid
   validates :provider, presence: true
   validates :uid, presence: true
 

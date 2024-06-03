@@ -1,6 +1,7 @@
 export const Settings = {
   API_URL: `${process.env.NEXT_PUBLIC_API_URL}/${process.env.NEXT_PUBLIC_API_VERSION}`,
   GA4_ID: process.env.NEXT_PUBLIC_GA4_ID,
+  APP_URL: process.env.NEXT_PUBLIC_APP_URL,
 };
 
 export const RouterPath = {
@@ -8,11 +9,11 @@ export const RouterPath = {
   signUp: "/signup",
   login: "/login",
   illustIndex: "/",
-  illust: (id: number) => `/illusts/${id}`,
+  illust: (uuid: string) => `/illusts/${uuid}`,
   illustSearch: (searchWord: string) => `/illusts?${searchWord}`,
   illustPost: "/illusts/post",
-  illustEdit: (id: number) => `/illusts/${id}/edit`,
-  users: (id: number) => `/users/${id}`,
+  illustEdit: (uuid: string) => `/illusts/${uuid}/edit`,
+  users: (uuid: string) => `/users/${uuid}`,
   account: "/account",
-  bookmark: (id: number) => `/users/${id}?bookmark=true`,
+  bookmark: (uuid: string) => `/users/${uuid}?tab=bookmark`,
 };

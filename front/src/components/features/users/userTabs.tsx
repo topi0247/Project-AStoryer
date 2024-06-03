@@ -1,43 +1,65 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Mantine from "@mantine/core";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/lib";
+import { RouterPath } from "@/settings";
 
 enum Tab {
-  post = "myPage",
+  post = "post",
   bookmark = "bookmark",
 }
 
-export default function UserTabs() {
-  const [value, setValue] = useState<string | null>(Tab.post);
+export default function UserTabs({
+  userUuid,
+  isBookmark,
+  setIsBookmark,
+}: {
+  userUuid: string;
+  isBookmark: boolean;
+  setIsBookmark: (value: boolean) => void;
+}) {
+  const [value, setValue] = useState<string | null>(
+    isBookmark ? Tab.bookmark : Tab.post
+  );
   const t_UserPage = useTranslations("UserPage");
+  const router = useRouter();
+
+  useEffect(() => {
+    setValue(isBookmark ? Tab.bookmark : Tab.post);
+  }, [isBookmark]);
 
   const handleChange = (newValue: string | null) => {
     if (newValue === value) return;
 
-    if (newValue === null) {
-      setValue(Tab.post);
-      return;
+    switch (newValue) {
+      case Tab.post:
+        router.push(RouterPath.users(userUuid), { scroll: false });
+        setValue(Tab.post);
+        setIsBookmark(false);
+        break;
+      case Tab.bookmark:
+        router.push(RouterPath.bookmark(userUuid), { scroll: false });
+        setValue(Tab.bookmark);
+        setIsBookmark(true);
+        break;
+      default:
+        router.push(RouterPath.users(userUuid), { scroll: false });
+        setValue(Tab.post);
+        setIsBookmark(false);
+        break;
     }
-    setValue(newValue as Tab);
   };
 
   return (
-    <Mantine.Tabs value={value} onChange={handleChange}>
-      <Mantine.Tabs.List
-        aria-label="一覧切り替え"
-        className="before:border-none"
-      >
-        <Mantine.Tabs.Tab
-          value={Tab.post}
-          className="border-green-400 transition-all hover:bg-transparent cursor-default"
-        >
+    <Mantine.Tabs value={value} onChange={handleChange} color="rgb(74 222 128)">
+      <Mantine.Tabs.List aria-label="一覧切り替え">
+        <Mantine.Tabs.Tab value={Tab.post} className="transition-all">
           {t_UserPage("post")}
         </Mantine.Tabs.Tab>
-        {/* TODO : ブックマーク機能を追加したら追加 */}
-        {/* <Mantine.Tabs.Tab value={Tab.bookmark}>
+        <Mantine.Tabs.Tab value={Tab.bookmark} className="transition-all">
           {t_UserPage("bookmark")}
-        </Mantine.Tabs.Tab> */}
+        </Mantine.Tabs.Tab>
       </Mantine.Tabs.List>
     </Mantine.Tabs>
   );

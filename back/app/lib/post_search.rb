@@ -43,13 +43,7 @@ class PostSearch
     # ユーザー検索
     posts = posts.search_by_user(user_name) if user_name.present?
     # ゲームシステム検索
-    if game_system.present?
-      game_system = GameSystem.find_by_name(game_system)
-      if game_system.present?
-        game_system_posts = PostGameSystem.where(game_system_id: game_system.id).pluck(:post_id)
-        posts = posts.where(id: game_system_posts)
-      end
-    end
+    posts = posts.search_by_game_system(game_system) if game_system.present?
     posts
   end
 
@@ -81,8 +75,8 @@ class PostSearch
     if game_system.present?
       game_system = GameSystem.find_by_name(game_system)
       if game_system.present?
-        game_system_posts = PostGameSystem.where(game_system_id: game_system.id).pluck(:post_id)
-        or_posts = or_posts.present? ? or_posts.or(base_posts.where(id: game_system_posts)) : base_posts.where(id: game_system_posts)
+        game_system_posts = PostGameSystem.where(game_system_id: game_system.id).pluck(:post_uuid)
+        or_posts = or_posts.present? ? or_posts.or(base_posts.where(uuid: game_system_posts)) : base_posts.where(uuid: game_system_posts)
       end
     end
     or_posts = or_posts if or_posts.present?

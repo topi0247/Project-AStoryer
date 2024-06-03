@@ -8,8 +8,9 @@
 #  text         :text
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
-#  user_id      :bigint           not null
+#  user_uuid    :uuid             not null
 #
 class Profile < ApplicationRecord
+  belongs_to :user, foreign_key: :user_uuid
   validates :text, length: { maximum: 250 }
 end

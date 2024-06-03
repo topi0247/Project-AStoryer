@@ -1,28 +1,23 @@
 "use client";
 
 import * as Mantine from "@mantine/core";
-import { IndexIllustData } from "@/types";
-import { Illust } from "@/components/features/illusts";
 import { useTranslations } from "next-intl";
 import * as Users from "@/components/features/users";
 import { GetFromAPI } from "@/lib";
 import useSWR from "swr";
-import { useRecoilValue } from "recoil";
-import { userState } from "@/recoilState";
 
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
-export default function UserPage({ params }: { params: { id: string } }) {
-  const { id } = params;
-  const user = useRecoilValue(userState);
+export default function UserPage({ params }: { params: { uuid: string } }) {
+  const { uuid } = params;
   const t_UserPage = useTranslations("UserPage");
-  const { data, error } = useSWR(`/users/${id}`, fetcher);
+  const { data, error } = useSWR(`/users/${uuid}`, fetcher);
 
   if (error) return <div>failed to load</div>;
   if (!data) return <div>loading...</div>;
 
   const userProfile = {
-    id: data.id,
+    uuid: data.uuid,
     name: data.name,
     headerImage: data.header_image,
     avatar: data.avatar,
@@ -35,22 +30,6 @@ export default function UserPage({ params }: { params: { id: string } }) {
     },
     profile: data.profile,
   };
-
-  const illusts = data.posts.map(
-    (illust: {
-      id: string;
-      title: string;
-      data: string;
-      publish_state?: string;
-    }) => {
-      return {
-        id: illust.id,
-        title: illust.title,
-        image: illust.data,
-        publishRange: illust.publish_state ?? null,
-      };
-    }
-  );
 
   return (
     <>
@@ -82,7 +61,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
 
                 <div className="w-full flex flex-col justify-start items-end md:items-start md:justify-start md:relative">
                   {/* ユーザー編集 */}
-                  {/* {userProfile.id === user.id && (
+                  {/* {userProfile.uuid === user.uuid && (
                     <Users.UserEdit userProfile={userProfile} />
                   )} */}
                   <div className="hidden md:block md:h-1/3">
@@ -168,22 +147,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
 
       {/* イラスト一覧 */}
       <article className="mb-16">
-        <section id="tabs" className="mx-2 md:container md:m-auto md:mb-8">
-          <Users.UserTabs />
-        </section>
-        <section className="container my-2 m-auto">
-          <div className="grid grid-cols-2 md:mx-auto md:grid-cols-4 mx-2 gap-1">
-            {illusts.map((illust: IndexIllustData) => (
-              <div key={illust.id}>
-                <Illust illust={illust} />
-              </div>
-            ))}
-          </div>
-        </section>
-        {/* TODO : スタート時は投稿数が少ないことからページネーションは後で実装 */}
-        {/* <section className="mt-4">
-          <UI.Pagination elementName="#tabs" adjust={-20} />
-        </section> */}
+        <Users.IllustIndex uuid={uuid} />
       </article>
     </>
   );

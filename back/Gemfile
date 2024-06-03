@@ -27,6 +27,10 @@ end
 group :production do
   # 画像保存のストレージサービス
   gem "aws-sdk-s3", require: false
+  # 監視
+  gem "stackprof"
+  gem "sentry-ruby"
+  gem "sentry-rails"
 end
 
 # .envを使うため
