@@ -22,11 +22,16 @@ export interface IndexIllustData {
   publishRange?: string;
 }
 
+export interface IEditIllust {
+  body: string;
+  position: number;
+}
+
 export interface IEditIllustData {
   uuid: string;
   title: string;
   caption?: string;
-  image?: string[];
+  image?: IEditIllust[];
   tags?: string[];
   synalio?: string;
   publish_state: IPublicState;

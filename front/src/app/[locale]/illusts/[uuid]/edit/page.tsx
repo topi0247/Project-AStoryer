@@ -3,7 +3,7 @@
 import { Delete2API, GetFromAPI, Put2API, useRouter } from "@/lib";
 import { userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
-import { IEditIllustData, IPublicState } from "@/types";
+import { IEditIllust, IEditIllustData, IPublicState } from "@/types";
 import * as Mantine from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
@@ -53,7 +53,8 @@ export default function IllustEditPage({
     "/game_systems",
     fetcherGameSystems
   );
-  const [postIllust, setPostIllust] = useState<string[]>([]);
+  const [postIllust, setPostIllust] = useState<IEditIllust[]>([]);
+  const [isInitialSetIllust, setIsInitialSetIllust] = useState<boolean>(false);
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -87,9 +88,11 @@ export default function IllustEditPage({
       tags: illustData?.tags || [],
     },
     validate: {
-      postIllust: () => {
-        if (postIllust.length === 0) {
+      postIllust: (value: IEditIllust[]) => {
+        if (value.length === 0) {
           return t_PostIllustEdit("uploadValid");
+        } else if (value.length > MAX_COUNT) {
+          return t_PostIllustEdit("countValid");
         }
       },
       title: (value) => {
@@ -106,19 +109,24 @@ export default function IllustEditPage({
   });
 
   useEffect(() => {
-    if (Object.keys(illustData).length === 0 || postIllust.length > 0) {
+    if (isInitialSetIllust || illustData.image === undefined) {
       return;
     }
-    setPostIllust(illustData.image ?? []);
+    const illusts = illustData.image?.map((image: IEditIllust) => {
+      return { body: image.body, position: image.position };
+    });
+    setPostIllust(illusts ?? []);
     setTags(illustData.tags ?? []);
     form.setValues({
-      postIllust: illustData.image,
-      title: illustData?.title,
-      caption: illustData?.caption,
-      publishRange: illustData?.publish_state,
-      synalioTitle: illustData?.synalio,
-      gameSystem: illustData?.game_system,
+      postIllust: illustData.image ?? [],
+      title: illustData?.title ?? "",
+      caption: illustData?.caption ?? "",
+      publishRange: illustData?.publish_state ?? "",
+      synalioTitle: illustData?.synalio ?? "",
+      gameSystem: illustData?.game_system ?? "",
+      tags: illustData?.tags ?? [],
     });
+    setIsInitialSetIllust(illustData.image ? true : false);
   }, [illustData]);
 
   const getFetcherError = () => {
@@ -204,7 +212,7 @@ export default function IllustEditPage({
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target) {
-          postIllust.push(e.target.result as string);
+          postIllust.push({ body: e.target.result as string, position: -1 });
           form.setValues({ postIllust: postIllust });
         }
       };
@@ -253,7 +261,7 @@ export default function IllustEditPage({
                       <span className="text-red-600">*</span>
                     </label>
                     <div className="w-full bg-slate-400 p-5 rounded grid grid-cols-2 gap-4 md:grid-cols-4">
-                      {postIllust.map((image: string, i: number) => (
+                      {postIllust.map((image: IEditIllust, i: number) => (
                         <div
                           className="relative w-full h-full max-h-28 flex justify-center items-center"
                           key={i}
@@ -268,7 +276,7 @@ export default function IllustEditPage({
                             <IoMdClose className="icon-red-sm p-0" />
                           </Mantine.Button>
                           <Mantine.Image
-                            src={image}
+                            src={image.body}
                             key={i}
                             className="object-cover w-full h-full rounded"
                           />
@@ -312,13 +320,13 @@ export default function IllustEditPage({
                   <>
                     {postIllust.length > 0 && (
                       <div className="w-full bg-slate-400 p-5 rounded grid grid-cols-2 gap-4 md:grid-cols-4">
-                        {postIllust.map((image: string, i: number) => (
+                        {postIllust.map((image: IEditIllust, i: number) => (
                           <div
                             className="relative w-full h-full max-h-28 flex justify-center items-center"
                             key={i}
                           >
                             <Mantine.Image
-                              src={image}
+                              src={image.body}
                               key={i}
                               className="object-cover w-full h-full rounded"
                             />

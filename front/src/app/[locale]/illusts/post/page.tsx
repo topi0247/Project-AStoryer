@@ -4,7 +4,7 @@ import { XShare } from "@/components/features/illusts";
 import { GetFromAPI, Post2API, useRouter } from "@/lib";
 import { userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
-import { IPublicState } from "@/types";
+import { IPublicState, IEditIllust } from "@/types";
 import * as Mantine from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
@@ -50,7 +50,7 @@ export default function IllustPostPage() {
 
   const form = useForm({
     initialValues: {
-      postIllust: [] as string[],
+      postIllust: [] as IEditIllust[],
       title: "",
       caption: "",
       publishRange: "" as IPublicState,
@@ -58,7 +58,7 @@ export default function IllustPostPage() {
       gameSystem: "",
     },
     validate: {
-      postIllust: (value) => {
+      postIllust: (value: IEditIllust[]) => {
         if (value.length === 0) {
           return t_PostIllust("uploadValid");
         } else if (value.length > MAX_COUNT) {
@@ -145,7 +145,7 @@ export default function IllustPostPage() {
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target) {
-          postIllust.push(e.target.result as string);
+          postIllust.push({ body: e.target.result as string, position: -1 });
           form.setValues({ postIllust: postIllust });
         }
       };
@@ -209,7 +209,7 @@ export default function IllustPostPage() {
                   <div className="w-full bg-slate-400 p-5 rounded grid grid-cols-2 gap-4 md:grid-cols-4">
                     {form
                       .getValues()
-                      .postIllust.map((image: string, i: number) => (
+                      .postIllust.map((image: IEditIllust, i: number) => (
                         <div
                           className="relative w-full h-full max-h-28 flex justify-center items-center"
                           key={i}
@@ -225,7 +225,7 @@ export default function IllustPostPage() {
                             <IoMdClose className="icon-red-sm p-0" />
                           </Mantine.Button>
                           <Mantine.Image
-                            src={image}
+                            src={image.body}
                             key={i}
                             className="object-cover w-full h-full rounded"
                           />

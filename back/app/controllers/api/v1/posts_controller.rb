@@ -26,8 +26,8 @@ class Api::V1::PostsController < Api::V1::BasesController
 
     content = []
     if post.illust?
-      post.postable.illust_attachments.order(position: :asc).each do |image|
-        content << url_for(image.image)
+      post.postable.illust_attachments.each do |attachment|
+        content << url_for(attachment.image)
       end
     end
     Rails.logger.debug(post.as_custom_show_json(content))
@@ -58,8 +58,8 @@ class Api::V1::PostsController < Api::V1::BasesController
         post.postable = postable_type.create!
 
         # イラストの場合
-        if post.illust? && !post.postable.active_storage_upload(post_params[:postable_attributes])
-          raise "画像の保存に失敗しました"
+        if post.illust? && !post.postable.illust_images_create!(post_params[:postable_attributes])
+          raise StandardError
         end
 
         # 保存
@@ -67,7 +67,8 @@ class Api::V1::PostsController < Api::V1::BasesController
 
         render json: { uuid: post.short_uuid }, status: :created
       rescue => e
-        Rails.logger.error(post.errors.full_messages) if post.errors.any?
+        Rails.logger.error(e.message)
+        Rails.logger.error(e.backtrace.join("\n"))
         render json: { error: e.message }, status: :bad_request
       end
     end
@@ -76,14 +77,17 @@ class Api::V1::PostsController < Api::V1::BasesController
   def edit
     post = current_api_v1_user.posts.includes(:postable, :tags, :synalios).find_by_short_uuid(params[:id])
 
-    if post.nil?
+    if post.nil? || post.postable.nil?
       render json: { error: 'Not Found' }, status: :not_found and return
     end
 
     content = []
     if post.illust?
-      post.postable.illust_attachments.each do |image|
-        content << url_for(image.image)
+      post.postable.illust_attachments.each do |attachment|
+        content << {
+          body: url_for(attachment.image),
+          position: attachment.position
+        }
       end
     end
 
@@ -96,7 +100,7 @@ class Api::V1::PostsController < Api::V1::BasesController
         # 投稿データのメインコンテンツの更新が可能か
         if @post.main_content_updatable?
           # イラスト
-          if @post.illust? && !@post.postable.active_storage_upload(post_params[:postable_attributes])
+          if @post.illust? && !@post.postable.illust_images_update!(post_params[:postable_attributes])
             raise "画像の保存に失敗しました"
           end
         end
@@ -139,7 +143,7 @@ class Api::V1::PostsController < Api::V1::BasesController
   private
 
   def post_params
-    params.require(:post).permit(:title, :caption, :publish_state, :postable_type, postable_attributes: [], tags: [], synalios: [], game_systems: [])
+    params.require(:post).permit(:title, :caption, :publish_state, :postable_type, postable_attributes: [:body, :position], tags: [], synalios: [], game_systems: [])
   end
 
   def set_post
