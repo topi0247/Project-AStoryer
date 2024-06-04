@@ -14,16 +14,18 @@
 #  user_uuid     :uuid             not null
 #
 class Post < ApplicationRecord
-  belongs_to :user, foreign_key: :user_uuid
+  self.primary_key = :uuid
+
+  belongs_to :user, foreign_key: :user_uuid, primary_key: :uuid
   belongs_to :postable, polymorphic: true
   accepts_nested_attributes_for :postable
 
-  has_many :post_tags, primary_key: :uuid, foreign_key: :post_uuid, dependent: :destroy
+  has_many :post_tags, foreign_key: :post_uuid, dependent: :destroy
   has_many :tags, through: :post_tags, source: :tag
-  has_many :post_synalios, primary_key: :uuid, foreign_key: :post_uuid, dependent: :destroy
+  has_many :post_synalios, foreign_key: :post_uuid, dependent: :destroy
   has_many :synalios, through: :post_synalios, source: :synalio
-  has_many :favorites, primary_key: :uuid, foreign_key: :post_uuid, dependent: :destroy
-  has_many :bookmarks, primary_key: :uuid, foreign_key: :post_uuid, dependent: :destroy
+  has_many :favorites, foreign_key: :post_uuid, dependent: :destroy
+  has_many :bookmarks, foreign_key: :post_uuid, dependent: :destroy
   has_many :post_game_systems, foreign_key: :post_uuid, dependent: :destroy
 
   validates :title, presence: true, length: { maximum: 20 }
@@ -85,18 +87,16 @@ class Post < ApplicationRecord
 
   # タグの作成
   def create_tags(new_tags)
-    return if new_tags[0].blank?
+    return if new_tags.blank? || new_tags.all?(&:blank?)
     new_tags.each do |tag|
-      new_tag = Tag.find_or_create_by!(name: tag)
-      post_tags.build(tag_id: new_tag.id)
+      next if tag.blank?
+      new_tag = Tag.find_or_create_by(name: tag)
+      post_tags.create(tag_id: new_tag.id)
     end
   end
 
   # タグの更新
   def update_tags(new_tags)
-    # 登録しているタグと一致するか
-    return unless new_tags.all? { |tag| tags.exists?(name: tag) }
-
     # 登録しているタグを一旦全部消す
     post_tags.destroy_all
 
@@ -104,31 +104,38 @@ class Post < ApplicationRecord
     create_tags(new_tags)
   end
 
+  # タグの取得
+  def get_tags
+    post_tags.map { |pt| Tag.find(pt.tag_id) }
+  end
+
   # シナリオの作成
   def create_synalios(new_synalios)
-    return if new_synalios[0].blank?
+    return if new_synalios.blank? || new_synalios.all?(&:blank?)
     new_synalios.each do |synalio|
-      new_synalio = Synalio.find_or_create_by!(name: synalio)
-      post_synalios.build(synalio_id: new_synalio.id)
+      synalio_record = Synalio.find_or_create_by(name: synalio)
+      post_synalios.create(synalio_id: synalio_record.id)
     end
   end
 
   # シナリオの更新
   def update_synalios(new_synalios)
-    # 登録しているシステムと一致するか
-    return unless new_synalios.all? { |synalio| synalios.exists?(name: synalio) }
-
     post_synalios.destroy_all
     create_synalios(new_synalios)
   end
 
+  # シナリオの取得
+  def get_synalios
+    post_synalios.map { |ps| Synalio.find(ps.synalio_id) }
+  end
+
   # システムの作成
   def create_game_systems(new_game_systems)
-    return if new_game_systems[0].blank?
+    return if new_game_systems.blank? || new_game_systems.all?(&:blank?)
     new_game_systems.each do |game_system|
       system = GameSystem.find_by(name: game_system)
       if system.present?
-        PostGameSystem.build(post_uuid: id, game_system_id: system.id)
+        post_game_systems.create(game_system_id: system.id)
       end
     end
   end
@@ -199,9 +206,9 @@ class Post < ApplicationRecord
       uuid: short_uuid,
       title: title,
       caption: caption,
-      synalio: synalios.map(&:name).first,
+      synalio: get_synalios.map(&:name).first,
       game_systems: get_game_systems.map(&:name).first,
-      tags: tags.map(&:name),
+      tags: get_tags.map(&:name),
       data: content,
       user: {
         uuid: user.short_uuid,
@@ -221,11 +228,11 @@ class Post < ApplicationRecord
       uuid: short_uuid,
       title: title,
       caption: caption,
-      synalio: synalios.map(&:name).first,
+      synalio: get_synalios.map(&:name).first,
       game_systems: get_game_systems.map(&:name).first,
       publish_state: publish_state,
       type: get_postable,
-      tags: tags.map(&:name),
+      tags: get_tags.map(&:name),
       data: content
     }
   end

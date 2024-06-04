@@ -10,7 +10,7 @@
 #  user_uuid   :uuid             not null
 #
 class UserNotice < ApplicationRecord
-  belongs_to :user, foreign_key: :user_uuid
+  belongs_to :user, foreign_key: :user_uuid, primary_key: :uuid
   belongs_to :notice
   enum notice_kind: { app: 0, email: 1 }
 end

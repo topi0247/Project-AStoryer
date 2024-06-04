@@ -351,8 +351,8 @@ export default function IllustEditPage({
                 setIsDeleteConfirmation(event.target.checked)
               }
               deleteConfirmationError={deleteConfirmationError}
-              handleDeleteSubmit={() => handleDeleteSubmit}
-              handleBack={() => handleBack}
+              handleDeleteSubmit={handleDeleteSubmit}
+              handleBack={handleBack}
             />
           ) : form.values.publishRange === IPublicState.Draft ? (
             <Post.DraftModal onClick={handleModalClose} />

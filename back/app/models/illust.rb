@@ -8,7 +8,7 @@
 #  updated_at :datetime         not null
 #
 class Illust < ApplicationRecord
-  has_one :post, as: :postable, primary_key: :uuid, foreign_key: :user_uuid, dependent: :destroy
+  has_one :post, as: :postable, foreign_key: :user_uuid, dependent: :destroy
   has_many :illust_attachments, -> {order(:position)}, dependent: :destroy
   has_many_attached :image
 
