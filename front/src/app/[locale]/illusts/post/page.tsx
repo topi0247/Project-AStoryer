@@ -1,39 +1,18 @@
 "use client";
 
-import { XShare } from "@/components/features/illusts";
-import { GetFromAPI, Post2API, useRouter } from "@/lib";
+import { IllustDropzone, Preview } from "@/components/features/illusts";
+import { Post2API, useRouter } from "@/lib";
 import { userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
 import { IPublicState, IEditIllust } from "@/types";
 import * as Mantine from "@mantine/core";
-import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
-import { useMediaQuery } from "@mantine/hooks";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useRecoilValue } from "recoil";
-import { FaImage } from "rocketicons/fa";
-import { IoMdClose } from "rocketicons/io";
-import useSWR from "swr";
-
-const fetcherTags = (url: string) => GetFromAPI(url).then((res) => res.data);
-const fetcherSynalios = (url: string) =>
-  GetFromAPI(url).then((res) => res.data);
-const fetcherGameSystems = (url: string) =>
-  GetFromAPI(url).then((res) => res.data);
+import * as Post from "@/components/features/post";
 
 export default function IllustPostPage() {
-  const { data: Tags, error: errorTags } = useSWR("/tags", fetcherTags);
-  const { data: Synalios, error: errorSynalios } = useSWR(
-    "/synalios",
-    fetcherSynalios
-  );
-  const { data: GameSystems, error: errorGameSystems } = useSWR(
-    "/game_systems",
-    fetcherGameSystems
-  );
-  const theme = Mantine.useMantineTheme();
-  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const [tags, setTags] = useState<string[]>([]);
   const [postUuid, setPostUuid] = useState<string>("");
   const [modalOpen, setModalOpen] = useState(false);
@@ -44,8 +23,6 @@ export default function IllustPostPage() {
   const t_PostGeneral = useTranslations("PostGeneral");
   const TITLE_MAX_LENGTH = 20;
   const CAPTION_MAX_LENGTH = 10000;
-  const MEGA_BITE = 1024 ** 2;
-  const MAX_SIZE = 10 * MEGA_BITE;
   const MAX_COUNT = 12;
 
   const form = useForm({
@@ -84,19 +61,6 @@ export default function IllustPostPage() {
       },
     },
   });
-
-  const getFetcherError = () => {
-    return errorTags || errorSynalios || errorGameSystems;
-  };
-
-  const disableData = () => {
-    return (
-      Tags === undefined || Synalios === undefined || GameSystems === undefined
-    );
-  };
-
-  if (getFetcherError()) return <div>error</div>;
-  if (disableData()) return <div>Now Loading</div>;
 
   const handleSubmit = async () => {
     const {
@@ -139,18 +103,16 @@ export default function IllustPostPage() {
     }
   };
 
-  const handleDrop = (files: File[]) => {
-    const postIllust = form.values.postIllust;
-    for (const file of files) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target) {
-          postIllust.push({ body: e.target.result as string, position: -1 });
-          form.setValues({ postIllust: postIllust });
-        }
-      };
-      reader.readAsDataURL(file);
-    }
+  const pushIllust = (targetResult: string) => {
+    const postIllust = form.getValues().postIllust;
+    postIllust.push({ body: targetResult, position: -1 });
+    form.setValues({ postIllust: postIllust });
+  };
+
+  const deleteIllust = (index: number) => {
+    let postIllust = form.getValues().postIllust;
+    postIllust.splice(index, 1);
+    form.setValues({ postIllust: postIllust });
   };
 
   const handleModalClose = () => {
@@ -159,7 +121,6 @@ export default function IllustPostPage() {
       router.push(RouterPath.users(user.uuid));
     }
   };
-
   return (
     <>
       <article className="mt-8 mb-12">
@@ -179,87 +140,26 @@ export default function IllustPostPage() {
                 </label>
                 <p className="text-sm">{t_PostIllust("maxSize")}</p>
                 <p className="text-sm">{t_PostIllust("maxCount")}</p>
-                {form.getValues().postIllust.length === 0 ? (
-                  <Dropzone
-                    name="postIllust"
-                    multiple
-                    onDrop={(files) => handleDrop(files)}
-                    maxSize={MAX_SIZE}
-                    accept={IMAGE_MIME_TYPE}
-                    style={{
-                      height: mobile ? "15rem" : "30rem",
-                      width: "auto",
-                      margin: "0 auto",
-                      position: "relative",
-                      cursor: "pointer",
-                    }}
-                    {...form.getInputProps("postIllust")}
-                  >
-                    <Dropzone.Idle>
-                      <FaImage
-                        className="icon-black opacity-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                        style={{
-                          width: "3rem",
-                          height: "3rem",
-                        }}
-                      />
-                    </Dropzone.Idle>
-                  </Dropzone>
-                ) : (
-                  <div className="w-full bg-slate-400 p-5 rounded grid grid-cols-2 gap-4 md:grid-cols-4">
-                    {form
+                <div className="w-full bg-slate-400 p-5 rounded grid grid-cols-2 gap-4 md:grid-cols-4">
+                  {form.getValues().postIllust.length > 0 &&
+                    form
                       .getValues()
                       .postIllust.map((image: IEditIllust, i: number) => (
-                        <div
-                          className="relative w-full h-full max-h-28 flex justify-center items-center"
+                        <Preview
                           key={i}
-                        >
-                          <Mantine.Button
-                            className="absolute -top-3 -right-3 rounded-full bg-white transition-all h-6 w-6 p-0 border border-red-400 hover:bg-red-400"
-                            onClick={() => {
-                              let postIllust = form.getValues().postIllust;
-                              postIllust.splice(i, 1);
-                              form.setValues({ postIllust: postIllust });
-                            }}
-                          >
-                            <IoMdClose className="icon-red-sm p-0" />
-                          </Mantine.Button>
-                          <Mantine.Image
-                            src={image.body}
-                            key={i}
-                            className="object-cover w-full h-full rounded"
-                          />
-                        </div>
+                          image={image}
+                          deleteIllust={() => deleteIllust(i)}
+                          isDelete={true}
+                        />
                       ))}
-                    {form.getValues().postIllust.length < MAX_COUNT && (
-                      <Dropzone
-                        name="postIllust"
-                        multiple
-                        onDrop={(files) => handleDrop(files)}
-                        maxSize={MAX_SIZE}
-                        accept={IMAGE_MIME_TYPE}
-                        style={{
-                          position: "relative",
-                          cursor: "pointer",
-                          borderRadius: "4px",
-                          height: "110px",
-                          border: "2px dashed rgb(148 163 184)",
-                        }}
-                        {...form.getInputProps("postIllust")}
-                      >
-                        <Dropzone.Idle>
-                          <FaImage
-                            className="icon-black opacity-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                            style={{
-                              width: "3rem",
-                              height: "3rem",
-                            }}
-                          />
-                        </Dropzone.Idle>
-                      </Dropzone>
-                    )}
-                  </div>
-                )}
+                  {form.getValues().postIllust.length < MAX_COUNT && (
+                    <IllustDropzone
+                      pushIllust={pushIllust}
+                      MAX_COUNT={MAX_COUNT}
+                      formProps={form.getInputProps("postIllust")}
+                    />
+                  )}
+                </div>
                 {form.errors.postIllust && (
                   <p className="text-sm text-red-500">
                     {form.errors.postIllust}
@@ -267,86 +167,34 @@ export default function IllustPostPage() {
                 )}
               </section>
               <section>
-                <Mantine.TextInput
-                  withAsterisk
-                  maxLength={TITLE_MAX_LENGTH}
-                  label={t_PostGeneral("title")}
-                  name="title"
-                  {...form.getInputProps("title")}
-                />
-              </section>
-              <section>
-                <Mantine.Textarea
-                  name="caption"
-                  label={t_PostGeneral("caption")}
-                  size="sm"
-                  radius="xs"
-                  rows={5}
-                  maxLength={CAPTION_MAX_LENGTH}
-                  {...form.getInputProps("caption")}
-                />
-              </section>
-              <section>
-                <Mantine.TagsInput
-                  name="tags"
-                  label={t_PostGeneral("tag")}
-                  splitChars={[" ", "|"]}
-                  data={Tags}
-                  onChange={setTags}
-                  value={tags}
+                <Post.Title
+                  formProps={form.getInputProps("title")}
+                  TITLE_MAX_LENGTH={TITLE_MAX_LENGTH}
                 />
               </section>
               <section className="flex gap-5 flex-col md:flex-row md:items-center md:gap-2 w-full ">
                 <div className="md:w-1/3">
-                  <Mantine.Autocomplete
-                    name="gameSystem"
-                    label={t_PostGeneral("gameSystem")}
-                    data={GameSystems}
-                    {...form.getInputProps("gameSystem")}
-                  />
+                  <Post.System formProps={form.getInputProps("gameSystem")} />
                 </div>
                 <div className="md:w-2/3">
-                  <Mantine.Autocomplete
-                    name="synalioTitle"
-                    label={t_PostGeneral("synalioTitle")}
-                    data={Synalios}
-                    {...form.getInputProps("synalioTitle")}
+                  <Post.Synalio
+                    formProps={form.getInputProps("synalioTitle")}
                   />
                 </div>
               </section>
               <section>
-                <Mantine.Radio.Group
-                  name="publishRange"
-                  label={t_PostGeneral("publishRange")}
-                  withAsterisk
-                  {...form.getInputProps("publishRange")}
-                >
-                  <Mantine.Group>
-                    <Mantine.Radio
-                      label={t_PostGeneral("allPublish")}
-                      value={IPublicState.All}
-                      style={{ cursor: "pointer" }}
-                    />
-                    <Mantine.Radio
-                      label={t_PostGeneral("urlPublish")}
-                      value={IPublicState.URL}
-                      style={{ cursor: "pointer" }}
-                    />
-                    {/* <Mantine.Radio
-                      label={t_PostGeneral("followerPublish")}
-                      value={IPublicState.Follower}
-                      style={{ cursor: "pointer" }}
-                    /> */}
-                    <Mantine.Radio
-                      label={t_PostGeneral("private")}
-                      value={IPublicState.Private}
-                      style={{ cursor: "pointer" }}
-                    />
-                  </Mantine.Group>
-                </Mantine.Radio.Group>
-                <p className="text-sm my-4">
-                  {t_PostGeneral("publishAttention")}
-                </p>
+                <Post.Tag onChange={setTags} value={tags} />
+              </section>
+              <section>
+                <Post.Caption
+                  formProps={form.getInputProps("caption")}
+                  CAPTION_MAX_LENGTH={CAPTION_MAX_LENGTH}
+                />
+              </section>
+              <section>
+                <Post.PublishState
+                  formProps={form.getInputProps("publishRange")}
+                />
               </section>
               <section className="my-8">
                 <Mantine.Group className="flex justify-center items-center">
@@ -374,37 +222,17 @@ export default function IllustPostPage() {
 
       <Mantine.Modal opened={modalOpen} onClose={handleModalClose}>
         {errorMessage === "" ? (
-          <>
-            <h3 className="text-xl text-center my-4">
-              {form.values.publishRange === IPublicState.Draft
-                ? t_PostGeneral("draftSaved")
-                : t_PostGeneral("posted")}
-            </h3>
-            <Mantine.Group justify="center" gap={8}>
-              {form.values.publishRange === IPublicState.Draft ? (
-                <>
-                  <Mantine.Button
-                    className="bg-green-300 text-black"
-                    onClick={handleModalClose}
-                  >
-                    {t_PostGeneral("close")}
-                  </Mantine.Button>
-                </>
-              ) : (
-                <>
-                  <Mantine.Button
-                    className="bg-green-300 text-black"
-                    onClick={() => router.push(RouterPath.illust(postUuid))}
-                  >
-                    {t_PostGeneral("showPost")}
-                  </Mantine.Button>
-                  <XShare postUuid={postUuid} title={form.getValues().title} />
-                </>
-              )}
-            </Mantine.Group>
-          </>
+          form.values.publishRange === IPublicState.Draft ? (
+            <Post.DraftModal onClick={handleModalClose} />
+          ) : (
+            <Post.PostModal
+              onClick={handleModalClose}
+              postUuid={postUuid}
+              title={form.values.title}
+            />
+          )
         ) : (
-          <p className="text-center">{errorMessage}</p>
+          <Post.ErrorModal text={errorMessage} />
         )}
       </Mantine.Modal>
     </>
