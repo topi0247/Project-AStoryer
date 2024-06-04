@@ -9,7 +9,7 @@
 #  post_uuid      :uuid             not null
 #
 class PostGameSystem < ApplicationRecord
-  belongs_to :post, foreign_key: :post_uuid
+  belongs_to :post, foreign_key: :post_uuid, primary_key: :uuid
   # NOTE : ActiveHashの関連付けはこれ以下のものに適応されるようなので、
   #        ActiveHashの関連付けでないものは上に書く
   extend ActiveHash::Associations::ActiveRecordExtensions

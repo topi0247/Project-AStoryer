@@ -11,6 +11,6 @@
 #  user_uuid    :uuid             not null
 #
 class Profile < ApplicationRecord
-  belongs_to :user, foreign_key: :user_uuid
+  belongs_to :user, foreign_key: :user_uuid, primary_key: :uuid
   validates :text, length: { maximum: 250 }
 end

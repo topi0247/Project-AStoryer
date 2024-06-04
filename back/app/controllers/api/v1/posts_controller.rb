@@ -30,7 +30,6 @@ class Api::V1::PostsController < Api::V1::BasesController
         content << url_for(attachment.image)
       end
     end
-    Rails.logger.debug(post.as_custom_show_json(content))
 
     render json: post.as_custom_show_json(content), status: :ok
   end
@@ -40,17 +39,9 @@ class Api::V1::PostsController < Api::V1::BasesController
       begin
         default_params = post_params.except(:postable_attributes, :tags, :synalios, :game_systems)
         post = current_api_v1_user.posts.build(default_params)
-        # タグの登録
-        post.create_tags(post_params[:tags])
-        # シナリオ名の登録
-        post.create_synalios(post_params[:synalios])
-        # システムの登録
-        post.create_game_systems(post_params[:game_systems])
 
         # 下書き以外は投稿日時保存
-        if !post.draft?
-          post.published_at = Time.now
-        end
+        post.published_at = Time.now unless post.draft?
 
         # 投稿タイプに応じたクラス
         postable_type = post.initialize_postable(post_params[:postable_type])
@@ -59,17 +50,28 @@ class Api::V1::PostsController < Api::V1::BasesController
 
         # イラストの場合
         if post.illust? && !post.postable.illust_images_create!(post_params[:postable_attributes])
-          raise StandardError
+          raise StandardError, "Failed to create illust images"
         end
-
         # 保存
         post.save!
 
+        # タグの登録
+        post.create_tags(post_params[:tags])
+        # シナリオ名の登録
+        post.create_synalios(post_params[:synalios])
+        # システムの登録
+        post.create_game_systems(post_params[:game_systems])
+
         render json: { uuid: post.short_uuid }, status: :created
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error("Validation failed: #{e.record.errors.full_messages.join(", ")}")
+        render json: { error: e.record.errors.full_messages }, status: :unprocessable_entity
+        raise ActiveRecord::Rollback
       rescue => e
         Rails.logger.error(e.message)
         Rails.logger.error(e.backtrace.join("\n"))
         render json: { error: e.message }, status: :bad_request
+        raise ActiveRecord::Rollback
       end
     end
   end

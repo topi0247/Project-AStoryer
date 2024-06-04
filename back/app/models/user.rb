@@ -21,22 +21,22 @@ class User < ActiveRecord::Base
         :recoverable, :rememberable, :validatable,
         :omniauthable, omniauth_providers: %i[google_oauth2 discord]
   include DeviseTokenAuth::Concerns::User
-  has_many :authentications, primary_key: :uuid, foreign_key: :user_uuid, dependent: :destroy
-  has_one :profile, primary_key: :uuid, foreign_key: :user_uuid, dependent: :destroy
-  has_many :user_notices, primary_key: :uuid, foreign_key: :user_uuid, dependent: :destroy
+  has_many :authentications, foreign_key: :user_uuid, dependent: :destroy
+  has_one :profile, foreign_key: :user_uuid, dependent: :destroy
+  has_many :user_notices, foreign_key: :user_uuid, dependent: :destroy
   has_many :notices, through: :user_notices
-  has_many :posts, primary_key: :uuid, foreign_key: :user_uuid, dependent: :destroy
+  has_many :posts, foreign_key: :user_uuid, dependent: :destroy
 
   # フォローしている人とフォローされている人を取得するためのアソシエーション
-  has_many :following_relationships, class_name: 'Relationship', primary_key: :uuid, foreign_key: 'follower_uuid', dependent: :destroy, inverse_of: :follower
-  has_many :follower_relationships, class_name: 'Relationship', primary_key: :uuid, foreign_key: 'followed_uuid', dependent: :destroy, inverse_of: :followed
+  has_many :following_relationships, class_name: 'Relationship', foreign_key: 'follower_uuid', dependent: :destroy, inverse_of: :follower
+  has_many :follower_relationships, class_name: 'Relationship', foreign_key: 'followed_uuid', dependent: :destroy, inverse_of: :followed
   # フォローしている人を呼び出す
   has_many :following, through: :following_relationships, source: :followed
   # フォロワーを呼びたす
   has_many :followers, through: :follower_relationships, source: :follower
 
-  has_many :favorites, primary_key: :uuid, foreign_key: :user_uuid, dependent: :destroy
-  has_many :bookmarks, primary_key: :uuid, foreign_key: :user_uuid, dependent: :destroy
+  has_many :favorites, foreign_key: :user_uuid, dependent: :destroy
+  has_many :bookmarks, foreign_key: :user_uuid, dependent: :destroy
   has_many :bookmark_posts, through: :bookmarks, source: :post
 
   enum role: { general: 0, admin: 1 } # general: 一般ユーザー, admin: 管理者

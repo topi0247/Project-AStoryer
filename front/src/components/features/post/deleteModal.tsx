@@ -12,7 +12,7 @@ export default function DeleteModal({
   isDeleteConfirmation: boolean;
   setIsDeleteConfirmation: ChangeEventHandler<HTMLInputElement>;
   deleteConfirmationError: string;
-  handleDeleteSubmit: ()=>void;
+  handleDeleteSubmit: () => void;
   handleBack: () => void;
 }) {
   const t_EditGeneral = useTranslations("EditGeneral");
