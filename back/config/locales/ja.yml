@@ -1,0 +1,14 @@
+ja:
+  activerecord:
+    errors:
+      models:
+        post:
+          attributes:
+            post_synalios:
+              invalid: "無効なシナリオです"
+            post_tags:
+              invalid: "無効なタグです"
+            postable:
+              required: "投稿タイプを設定してください"
+            post_game_systems:
+              invalid: "無効なゲームシステムです"

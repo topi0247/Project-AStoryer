@@ -1,5 +1,6 @@
 import Illust from "./illust";
 import IllustCarousel from "./illustCarousel";
-import XShare from "./xShare";
+import IllustDropzone from "./illustDropzone";
+import Preview from "./preview";
 
-export { Illust, IllustCarousel, XShare };
+export { Illust, IllustCarousel, IllustDropzone, Preview };

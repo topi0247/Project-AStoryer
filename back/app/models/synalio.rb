@@ -9,5 +9,6 @@
 #
 class Synalio < ApplicationRecord
   has_many :post_synalios, dependent: :destroy
+  has_many :posts, primary_key: :uuid, foreign_key: :post_uuid, through: :post_synalios
   validates :name, presence: true, uniqueness: true
 end

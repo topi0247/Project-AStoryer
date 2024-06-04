@@ -5,26 +5,15 @@ import { userState } from "@/recoilState";
 import { RouterPath } from "@/settings";
 import { IEditIllust, IEditIllustData, IPublicState } from "@/types";
 import * as Mantine from "@mantine/core";
-import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
-import { useMediaQuery } from "@mantine/hooks";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { FaImage } from "rocketicons/fa";
+import { useRecoilValue } from "recoil";
 import useSWR, { mutate } from "swr";
-import { XShare } from "@/components/features/illusts";
-import { IoMdClose } from "rocketicons/io";
+import { IllustDropzone, Preview } from "@/components/features/illusts";
+import * as Post from "@/components/features/post";
 
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
-
-const fetcherTags = (url: string) => GetFromAPI(url).then((res) => res.data);
-
-const fetcherSynalios = (url: string) =>
-  GetFromAPI(url).then((res) => res.data);
-
-const fetcherGameSystems = (url: string) =>
-  GetFromAPI(url).then((res) => res.data);
 
 export default function IllustEditPage({
   params,
@@ -44,19 +33,8 @@ export default function IllustEditPage({
         game_system: data.game_systems,
       } as IEditIllustData)
     : ({} as IEditIllustData);
-  const { data: Tags, error: errorTags } = useSWR("/tags", fetcherTags);
-  const { data: Synalios, error: errorSynalios } = useSWR(
-    "/synalios",
-    fetcherSynalios
-  );
-  const { data: GameSystems, error: errorGameSystems } = useSWR(
-    "/game_systems",
-    fetcherGameSystems
-  );
   const [postIllust, setPostIllust] = useState<IEditIllust[]>([]);
   const [isInitialSetIllust, setIsInitialSetIllust] = useState<boolean>(false);
-  const theme = Mantine.useMantineTheme();
-  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [tags, setTags] = useState<string[]>([]);
   const router = useRouter();
@@ -73,8 +51,6 @@ export default function IllustEditPage({
   const [errorMessage, setErrorMessage] = useState<string>("");
   const TITLE_MAX_LENGTH = 20;
   const CAPTION_MAX_LENGTH = 10000;
-  const MEGA_BITE = 1024 ** 2;
-  const MAX_SIZE = 10 * MEGA_BITE;
   const MAX_COUNT = 12;
 
   const form = useForm({
@@ -130,16 +106,11 @@ export default function IllustEditPage({
   }, [illustData]);
 
   const getFetcherError = () => {
-    return error || errorTags || errorSynalios || errorGameSystems;
+    return error;
   };
 
   const disableData = () => {
-    return (
-      data === undefined ||
-      Tags === undefined ||
-      Synalios === undefined ||
-      GameSystems === undefined
-    );
+    return data === undefined;
   };
 
   if (getFetcherError()) return <div>error</div>;
@@ -179,6 +150,18 @@ export default function IllustEditPage({
     }
   };
 
+  const pushIllust = (targetResult: string) => {
+    const postIllust = form.getValues().postIllust;
+    postIllust.push({ body: targetResult, position: -1 });
+    form.setValues({ postIllust: postIllust });
+  };
+
+  const deleteIllust = (index: number) => {
+    let postIllust = form.getValues().postIllust;
+    postIllust.splice(index, 1);
+    form.setValues({ postIllust: postIllust });
+  };
+
   const handleDelete = () => {
     setOpenModal(true);
     setIsDelete(true);
@@ -207,25 +190,17 @@ export default function IllustEditPage({
     }
   };
 
-  const handleDrop = (files: File[]) => {
-    for (const file of files) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target) {
-          postIllust.push({ body: e.target.result as string, position: -1 });
-          form.setValues({ postIllust: postIllust });
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleModalClose = () => {
     setIsDelete(false);
     setIsDeleteConfirmation(false);
     setDeleteConfirmationError("");
     setOpenModal(false);
     router.back();
+  };
+
+  const handleBack = () => {
+    setIsDelete(false);
+    setOpenModal(false);
   };
 
   return (
@@ -254,100 +229,59 @@ export default function IllustEditPage({
               onSubmit={form.onSubmit(handleSubmit)}
             >
               <section>
-                {illustData?.publish_state === IPublicState.Draft ? (
-                  <>
-                    <label htmlFor="postIllust">
-                      {t_PostIllustEdit("upload")}
-                      <span className="text-red-600">*</span>
-                    </label>
-                    <div className="w-full bg-slate-400 p-5 rounded grid grid-cols-2 gap-4 md:grid-cols-4">
-                      {postIllust.map((image: IEditIllust, i: number) => (
-                        <div
-                          className="relative w-full h-full max-h-28 flex justify-center items-center"
-                          key={i}
-                        >
-                          <Mantine.Button
-                            className="absolute -top-3 -right-3 rounded-full bg-white transition-all h-6 w-6 p-0 border border-red-400 hover:bg-red-400"
-                            onClick={() => {
-                              postIllust.splice(i, 1);
-                              form.setValues({ postIllust: postIllust });
-                            }}
-                          >
-                            <IoMdClose className="icon-red-sm p-0" />
-                          </Mantine.Button>
-                          <Mantine.Image
-                            src={image.body}
-                            key={i}
-                            className="object-cover w-full h-full rounded"
-                          />
-                        </div>
-                      ))}
-                      {postIllust.length < MAX_COUNT && (
-                        <Dropzone
-                          name="postIllust"
-                          multiple
-                          onDrop={(files) => handleDrop(files)}
-                          maxSize={MAX_SIZE}
-                          accept={IMAGE_MIME_TYPE}
-                          style={{
-                            position: "relative",
-                            cursor: "pointer",
-                            borderRadius: "4px",
-                            height: "110px",
-                            border: "2px dashed rgb(148 163 184)",
-                          }}
-                          {...form.getInputProps("postIllust")}
-                        >
-                          <Dropzone.Idle>
-                            <FaImage
-                              className="icon-black opacity-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                              style={{
-                                width: "3rem",
-                                height: "3rem",
-                              }}
-                            />
-                          </Dropzone.Idle>
-                        </Dropzone>
-                      )}
-                    </div>
-                    {form.errors.postIllust && (
-                      <p className="text-sm text-red-500">
-                        {form.errors.postIllust}
-                      </p>
+                <label htmlFor="postIllust">
+                  {t_PostIllustEdit("upload")}
+                  <span className="text-red-600">*</span>
+                </label>
+                <p className="text-sm">{t_PostIllustEdit("maxSize")}</p>
+                <p className="text-sm">{t_PostIllustEdit("maxCount")}</p>
+                <div className="w-full bg-slate-400 p-5 rounded grid grid-cols-2 gap-4 md:grid-cols-4">
+                  {postIllust.map((image: IEditIllust, i: number) => (
+                    <Preview
+                      key={i}
+                      image={image}
+                      deleteIllust={() => deleteIllust(i)}
+                      isDelete={
+                        illustData?.publish_state === IPublicState.Draft
+                      }
+                    />
+                  ))}
+                  {illustData?.publish_state === IPublicState.Draft &&
+                    postIllust.length < MAX_COUNT && (
+                      <IllustDropzone
+                        pushIllust={pushIllust}
+                        MAX_COUNT={MAX_COUNT}
+                        formProps={form.getInputProps("postIllust")}
+                      />
                     )}
-                  </>
-                ) : (
-                  <>
-                    {postIllust.length > 0 && (
-                      <div className="w-full bg-slate-400 p-5 rounded grid grid-cols-2 gap-4 md:grid-cols-4">
-                        {postIllust.map((image: IEditIllust, i: number) => (
-                          <div
-                            className="relative w-full h-full max-h-28 flex justify-center items-center"
-                            key={i}
-                          >
-                            <Mantine.Image
-                              src={image.body}
-                              key={i}
-                              className="object-cover w-full h-full rounded"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <p className="text-center text-sm">
-                      ※{t_PostIllustEdit("illustPostAttention")}
-                    </p>
-                  </>
+                </div>
+                {form.errors.postIllust && (
+                  <p className="text-sm text-red-500">
+                    {form.errors.postIllust}
+                  </p>
                 )}
+                <p className="text-center text-sm">
+                  ※{t_PostIllustEdit("illustPostAttention")}
+                </p>
               </section>
               <section>
-                <Mantine.TextInput
-                  withAsterisk
-                  maxLength={TITLE_MAX_LENGTH}
-                  label={t_PostGeneral("title")}
-                  name="title"
-                  {...form.getInputProps("title")}
+                <Post.Title
+                  formProps={form.getInputProps("title")}
+                  TITLE_MAX_LENGTH={TITLE_MAX_LENGTH}
                 />
+              </section>
+              <section className="flex gap-5 flex-col md:flex-row md:items-center md:gap-2 w-full ">
+                <div className="md:w-1/3">
+                  <Post.System formProps={form.getInputProps("gameSystem")} />
+                </div>
+                <div className="md:w-2/3">
+                  <Post.Synalio
+                    formProps={form.getInputProps("synalioTitle")}
+                  />
+                </div>
+              </section>
+              <section>
+                <Post.Tag onChange={setTags} value={tags} />
               </section>
               <section>
                 <Mantine.Textarea
@@ -361,67 +295,9 @@ export default function IllustEditPage({
                 />
               </section>
               <section>
-                <Mantine.TagsInput
-                  name="tags"
-                  label={t_PostGeneral("tag")}
-                  splitChars={[" ", "|"]}
-                  data={Tags}
-                  onChange={setTags}
-                  value={tags}
+                <Post.PublishState
+                  formProps={form.getInputProps("publishRange")}
                 />
-              </section>
-              <section className="flex gap-5 flex-col md:flex-row md:items-center md:gap-2 w-full ">
-                <div className="md:w-1/3">
-                  <Mantine.Autocomplete
-                    name="gameSystem"
-                    label={t_PostGeneral("gameSystem")}
-                    data={GameSystems}
-                    {...form.getInputProps("gameSystem")}
-                  />
-                </div>
-                <div className="md:w-2/3">
-                  <Mantine.Autocomplete
-                    name="synalioTitle"
-                    label={t_PostGeneral("synalioTitle")}
-                    data={Synalios}
-                    {...form.getInputProps("synalioTitle")}
-                  />
-                </div>
-              </section>
-              <section>
-                <Mantine.Radio.Group
-                  name="publishRange"
-                  label={t_PostGeneral("publishRange")}
-                  withAsterisk
-                  value={form.values.publishRange}
-                  {...form.getInputProps("publishRange")}
-                >
-                  <Mantine.Group>
-                    <Mantine.Radio
-                      label={t_PostGeneral("allPublish")}
-                      value={IPublicState.All}
-                      style={{ cursor: "pointer" }}
-                    />
-                    <Mantine.Radio
-                      label={t_PostGeneral("urlPublish")}
-                      value={IPublicState.URL}
-                      style={{ cursor: "pointer" }}
-                    />
-                    {/* <Mantine.Radio
-                      label={t_PostGeneral("followerPublish")}
-                      value={IPublicState.Follower}
-                      style={{ cursor: "pointer" }}
-                    /> */}
-                    <Mantine.Radio
-                      label={t_PostGeneral("private")}
-                      value={IPublicState.Private}
-                      style={{ cursor: "pointer" }}
-                    />
-                  </Mantine.Group>
-                </Mantine.Radio.Group>
-                <p className="text-sm my-4">
-                  {t_PostGeneral("publishAttention")}
-                </p>
               </section>
               <section className="my-8">
                 <Mantine.Group className="flex justify-center items-center">
@@ -469,84 +345,26 @@ export default function IllustEditPage({
       <Mantine.Modal opened={openModal} onClose={handleModalClose}>
         {errorMessage === "" ? (
           isDelete ? (
-            <>
-              <h3 className="text-xl text-center my-4">
-                {t_EditGeneral("deleteModalTItle")}
-              </h3>
-              <p className="text-center text-sm">
-                {t_EditGeneral("deleteModalAttention")}
-              </p>
-              <div className="my-4 flex flex-col justify-center items-center">
-                <Mantine.Checkbox
-                  label={t_EditGeneral("deleteCheckLabel")}
-                  size="md"
-                  radius="xl"
-                  color="red"
-                  checked={isDeleteConfirmation}
-                  onChange={(event) =>
-                    setIsDeleteConfirmation(event.currentTarget.checked)
-                  }
-                />
-                {deleteConfirmationError && (
-                  <p className="text-red-400">{deleteConfirmationError}</p>
-                )}
-              </div>
-              <div className="flex flex-col justify-center items-center gap-4 my-8">
-                <Mantine.Button
-                  type="button"
-                  className="bg-red-400 hover:bg-red-600 transition-all text-white px-8 py-1"
-                  onClick={handleDeleteSubmit}
-                >
-                  {t_EditGeneral("deleteButton")}
-                </Mantine.Button>
-                <Mantine.Button
-                  type="button"
-                  className="tracking-wider text-black hover:text-black hover:text-opacity-50 transition-all bg-transparent hover:bg-transparent"
-                  onClick={() => {
-                    setIsDelete(false);
-                    setOpenModal(false);
-                  }}
-                >
-                  {t_General("back")}
-                </Mantine.Button>
-              </div>
-            </>
+            <Post.DeleteModal
+              isDeleteConfirmation={isDeleteConfirmation}
+              setIsDeleteConfirmation={(event) =>
+                setIsDeleteConfirmation(event.target.checked)
+              }
+              deleteConfirmationError={deleteConfirmationError}
+              handleDeleteSubmit={handleDeleteSubmit}
+              handleBack={handleBack}
+            />
+          ) : form.values.publishRange === IPublicState.Draft ? (
+            <Post.DraftModal onClick={handleModalClose} />
           ) : (
-            <>
-              <h3 className="text-xl text-center my-4">
-                {form.values.publishRange === IPublicState.Draft
-                  ? t_PostGeneral("draftSaved")
-                  : t_PostGeneral("posted")}
-              </h3>
-              <Mantine.Group justify="center" gap={8}>
-                {form.values.publishRange === IPublicState.Draft ? (
-                  <>
-                    <Mantine.Button
-                      className="bg-green-300 text-black"
-                      onClick={handleModalClose}
-                    >
-                      {t_PostGeneral("close")}
-                    </Mantine.Button>
-                  </>
-                ) : (
-                  <>
-                    <Mantine.Button
-                      className="bg-green-300 hover:bg-green-500 transition-all text-black"
-                      onClick={() => {
-                        router.push(RouterPath.illust(uuid));
-                        setOpenModal(false);
-                      }}
-                    >
-                      {t_PostGeneral("showPost")}
-                    </Mantine.Button>
-                    <XShare postUuid={uuid} title={form.getValues().title} />
-                  </>
-                )}
-              </Mantine.Group>
-            </>
+            <Post.PostModal
+              onClick={handleModalClose}
+              postUuid={uuid}
+              title={form.values.title}
+            />
           )
         ) : (
-          <p className="text-black text-center">{errorMessage}</p>
+          <Post.ErrorModal text={errorMessage} />
         )}
       </Mantine.Modal>
     </>
