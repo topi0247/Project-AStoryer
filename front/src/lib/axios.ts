@@ -9,8 +9,7 @@ export function Delete2API(url: string) {
 }
 
 export function GetFromAPI(url: string) {
-  const response = client.get(url);
-  return response;
+  return client.get(url);
 }
 
 export function Put2API(url: string, body: any) {

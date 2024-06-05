@@ -1,9 +1,9 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import * as RecoilState from "@/recoilState";
-import { GetFromAPI, Link, useRouter } from "@/lib";
+import * as Lib from "@/lib";
 import * as Mantine from "@mantine/core";
 import { IconButtonList } from "@/components/ui";
 import { useTranslations } from "next-intl";
@@ -13,7 +13,8 @@ import { RouterPath } from "@/settings";
 import { Carousel } from "@mantine/carousel";
 import "@mantine/carousel/styles.css";
 
-const fetcherIllust = (url: string) => GetFromAPI(url).then((res) => res.data);
+const fetcherIllust = (url: string) =>
+  Lib.GetFromAPI(url).then((res) => res.data);
 
 export default function IllustPage({
   params: { uuid },
@@ -34,14 +35,18 @@ export default function IllustPage({
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const CAPTION_OPEN_LENGTH = 280;
-  const router = useRouter();
+  const router = Lib.useRouter();
 
-  if (illustError) return <div>error</div>;
-
-  if (illustData?.error === "Not Found") {
-    // TODO : 404ページへリダイレクト
-    router.push(RouterPath.home);
-  }
+  useEffect(() => {
+    if (illustError) {
+      if (illustError.response.status === 404) {
+        router.push("/not-found");
+      } else {
+        router.push("/error");
+      }
+      return undefined;
+    }
+  }, [illustError]);
 
   const handleOpenUser = () => {
     // TODO : 投稿者の情報モーダルの表示
@@ -150,7 +155,7 @@ export default function IllustPage({
                   </Mantine.Modal>
                 </>
               ) : (
-                <Mantine.Skeleton height={500} />
+                <Mantine.Skeleton height={500} radius={0} />
               )}
             </section>
             <section className="bg-white p-4 rounded flex flex-col gap-3">
@@ -200,24 +205,24 @@ export default function IllustPage({
                     {illustData ? (
                       <>
                         {illustData.game_systems && (
-                          <Link
+                          <Lib.Link
                             href={RouterPath.illustSearch(
                               `gameSystem=${illustData.game_systems}`
                             )}
                             className="bg-blue-200 rounded-lg px-2 py-1 hover:opacity-60 transition-all"
                           >
                             {illustData.game_systems}
-                          </Link>
+                          </Lib.Link>
                         )}
                         {illustData.synalio && (
-                          <Link
+                          <Lib.Link
                             href={RouterPath.illustSearch(
                               `synalioName=${illustData.synalio}`
                             )}
                             className="bg-green-200 rounded-lg px-2 py-1 hover:opacity-60 transition-all"
                           >
                             {illustData.synalio}
-                          </Link>
+                          </Lib.Link>
                         )}
                       </>
                     ) : (
@@ -231,13 +236,13 @@ export default function IllustPage({
                   <div className="flex flex-wrap gap-2 text-sm">
                     {illustData ? (
                       illustData.tags.map((tag: string, i: number) => (
-                        <Link
+                        <Lib.Link
                           key={i}
                           href={RouterPath.illustSearch(`tags=${tag}`)}
                           className="text-blue-600 hover:underline hover:opacity-60 transition-all"
                         >
                           #{tag}
-                        </Link>
+                        </Lib.Link>
                       ))
                     ) : (
                       <>
@@ -340,13 +345,13 @@ export default function IllustPage({
                     key={i}
                     className="flex gap-4 items-start py-4 border-b border-slate-200 last-of-type:border-none"
                   >
-                    <Link href="/users/1">
+                    <Lib.Link href="/users/1">
                       <Mantine.Avatar alt="icon" src={illustData.user.avatar} />
-                    </Link>
+                    </Lib.Link>
                     <div className="flex flex-col gap-1">
-                      <Link href="/users/1" className="font-semibold">
+                      <Lib.Link href="/users/1" className="font-semibold">
                         ユーザー名
-                      </Link>
+                      </Lib.Link>
                       <p>
                         コメント コメント コメント コメント コメント
                         コメントコメント コメント コメント コメント コメント
@@ -369,7 +374,7 @@ export default function IllustPage({
             <div className="flex gap-4 justify-start items-center">
               {illustData ? (
                 <>
-                  <Link href={RouterPath.users(illustData.user.uuid)}>
+                  <Lib.Link href={RouterPath.users(illustData.user.uuid)}>
                     <Mantine.Avatar
                       variant="default"
                       radius="xl"
@@ -377,14 +382,14 @@ export default function IllustPage({
                       alt="icon"
                       src={illustData.user.avatar}
                     />
-                  </Link>
+                  </Lib.Link>
                   <div className="w-full flex flex-col gap-2">
-                    <Link
+                    <Lib.Link
                       href={RouterPath.users(illustData.user.uuid)}
                       className="text-xl"
                     >
                       {illustData.user.name}
-                    </Link>
+                    </Lib.Link>
                     {/* {follow ? (
                   <Mantine.Button
                     variant="outlined"
@@ -411,21 +416,21 @@ export default function IllustPage({
               )}
             </div>
             {/* <div className="flex flex-wrap gap-3">
-              <Link href="" className="bg-slate-300 rounded px-2">
+              <Lib.Link href="" className="bg-slate-300 rounded px-2">
                 X
-              </Link>
-              <Link href="" className="bg-slate-300 rounded px-2">
+              </Lib.Link>
+              <Lib.Link href="" className="bg-slate-300 rounded px-2">
                 pixiv
-              </Link>
-              <Link href="" className="bg-slate-300 rounded px-2">
+              </Lib.Link>
+              <Lib.Link href="" className="bg-slate-300 rounded px-2">
                 privatter
-              </Link>
-              <Link href="" className="bg-slate-300 rounded px-2">
+              </Lib.Link>
+              <Lib.Link href="" className="bg-slate-300 rounded px-2">
                 {t_ShowPost("fusetter")}
-              </Link>
-              <Link href="" className="bg-slate-300 rounded px-2">
+              </Lib.Link>
+              <Lib.Link href="" className="bg-slate-300 rounded px-2">
                 {t_ShowPost("other")}
-              </Link>
+              </Lib.Link>
             </div> */}
             <div>
               {illustData ? (
