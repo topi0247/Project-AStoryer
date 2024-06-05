@@ -4,6 +4,7 @@ import useSWR from "swr";
 import { useTranslations } from "next-intl";
 import { Email, Name, NoticeTabs } from "@/components/features/account";
 import { GetFromAPI } from "@/lib";
+import { LoadingOverlay } from "@mantine/core";
 
 interface AccountProps {
   name: string;
@@ -19,7 +20,7 @@ export default function AccountPage() {
   const t_AccountSettings = useTranslations("AccountSettings");
   // TODO : ローディング・エラー画面
   if (error) return <div>error</div>;
-  if (data === undefined) return <div>Now Loading</div>;
+  if (data === undefined) return <LoadingOverlay visible />;
   const account = data?.account as AccountProps;
 
   return (
