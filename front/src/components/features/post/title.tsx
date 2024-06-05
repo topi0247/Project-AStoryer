@@ -8,7 +8,7 @@ export default function PostTitle({
 }: {
   formProps: any;
   TITLE_MAX_LENGTH: number;
-  loading: boolean;
+  loading?: boolean;
 }) {
   const t_PostGeneral = useTranslations("PostGeneral");
   return (

@@ -8,7 +8,7 @@ export default function Caption({
 }: {
   formProps: any;
   CAPTION_MAX_LENGTH: number;
-  loading: boolean;
+  loading?: boolean;
 }) {
   const t_PostGeneral = useTranslations("PostGeneral");
   return (

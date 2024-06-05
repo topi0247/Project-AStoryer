@@ -7,7 +7,7 @@ export default function PublishState({
   loading = false,
 }: {
   formProps: any;
-  loading: boolean;
+  loading?: boolean;
 }) {
   const t_PostGeneral = useTranslations("PostGeneral");
   return (
