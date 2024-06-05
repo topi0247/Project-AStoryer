@@ -9,7 +9,8 @@ class Api::V1::ProfilesController < Api::V1::BasesController
       user.profile.save_avatar(profile_params[:avatar]) if profile_params[:avatar]
       user.profile.text = profile_params[:text] if profile_params[:text]
       user.profile.save!
-      head :ok
+      avater = user.profile.avatar.attached? ? url_for(user.profile.avatar) : nil
+      render json: {avater: avater}, status: :ok
     rescue => e
       Rails.logger.error(e.message)
       render json: { error: e.message }, status: :bad_request

@@ -10,7 +10,7 @@ import { useState } from "react";
 import { FaImage } from "rocketicons/fa";
 import { useForm } from "@mantine/form";
 import { Put2API } from "@/lib";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { userState } from "@/recoilState";
 import { mutate } from "swr";
 
@@ -27,7 +27,7 @@ export default function UserEdit({
   const [avatarBlob, setAvatarBlob] = useState(userProfile.avatar);
   const theme = MantineCore.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
-  const user = useRecoilValue(userState);
+  const [user, setUser] = useRecoilState(userState);
 
   const form = useForm({
     mode: "uncontrolled",
@@ -119,6 +119,9 @@ export default function UserEdit({
 
       alert("変更しました");
       mutate(`/users/${user.uuid}`);
+      if (res.data.avatar) {
+        setUser((prev) => ({ ...prev, avatar: res.data.avatar }));
+      }
     } catch (error) {
       alert("エラーが発生しました");
     } finally {
