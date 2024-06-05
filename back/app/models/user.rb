@@ -90,12 +90,11 @@ class User < ActiveRecord::Base
     nil
   end
 
-  def as_header_json
+  def as_header_json(avatar_url)
     {
       uuid: short_uuid,
       name: name,
-      avatar: profile&.avatar&.url,
-      header_image: profile&.header_image&.url,
+      avatar: avatar_url,
       following_count: following.count || 0,
       follower_count: followers.count || 0,
     }
