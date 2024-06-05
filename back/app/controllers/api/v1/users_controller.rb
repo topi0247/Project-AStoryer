@@ -64,9 +64,20 @@ class Api::V1::UsersController < Api::V1::BasesController
   private
 
   def set_user
-    @user = User.find_by_short_uuid(params[:id])
-    if @user.nil?
-      render json: { error: 'Not Found' }, status: :not_found and return
+    begin
+      if params[:id].length != 22
+        raise ActiveRecord::RecordInvalid
+      end
+      @user = User.find_by_short_uuid(params[:id])
+      if @user.nil?
+        raise ActiveRecord::RecordNotFound
+      end
+    rescue ActiveRecord::RecordInvalid => e
+      render json: { error: 'Invalid UUID' }, status: :not_found
+    rescue ActiveRecord::RecordNotFound => e
+      render json: { error: 'Not Found' }, status: :not_found
+    rescue => e
+      render json: { error: e.message }, status: :internal_server_error
     end
   end
 end

@@ -78,10 +78,8 @@ class Post < ApplicationRecord
       true
     when 'only_follower'
       self.user.followers.include?(current_user)
-    when 'private_publish'
-      current_user == user
     else
-      false
+      current_user == user
     end
   end
 

@@ -16,4 +16,6 @@ export const RouterPath = {
   users: (uuid: string) => `/users/${uuid}`,
   account: "/account",
   bookmark: (uuid: string) => `/users/${uuid}?tab=bookmark`,
+  error: "/error",
+  notFound: "/not-found",
 };

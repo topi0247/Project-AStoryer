@@ -3,7 +3,9 @@
 import useSWR from "swr";
 import { useTranslations } from "next-intl";
 import { Email, Name, NoticeTabs } from "@/components/features/account";
-import { GetFromAPI } from "@/lib";
+import { GetFromAPI, useRouter } from "@/lib";
+import { LoadingOverlay } from "@mantine/core";
+import { RouterPath } from "@/settings";
 
 interface AccountProps {
   name: string;
@@ -17,9 +19,11 @@ const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 export default function AccountPage() {
   const { data, error } = useSWR("/account", fetcher);
   const t_AccountSettings = useTranslations("AccountSettings");
-  // TODO : ローディング・エラー画面
-  if (error) return <div>error</div>;
-  if (data === undefined) return <div>Now Loading</div>;
+  const router = useRouter();
+  if (error) {
+    router.push(RouterPath.notFound);
+  }
+  if (data === undefined) return <LoadingOverlay visible />;
   const account = data?.account as AccountProps;
 
   return (

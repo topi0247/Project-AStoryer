@@ -18,20 +18,34 @@ class Api::V1::PostsController < Api::V1::BasesController
   end
 
   def show
-    post = Post.includes(:postable, :tags, :synalios, :user).find_by_short_uuid(params[:id])
-
-    if post.nil? || !post.publishable?(current_api_v1_user)
-      render json: { error: 'Not Found' }, status: :not_found and return
-    end
-
-    content = []
-    if post.illust?
-      post.postable.illust_attachments.each do |attachment|
-        content << url_for(attachment.image)
+    begin
+      if params[:id].length != 22
+        raise ActiveRecord::RecordInvalid
       end
-    end
 
-    render json: post.as_custom_show_json(content), status: :ok
+      post = Post.includes(:postable, :tags, :synalios, :user).find_by_short_uuid(params[:id])
+
+      if post.nil? || !post.publishable?(current_api_v1_user)
+        raise ActiveRecord::RecordNotFound
+      end
+
+      content = []
+      if post.illust?
+        post.postable.illust_attachments.each do |attachment|
+          content << url_for(attachment.image)
+        end
+      end
+
+      render json: post.as_custom_show_json(content), status: :ok
+    rescue ActiveRecord::RecordInvalid => e
+      render json: { error: 'Invalid UUID' }, status: :not_found
+    rescue ActiveRecord::RecordNotFound => e
+      render json: { error: 'Not Found' }, status: :not_found
+    rescue => e
+      Rails.logger.error(e.message)
+      Rails.logger.error(e.backtrace.join("\n"))
+      render json: { error: e.message }, status: :internal_server_error
+      end
   end
 
   def create

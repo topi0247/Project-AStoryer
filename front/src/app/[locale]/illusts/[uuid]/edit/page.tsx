@@ -109,12 +109,7 @@ export default function IllustEditPage({
     return error;
   };
 
-  const disableData = () => {
-    return data === undefined;
-  };
-
   if (getFetcherError()) return <div>error</div>;
-  if (disableData()) return <div>Now Loading</div>;
 
   const handleSubmit = async () => {
     const { title, caption, publishRange, synalioTitle, gameSystem } =
@@ -236,24 +231,32 @@ export default function IllustEditPage({
                 <p className="text-sm">{t_PostIllustEdit("maxSize")}</p>
                 <p className="text-sm">{t_PostIllustEdit("maxCount")}</p>
                 <div className="w-full bg-slate-400 p-5 rounded grid grid-cols-2 gap-4 md:grid-cols-4">
-                  {postIllust.map((image: IEditIllust, i: number) => (
-                    <Preview
-                      key={i}
-                      image={image}
-                      deleteIllust={() => deleteIllust(i)}
-                      isDelete={
-                        illustData?.publish_state === IPublicState.Draft
-                      }
-                    />
-                  ))}
-                  {illustData?.publish_state === IPublicState.Draft &&
-                    postIllust.length < MAX_COUNT && (
-                      <IllustDropzone
-                        pushIllust={pushIllust}
-                        MAX_COUNT={MAX_COUNT}
-                        formProps={form.getInputProps("postIllust")}
-                      />
+                  <>
+                    {data === undefined ? (
+                      <Mantine.Skeleton height={96} />
+                    ) : (
+                      <>
+                        {postIllust.map((image: IEditIllust, i: number) => (
+                          <Preview
+                            key={i}
+                            image={image}
+                            deleteIllust={() => deleteIllust(i)}
+                            isDelete={
+                              illustData?.publish_state === IPublicState.Draft
+                            }
+                          />
+                        ))}
+                        {illustData?.publish_state === IPublicState.Draft &&
+                          postIllust.length < MAX_COUNT && (
+                            <IllustDropzone
+                              pushIllust={pushIllust}
+                              MAX_COUNT={MAX_COUNT}
+                              formProps={form.getInputProps("postIllust")}
+                            />
+                          )}
+                      </>
                     )}
+                  </>
                 </div>
                 {form.errors.postIllust && (
                   <p className="text-sm text-red-500">
@@ -268,6 +271,7 @@ export default function IllustEditPage({
                 <Post.Title
                   formProps={form.getInputProps("title")}
                   TITLE_MAX_LENGTH={TITLE_MAX_LENGTH}
+                  loading={data === undefined}
                 />
               </section>
               <section className="flex gap-5 flex-col md:flex-row md:items-center md:gap-2 w-full ">
@@ -284,19 +288,16 @@ export default function IllustEditPage({
                 <Post.Tag onChange={setTags} value={tags} />
               </section>
               <section>
-                <Mantine.Textarea
-                  name="caption"
-                  label={t_PostGeneral("caption")}
-                  size="sm"
-                  radius="xs"
-                  rows={5}
-                  maxLength={CAPTION_MAX_LENGTH}
-                  {...form.getInputProps("caption")}
+                <Post.Caption
+                  formProps={form.getInputProps("caption")}
+                  CAPTION_MAX_LENGTH={CAPTION_MAX_LENGTH}
+                  loading={data === undefined}
                 />
               </section>
               <section>
                 <Post.PublishState
                   formProps={form.getInputProps("publishRange")}
+                  loading={data === undefined}
                 />
               </section>
               <section className="my-8">
@@ -305,7 +306,10 @@ export default function IllustEditPage({
                     <>
                       <Mantine.Button
                         type="submit"
-                        className="bg-green-300 text-black hover:bg-green-500 hover:text-black transition-all"
+                        className={`bg-green-300 text-black hover:bg-green-500 hover:text-black transition-all ${
+                          data === undefined ? "bg-green-600" : ""
+                        }`}
+                        disabled={data === undefined}
                       >
                         {t_PostGeneral("post")}
                       </Mantine.Button>
@@ -315,7 +319,10 @@ export default function IllustEditPage({
                           form.setValues({ publishRange: IPublicState.Draft });
                           form.onSubmit(handleSubmit);
                         }}
-                        className="bg-slate-500 hover:bg-slate-800 transition-all"
+                        className={`bg-slate-500 hover:bg-slate-800 transition-all ${
+                          data === undefined ? "bg-slate-800" : ""
+                        }`}
+                        disabled={data === undefined}
                       >
                         {t_PostGeneral("draftSave")}
                       </Mantine.Button>
@@ -323,7 +330,10 @@ export default function IllustEditPage({
                   ) : (
                     <Mantine.Button
                       type="submit"
-                      className="bg-green-300 text-black hover:bg-green-500 hover:text-black transition-all"
+                      className={`bg-green-300 text-black hover:bg-green-500 hover:text-black transition-all ${
+                        data === undefined ? "bg-green-500" : ""
+                      }`}
+                      disabled={data === undefined}
                     >
                       {t_EditGeneral("update")}
                     </Mantine.Button>
@@ -331,7 +341,10 @@ export default function IllustEditPage({
                   <Mantine.Button
                     type="button"
                     onClick={handleDelete}
-                    className="bg-red-500 hover:bg-red-800 transition-all"
+                    className={`bg-red-500 hover:bg-red-800 transition-all  ${
+                      data === undefined ? "bg-red-800" : ""
+                    }`}
+                    disabled={data === undefined}
                   >
                     {t_PostGeneral("delete")}
                   </Mantine.Button>
