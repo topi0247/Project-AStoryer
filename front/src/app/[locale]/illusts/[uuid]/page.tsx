@@ -188,11 +188,11 @@ export default function IllustPage({
                   ) : (
                     <>
                       <div className="flex justify-end items-center">
-                        <Mantine.Skeleton height={35} width={35} />
+                        <Mantine.Skeleton height={35} circle />
                       </div>
                       <Mantine.Skeleton height={35} />
                       <div className="md:hidden">
-                        <Mantine.Skeleton height={35} width={35} radius={100} />
+                        <Mantine.Skeleton height={35} circle />
                       </div>
                     </>
                   )}
