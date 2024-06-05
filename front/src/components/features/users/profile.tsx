@@ -32,17 +32,19 @@ export default function Profile({ profileText }: { profileText: string }) {
       >
         {profileText}
       </Mantine.Text>
-      <button
-        type="button"
-        className={`w-full bg-blue-300 border border-blue-600 border-opacity-50 bg-opacity-50 hover:bg-opacity-25 hover:border-opacity-25 flex justify-center items-center rounded py-1 transition-all ${
-          opened && "mt-3"
-        } `}
-        onClick={toggle}
-      >
-        <span className={`${opened ? "rotate-180" : ""} transition-all`}>
-          ▼
-        </span>
-      </button>
+      {isCollapse && (
+        <button
+          type="button"
+          className={`w-full bg-blue-300 border border-blue-600 border-opacity-50 bg-opacity-50 hover:bg-opacity-25 hover:border-opacity-25 flex justify-center items-center rounded py-1 transition-all ${
+            opened && "mt-3"
+          } `}
+          onClick={toggle}
+        >
+          <span className={`${opened ? "rotate-180" : ""} transition-all`}>
+            ▼
+          </span>
+        </button>
+      )}
     </Mantine.Box>
   );
 }

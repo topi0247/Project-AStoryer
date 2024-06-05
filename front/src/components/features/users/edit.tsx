@@ -72,6 +72,11 @@ export default function UserEdit({
         }
         return null;
       },
+      profile: (value) => {
+        if (value.length > 1000) {
+          return "1000文字以内で入力してください";
+        }
+      },
     },
   });
 

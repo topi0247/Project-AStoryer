@@ -12,7 +12,7 @@
 #
 class Profile < ApplicationRecord
   belongs_to :user, foreign_key: :user_uuid, primary_key: :uuid
-  validates :text, length: { maximum: 250 }
+  validates :text, length: { maximum: 1000 }
 
   has_one_attached :header_image
   has_one_attached :avatar
