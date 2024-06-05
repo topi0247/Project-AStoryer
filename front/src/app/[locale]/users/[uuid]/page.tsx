@@ -7,6 +7,8 @@ import { GetFromAPI, useRouter } from "@/lib";
 import useSWR from "swr";
 import { useEffect, useState } from "react";
 import { RouterPath } from "@/settings";
+import { useRecoilValue } from "recoil";
+import { userState } from "@/recoilState";
 
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
@@ -31,6 +33,7 @@ export default function UserPage({ params }: { params: { uuid: string } }) {
   const { data, error } = useSWR(`/users/${uuid}`, fetcher);
   const [userProfile, setUserProfile] = useState<UserProfile>();
   const router = useRouter();
+  const user = useRecoilValue(userState);
 
   useEffect(() => {
     if (error) {
@@ -98,9 +101,9 @@ export default function UserPage({ params }: { params: { uuid: string } }) {
                 )}
                 <div className="w-full flex flex-col justify-start items-end md:items-start md:justify-start md:relative">
                   {/* ユーザー編集 */}
-                  {/* {userProfile.uuid === user.uuid && (
+                  {userProfile?.uuid === user.uuid && (
                     <Users.UserEdit userProfile={userProfile} />
-                  )} */}
+                  )}
                   <div className="hidden md:block md:h-1/3">
                     {userProfile ? (
                       <h2 className="text-3xl">

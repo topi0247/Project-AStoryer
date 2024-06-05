@@ -9,6 +9,10 @@ import { IUserPageEdit } from "@/types";
 import { useState } from "react";
 import { FaImage } from "rocketicons/fa";
 import { useForm } from "@mantine/form";
+import { Put2API } from "@/lib";
+import { useRecoilValue } from "recoil";
+import { userState } from "@/recoilState";
+import { mutate } from "swr";
 
 export default function UserEdit({
   userProfile,
@@ -23,6 +27,7 @@ export default function UserEdit({
   const [avatarBlob, setAvatarBlob] = useState(userProfile.avatar);
   const theme = MantineCore.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
+  const user = useRecoilValue(userState);
 
   const form = useForm({
     mode: "uncontrolled",
@@ -79,7 +84,7 @@ export default function UserEdit({
     handleClear();
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // 変更点があるか確認
     if (!hasChanges()) {
       alert("変更がありません");
@@ -89,10 +94,31 @@ export default function UserEdit({
     const { twitter, pixiv, fusetter, privatter, other, profile } =
       form.getValues();
 
-    // TODO : 更新処理
-    alert("更新しました");
-    close();
-    handleClear();
+    const data = {
+      profile: {
+        header_image: headerImageBlob,
+        avatar: avatarBlob,
+        text: profile,
+      },
+    };
+
+    try {
+      const res = await Put2API(
+        `/users/${user.uuid}/profile`,
+        JSON.stringify(data)
+      );
+
+      if (res.status !== 200) {
+        throw new Error("エラーが発生しました");
+      }
+
+      alert("変更しました");
+      mutate(`/users/${user.uuid}`);
+    } catch (error) {
+      alert("エラーが発生しました");
+    } finally {
+      close();
+    }
   };
 
   const hasChanges = () => {
@@ -331,16 +357,20 @@ export default function UserEdit({
               </section>
             </div>
             <section className="w-full">
-              <label htmlFor="profile">プロフィール</label>
               <MantineCore.Textarea
                 name="profile"
                 rows={5}
+                label="プロフィール"
                 placeholder="プロフィール"
                 className="w-full"
+                {...form.getInputProps("profile")}
               />
             </section>
             <section className="w-full text-center">
-              <MantineCore.Button type="submit">
+              <MantineCore.Button
+                type="submit"
+                className="bg-green-400 hover:bg-green-600 transition-all"
+              >
                 {t_General("save")}
               </MantineCore.Button>
             </section>

@@ -101,12 +101,12 @@ class User < ActiveRecord::Base
     }
   end
 
-  def as_custom_json(posts = [])
+  def as_custom_json(header_image_url, avatar_url)
     {
       uuid: short_uuid,
       name: name,
-      avatar: profile&.avatar&.url,
-      header_image: profile&.header_image&.url,
+      avatar: avatar_url,
+      header_image: header_image_url,
       profile: profile&.text,
       following_count: following.count || 0,
       follower_count: followers.count || 0,

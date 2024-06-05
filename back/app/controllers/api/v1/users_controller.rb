@@ -3,7 +3,18 @@ class Api::V1::UsersController < Api::V1::BasesController
   before_action :set_user, only: %i[show postsIllust bookmarks]
 
   def show
-    render json: @user.as_custom_json, status: :ok
+    header_image_url = nil
+    avatar_url = nil
+    if @user.profile.present?
+      if@user.profile.header_image.attached?
+        header_image_url = url_for(@user.profile.header_image)
+      end
+      if @user.profile.avatar.attached?
+        avatar_url = url_for(@user.profile.avatar)
+      end
+    end
+
+    render json: @user.as_custom_json(header_image_url,avatar_url), status: :ok
   end
 
   def postsIllust
