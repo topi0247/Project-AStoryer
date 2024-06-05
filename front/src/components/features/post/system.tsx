@@ -12,11 +12,13 @@ export default function System({ formProps }: { formProps: any }) {
   if (error) return;
 
   return (
-    <Mantine.Autocomplete
-      name="gameSystem"
-      label={t_PostGeneral("gameSystem")}
-      data={data}
-      {...formProps}
-    />
+    <>
+      <Mantine.InputLabel>{t_PostGeneral("gameSystem")}</Mantine.InputLabel>
+      {data === undefined ? (
+        <Mantine.Skeleton height={35} />
+      ) : (
+        <Mantine.Autocomplete name="gameSystem" data={data} {...formProps} />
+      )}
+    </>
   );
 }
