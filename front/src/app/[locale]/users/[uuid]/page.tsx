@@ -6,6 +6,7 @@ import * as Users from "@/components/features/users";
 import { GetFromAPI, useRouter } from "@/lib";
 import useSWR from "swr";
 import { useEffect, useState } from "react";
+import { RouterPath } from "@/settings";
 
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
@@ -34,9 +35,9 @@ export default function UserPage({ params }: { params: { uuid: string } }) {
   useEffect(() => {
     if (error) {
       if (error.response.status === 404) {
-        router.push("/not-found");
+        router.push(RouterPath.notFound);
       } else {
-        router.push("/error");
+        router.push(RouterPath.error);
       }
       return;
     }

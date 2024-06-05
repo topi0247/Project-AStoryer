@@ -40,9 +40,9 @@ export default function IllustPage({
   useEffect(() => {
     if (illustError) {
       if (illustError.response.status === 404) {
-        router.push("/not-found");
+        router.push(RouterPath.notFound);
       } else {
-        router.push("/error");
+        router.push(RouterPath.error);
       }
       return;
     }
