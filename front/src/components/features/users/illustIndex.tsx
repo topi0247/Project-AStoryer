@@ -62,8 +62,6 @@ export default function IllustIndex({ uuid }: { uuid: string }) {
     );
   }, [data]);
 
-  if (error) return <div>failed to load</div>;
-
   return (
     <>
       <section id="tabs" className="mx-2 md:container md:m-auto md:mb-8">

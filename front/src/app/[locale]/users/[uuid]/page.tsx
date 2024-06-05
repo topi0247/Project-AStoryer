@@ -3,7 +3,7 @@
 import * as Mantine from "@mantine/core";
 import { useTranslations } from "next-intl";
 import * as Users from "@/components/features/users";
-import { GetFromAPI } from "@/lib";
+import { GetFromAPI, useRouter } from "@/lib";
 import useSWR from "swr";
 import { useEffect, useState } from "react";
 
@@ -29,6 +29,18 @@ export default function UserPage({ params }: { params: { uuid: string } }) {
   const t_UserPage = useTranslations("UserPage");
   const { data, error } = useSWR(`/users/${uuid}`, fetcher);
   const [userProfile, setUserProfile] = useState<UserProfile>();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (error) {
+      if (error.response.status === 404) {
+        router.push("/not-found");
+      } else {
+        router.push("/error");
+      }
+      return;
+    }
+  }, [error]);
 
   useEffect(() => {
     if (!data) return;
@@ -47,8 +59,6 @@ export default function UserPage({ params }: { params: { uuid: string } }) {
       profile: data.profile,
     });
   }, [data]);
-
-  if (error) return <div>failed to load</div>;
 
   return (
     <>

@@ -44,7 +44,7 @@ export default function IllustPage({
       } else {
         router.push("/error");
       }
-      return undefined;
+      return;
     }
   }, [illustError]);
 
