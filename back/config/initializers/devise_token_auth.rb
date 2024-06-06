@@ -66,5 +66,5 @@ DeviseTokenAuth.setup do |config|
   # config.send_confirmation_email = true]
 
   # リセットパスワードのメール送信時のリダイレクト先
-  config.default_password_reset_url = "#{ENV['FRONT_URL']}/ja/request-password-resett"
+  config.default_password_reset_url = "#{ENV['FRONT_URL']}/ja/request-password-reset"
 end
