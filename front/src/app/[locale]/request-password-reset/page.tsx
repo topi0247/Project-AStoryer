@@ -5,9 +5,10 @@ import * as Mantine from "@mantine/core";
 import * as UI from "@/components/ui";
 import { Link, Post2API, useRouter } from "@/lib";
 import { useTranslations } from "next-intl";
-import { useSetRecoilState } from "recoil";
-import * as RecoilState from "@/recoilState";
 import { useState } from "react";
+import { RouterPath } from "@/settings";
+import { useRecoilValue } from "recoil";
+import { userState } from "@/recoilState";
 
 export default function ForgotPasswordPage() {
   const t_Auth = useTranslations("Auth");
@@ -15,6 +16,7 @@ export default function ForgotPasswordPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const router = useRouter();
+  const user = useRecoilValue(userState);
 
   const form = MantineForm.useForm({
     mode: "uncontrolled",
@@ -44,7 +46,7 @@ export default function ForgotPasswordPage() {
 
   const handleBackHome = () => {
     setModalOpen(false);
-    router.push("/");
+    router.push(RouterPath.home);
   };
 
   return (
@@ -70,20 +72,22 @@ export default function ForgotPasswordPage() {
                 {t_General("send")}
               </Mantine.Button>
             </form>
-            <div className="text-center text-sm text-blue-500 flex gap-2 flex-col md:flex-row">
-              <Link
-                href="/signup"
-                className="underline hover:opacity-50 transition-all"
-              >
-                {t_Auth("toSignUp")}
-              </Link>
-              <Link
-                href="/login"
-                className="underline hover:opacity-50 transition-all"
-              >
-                {t_Auth("toLogin")}
-              </Link>
-            </div>
+            {!user.uuid && (
+              <div className="text-center text-sm text-blue-500 flex gap-2 flex-col md:flex-row">
+                <Link
+                  href={RouterPath.signUp}
+                  className="underline hover:opacity-50 transition-all"
+                >
+                  {t_Auth("toSignUp")}
+                </Link>
+                <Link
+                  href={RouterPath.login}
+                  className="underline hover:opacity-50 transition-all"
+                >
+                  {t_Auth("toLogin")}
+                </Link>
+              </div>
+            )}
           </div>
         </section>
       </article>

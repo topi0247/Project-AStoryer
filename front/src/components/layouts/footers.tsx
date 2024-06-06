@@ -1,4 +1,5 @@
 import { Link } from "@/lib";
+import { RouterPath } from "@/settings";
 import { useTranslations } from "next-intl";
 
 export default function Footers() {
@@ -7,7 +8,7 @@ export default function Footers() {
     <footer className="p-4 flex text-white justify-between md:items-center w-full md:py-8">
       <div className="flex flex-col gap-3 md:block md:gap-0 text-2xl md:ml-8">
         <h3 className="md:text-center md:m-auto">
-          <Link href="/" className="flex flex-col">
+          <Link href={RouterPath.home} className="flex flex-col">
             AStoryer <span className="text-sm">- あすとりや -</span>
           </Link>
         </h3>

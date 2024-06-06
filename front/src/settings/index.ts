@@ -18,4 +18,6 @@ export const RouterPath = {
   bookmark: (uuid: string) => `/users/${uuid}?tab=bookmark`,
   error: "/error",
   notFound: "/not-found",
+  requestPasswordReset: "/request-password-reset",
+  resetPassword: "/reset-password",
 };

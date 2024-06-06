@@ -7,6 +7,7 @@ import { Put2API, useRouter } from "@/lib";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hook";
+import { RouterPath } from "@/settings";
 
 export default function ResetPasswordPage() {
   const { setAccessTokens } = useAuth();
@@ -20,7 +21,7 @@ export default function ResetPasswordPage() {
     const fetchData = async () => {
       const params = new URLSearchParams(window.location.search);
       if (params.get("reset_password") !== "true") {
-        router.push("/");
+        router.push(RouterPath.home);
         return;
       }
 
@@ -63,6 +64,16 @@ export default function ResetPasswordPage() {
         password,
         password_confirmation,
       });
+      if (res.status !== 200) throw new Error();
+      if (res.data.success) {
+        const accessToken = res.headers["access-token"];
+        const client = res.headers.client;
+        const uid = res.headers.uid;
+        const expiry = res.headers.expiry;
+        if (accessToken && client && uid && expiry) {
+          setAccessTokens(accessToken, client, uid, expiry);
+        }
+      }
       setModalMessage(res.data.message);
     } catch {
       setModalMessage(t_Auth("resetPasswordFailed"));
@@ -74,7 +85,7 @@ export default function ResetPasswordPage() {
 
   const handleBackHome = () => {
     setModalOpen(false);
-    router.push("/");
+    router.push(RouterPath.home);
   };
 
   return (
