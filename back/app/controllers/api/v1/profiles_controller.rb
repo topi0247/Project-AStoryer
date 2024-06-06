@@ -2,13 +2,19 @@ class Api::V1::ProfilesController < Api::V1::BasesController
   def update
     begin
       user = current_api_v1_user
-      if user.profile.nil?
-        user.build_profile
-      end
-      user.profile.save_header_image(profile_params[:header_image]) if profile_params[:header_image]
-      user.profile.save_avatar(profile_params[:avatar]) if profile_params[:avatar]
-      user.profile.text = profile_params[:text] if profile_params[:text]
-      user.profile.save!
+      user.build_profile if user.profile.nil?
+
+      # ヘッダー画像の保存
+      user.profile.save_header_image(profile_params[:header_image])
+      # アバター画像の保存
+      user.profile.save_avatar(profile_params[:avatar])
+      # プロフィール文の保存
+      user.profile.update!(text: profile_params[:text])
+
+      # リンクの保存
+      links = profile_params[:links]
+      Link.set_links(user.uuid, links) if links.present?
+
       avater = user.profile.avatar.attached? ? url_for(user.profile.avatar) : nil
       render json: {avater: avater}, status: :ok
     rescue => e
@@ -20,6 +26,6 @@ class Api::V1::ProfilesController < Api::V1::BasesController
   private
 
   def profile_params
-    params.require(:profile).permit(:header_image, :avatar, :text)
+    params.require(:profile).permit(:header_image, :avatar, :text, links: [:twitter, :pixiv, :fusetter, :privatter, :other])
   end
 end

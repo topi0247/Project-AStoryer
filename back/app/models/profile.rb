@@ -19,27 +19,25 @@ class Profile < ApplicationRecord
 
   # ヘッダー画像の保存
   def save_header_image(image)
+    return if image.blank? || image.start_with?('http')
     transaction do
       begin
         blob = get_blob(image)
         header_image.attach(blob)
-        true
       rescue => e
         Rails.logger.error("ヘッダー画像の保存に失敗しました: #{e.message}")
-        false
       end
     end
   end
 
   def save_avatar(image)
+    return if image.blank? || image.start_with?('http')
     transaction do
       begin
         blob = get_blob(image)
         avatar.attach(blob)
-        true
       rescue => e
         Rails.logger.error("アバター画像の保存に失敗しました: #{e.message}")
-        false
       end
     end
   end

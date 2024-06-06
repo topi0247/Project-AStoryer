@@ -17,7 +17,7 @@ interface UserProfile {
   name: string;
   headerImage: string;
   avatar: string;
-  link: {
+  links: {
     twitter: string;
     pixiv: string;
     fusetter: string;
@@ -53,13 +53,7 @@ export default function UserPage({ params }: { params: { uuid: string } }) {
       name: data.name,
       headerImage: data.header_image,
       avatar: data.avatar,
-      link: {
-        twitter: "",
-        pixiv: "",
-        fusetter: "",
-        privatter: "",
-        other: "",
-      },
+      links: data.links,
       profile: data.profile,
     });
   }, [data]);
@@ -97,7 +91,7 @@ export default function UserPage({ params }: { params: { uuid: string } }) {
                     src={userProfile.avatar}
                   />
                 ) : (
-                  <Mantine.Skeleton height={150} circle />
+                  <Mantine.Skeleton width={150} height={130} radius="100%" />
                 )}
                 <div className="w-full flex flex-col justify-start items-end md:items-start md:justify-start md:relative">
                   {/* ユーザー編集 */}
@@ -117,12 +111,12 @@ export default function UserPage({ params }: { params: { uuid: string } }) {
                   </div>
                   {userProfile ? (
                     <>
-                      {userProfile.link && (
+                      {userProfile.links && (
                         <ul className="flex justify-start items-center mt-auto ml-2 flex-wrap gap-2 md:h-2/3">
-                          {userProfile.link.twitter && (
+                          {userProfile.links.twitter && (
                             <li>
                               <a
-                                href="#"
+                                href={`https://x.com/${userProfile.links.twitter}`}
                                 className="text-white bg-black hover:bg-gray-600 transition-all px-2 py-1 rounded text-sm"
                                 target="_blank"
                               >
@@ -130,10 +124,10 @@ export default function UserPage({ params }: { params: { uuid: string } }) {
                               </a>
                             </li>
                           )}
-                          {userProfile.link.pixiv && (
+                          {userProfile.links.pixiv && (
                             <li>
                               <a
-                                href="#"
+                                href={`https://www.pixiv.net/users/${userProfile.links.pixiv}`}
                                 className="text-white bg-sky-400 transition-all hover:bg-sky-700 px-2 py-1 rounded text-sm"
                                 target="_blank"
                               >
@@ -141,10 +135,10 @@ export default function UserPage({ params }: { params: { uuid: string } }) {
                               </a>
                             </li>
                           )}
-                          {userProfile.link.fusetter && (
+                          {userProfile.links.fusetter && (
                             <li>
                               <a
-                                href="#"
+                                href={`https://fusetter.com/u/${userProfile.links.fusetter}`}
                                 className="text-white bg-orange-500 bg-opacity-80 hover:bg-orange-800 transition-all px-2 py-1 rounded text-sm"
                                 target="_blank"
                               >
@@ -152,10 +146,10 @@ export default function UserPage({ params }: { params: { uuid: string } }) {
                               </a>
                             </li>
                           )}
-                          {userProfile.link.privatter && (
+                          {userProfile.links.privatter && (
                             <li>
                               <a
-                                href="#"
+                                href={`https://privatter.net/u/${userProfile.links.privatter}`}
                                 className="text-white bg-sky-500 transition-all hover:bg-sky-700 px-2 py-1 rounded text-sm"
                                 target="_blank"
                               >
@@ -163,10 +157,10 @@ export default function UserPage({ params }: { params: { uuid: string } }) {
                               </a>
                             </li>
                           )}
-                          {userProfile.link.other && (
+                          {userProfile.links.other && (
                             <li>
                               <a
-                                href="#"
+                                href={userProfile.links.other}
                                 className="text-white bg-indigo-400 transition-all hover:bg-indigo-700 px-2 py-1 rounded text-sm"
                                 target="_blank"
                               >

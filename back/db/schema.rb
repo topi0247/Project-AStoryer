@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_03_043856) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_05_094722) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -81,6 +81,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_03_043856) do
     t.string "image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "links", force: :cascade do |t|
+    t.uuid "user_uuid", null: false
+    t.integer "link_kind", null: false
+    t.string "content", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_uuid", "link_kind", "content"], name: "index_links_on_user_uuid_and_link_kind_and_content", unique: true
   end
 
   create_table "notices", force: :cascade do |t|
@@ -197,6 +206,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_03_043856) do
   add_foreign_key "favorites", "posts", column: "post_uuid", primary_key: "uuid"
   add_foreign_key "favorites", "users", column: "user_uuid", primary_key: "uuid"
   add_foreign_key "illust_attachments", "illusts"
+  add_foreign_key "links", "users", column: "user_uuid", primary_key: "uuid"
   add_foreign_key "post_game_systems", "posts", column: "post_uuid", primary_key: "uuid"
   add_foreign_key "post_synalios", "posts", column: "post_uuid", primary_key: "uuid"
   add_foreign_key "post_synalios", "synalios"

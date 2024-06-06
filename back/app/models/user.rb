@@ -23,6 +23,7 @@ class User < ActiveRecord::Base
   include DeviseTokenAuth::Concerns::User
   has_many :authentications, foreign_key: :user_uuid, dependent: :destroy
   has_one :profile, foreign_key: :user_uuid, dependent: :destroy
+  has_many :links, foreign_key: :user_uuid, dependent: :destroy
   has_many :user_notices, foreign_key: :user_uuid, dependent: :destroy
   has_many :notices, through: :user_notices
   has_many :posts, foreign_key: :user_uuid, dependent: :destroy
@@ -109,6 +110,7 @@ class User < ActiveRecord::Base
       profile: profile&.text,
       following_count: following.count || 0,
       follower_count: followers.count || 0,
+      links: Link.get_links(uuid),
     }
   end
 end
