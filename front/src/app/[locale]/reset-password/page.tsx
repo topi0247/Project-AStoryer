@@ -83,9 +83,9 @@ export default function ResetPasswordPage() {
     }
   };
 
-  const handleBackHome = () => {
+  const handleLogin = () => {
     setModalOpen(false);
-    router.push(RouterPath.home);
+    router.push(RouterPath.login);
   };
 
   return (
@@ -123,7 +123,7 @@ export default function ResetPasswordPage() {
       <Mantine.Modal opened={modalOpen} onClose={() => setModalOpen(false)}>
         <div className="flex flex-col gap-4 justify-center items-center mt-4 w-68 m-auto">
           {modalMessage}
-          <Mantine.Button variant="outlined" onClick={handleBackHome}>
+          <Mantine.Button variant="outlined" onClick={handleLogin}>
             {t_General("backHome")}
           </Mantine.Button>
         </div>
