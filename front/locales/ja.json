@@ -33,6 +33,7 @@
     "signupWithGoogle": "Googleで登録",
     "signupWithDiscord": "Discordで登録",
     "signupFailed": "登録に失敗しました",
+    "authFailed": "認証に失敗しました",
     "toLogin": "ログインはこちら",
     "toSignUp": "新規登録はこちら",
     "toPasswordReset": "パスワードを忘れた方はこちら",
