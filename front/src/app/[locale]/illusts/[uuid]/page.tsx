@@ -21,10 +21,7 @@ export default function IllustPage({
 }: {
   params: { uuid: string };
 }) {
-  const { data: illustData, error: illustError } = useSWR(
-    `/posts/${uuid}`,
-    fetcherIllust
-  );
+  const { data, error } = useSWR(`/posts/${uuid}`, fetcherIllust);
   const user = useRecoilValue(RecoilState.userState);
   const [expansionMode, setExpansionMode] = useState(false);
   const [openCaption, setOpenCaption] = useState(false);
@@ -38,15 +35,15 @@ export default function IllustPage({
   const router = Lib.useRouter();
 
   useEffect(() => {
-    if (illustError) {
-      if (illustError.response.status === 404) {
+    if (error) {
+      if (error.response.status === 404) {
         router.push(RouterPath.notFound);
       } else {
         router.push(RouterPath.error);
       }
       return;
     }
-  }, [illustError]);
+  }, [error]);
 
   const handleOpenUser = () => {
     // TODO : 投稿者の情報モーダルの表示
@@ -81,9 +78,9 @@ export default function IllustPage({
         <div className="flex flex-col gap-8 md:w-full">
           <div>
             <section className="bg-gray-400 max-h-[90vh] w-full flex justify-center items-center mb-4 overflow-hidden">
-              {illustData ? (
+              {data ? (
                 <>
-                  {illustData.data.length === 1 ? (
+                  {data.data.length === 1 ? (
                     <Mantine.Button
                       variant={mobile ? "transparent" : "filled"}
                       color={mobile ? "transparent" : "gray"}
@@ -93,8 +90,8 @@ export default function IllustPage({
                       style={{ width: "100%", padding: 0 }}
                     >
                       <Mantine.Image
-                        src={illustData.data[0]}
-                        alt={illustData.title}
+                        src={data.data[0]}
+                        alt={data.title}
                         fit="contain"
                         style={{
                           width: "100%",
@@ -112,7 +109,7 @@ export default function IllustPage({
                       dragFree
                       withIndicators
                     >
-                      {illustData.data.map((img: string, i: number) => (
+                      {data.data.map((img: string, i: number) => (
                         <Carousel.Slide key={i}>
                           <Mantine.Button
                             variant={mobile ? "transparent" : "filled"}
@@ -124,7 +121,7 @@ export default function IllustPage({
                           >
                             <Mantine.Image
                               src={img}
-                              alt={illustData.title}
+                              alt={data.title}
                               fit="contain"
                               style={{
                                 width: "100%",
@@ -144,8 +141,8 @@ export default function IllustPage({
                     padding="sm"
                   >
                     <Mantine.Image
-                      src={illustData.data[clickImage]}
-                      alt={illustData.title}
+                      src={data.data[clickImage]}
+                      alt={data.title}
                       fit="contain"
                       style={{
                         maxHeight: "80vh",
@@ -161,18 +158,16 @@ export default function IllustPage({
             <section className="bg-white p-4 rounded flex flex-col gap-3">
               <div className="flex flex-col gap-3">
                 <div className="flex flex-col gap-2">
-                  {illustData ? (
+                  {data ? (
                     <>
                       <IconButtonList
                         postUuid={uuid}
-                        publicState={illustData?.publish_state}
-                        title={illustData?.title}
-                        postUserUuid={illustData?.user?.uuid}
+                        publicState={data?.publish_state}
+                        title={data?.title}
+                        postUserUuid={data?.user?.uuid}
                       />
 
-                      <h3 className="text-2xl font-semibold">
-                        {illustData?.title}
-                      </h3>
+                      <h3 className="text-2xl font-semibold">{data?.title}</h3>
                       <Mantine.Button
                         variant="transparent"
                         onClick={handleOpenUser}
@@ -183,10 +178,10 @@ export default function IllustPage({
                           radius="xl"
                           size="md"
                           alt="icon"
-                          src={illustData.user.avatar}
+                          src={data.user.avatar}
                         />
                         <span className="ml-2 text-black">
-                          {illustData.user.name}
+                          {data.user.name}
                         </span>
                       </Mantine.Button>
                     </>
@@ -202,26 +197,26 @@ export default function IllustPage({
                     </>
                   )}
                   <div className="text-sm flex justify-center items-center md:justify-start gap-2">
-                    {illustData ? (
+                    {data ? (
                       <>
-                        {illustData.game_systems && (
+                        {data.game_systems && (
                           <Lib.Link
                             href={RouterPath.illustSearch(
-                              `gameSystem=${illustData.game_systems}`
+                              `gameSystem=${data.game_systems}`
                             )}
                             className="bg-blue-200 rounded-lg px-2 py-1 hover:opacity-60 transition-all"
                           >
-                            {illustData.game_systems}
+                            {data.game_systems}
                           </Lib.Link>
                         )}
-                        {illustData.synalio && (
+                        {data.synalio && (
                           <Lib.Link
                             href={RouterPath.illustSearch(
-                              `synalioName=${illustData.synalio}`
+                              `synalioName=${data.synalio}`
                             )}
                             className="bg-green-200 rounded-lg px-2 py-1 hover:opacity-60 transition-all"
                           >
-                            {illustData.synalio}
+                            {data.synalio}
                           </Lib.Link>
                         )}
                       </>
@@ -234,8 +229,8 @@ export default function IllustPage({
                     )}
                   </div>
                   <div className="flex flex-wrap gap-2 text-sm">
-                    {illustData ? (
-                      illustData.tags.map((tag: string, i: number) => (
+                    {data ? (
+                      data.tags.map((tag: string, i: number) => (
                         <Lib.Link
                           key={i}
                           href={RouterPath.illustSearch(`tags=${tag}`)}
@@ -252,9 +247,9 @@ export default function IllustPage({
                       </>
                     )}
                   </div>
-                  {illustData ? (
+                  {data ? (
                     <p className="flex justify-end items-center text-xs text-gray-500 md:gap-4">
-                      {illustData.published_at}
+                      {data.published_at}
                     </p>
                   ) : (
                     <div className="flex justify-end items-center">
@@ -264,20 +259,19 @@ export default function IllustPage({
                 </div>
               </div>
               <div className="relative w-full">
-                {illustData ? (
+                {data ? (
                   <>
                     <p
                       className={`overflow-y-hidden
                 ${
-                  openCaption ||
-                  illustData.caption.length <= CAPTION_OPEN_LENGTH
+                  openCaption || data.caption.length <= CAPTION_OPEN_LENGTH
                     ? "max-h-auto"
                     : `gradientText max-h-32`
                 }`}
                     >
-                      {illustData.caption}
+                      {data.caption}
                     </p>
-                    {illustData.caption.length > CAPTION_OPEN_LENGTH && (
+                    {data.caption.length > CAPTION_OPEN_LENGTH && (
                       <button
                         type="button"
                         className={`w-full bg-blue-300 border border-blue-600 border-opacity-50 bg-opacity-50 hover:bg-opacity-25 hover:border-opacity-25 flex justify-center items-center rounded py-1 transition-all
@@ -346,7 +340,7 @@ export default function IllustPage({
                     className="flex gap-4 items-start py-4 border-b border-slate-200 last-of-type:border-none"
                   >
                     <Lib.Link href="/users/1">
-                      <Mantine.Avatar alt="icon" src={illustData.user.avatar} />
+                      <Mantine.Avatar alt="icon" src={data.user.avatar} />
                     </Lib.Link>
                     <div className="flex flex-col gap-1">
                       <Lib.Link href="/users/1" className="font-semibold">
@@ -371,70 +365,95 @@ export default function IllustPage({
         <article className="hidden md:w-1/3 md:block md:sticky md:top-4">
           <section className="bg-white p-4 rounded flex flex-col gap-4">
             <h3 className="text-xl">{t_ShowPost("postUser")}</h3>
-            <div className="flex gap-4 justify-start items-center">
-              {illustData ? (
+            <div className="flex flex-col w-full gap-2 justify-center items-center">
+              {data ? (
                 <>
-                  <Lib.Link href={RouterPath.users(illustData.user.uuid)}>
+                  <Lib.Link
+                    href={RouterPath.users(data.user.uuid)}
+                    className="flex gap-2 items-center rounded transition-all w-full p-2 hover:bg-slate-300"
+                  >
                     <Mantine.Avatar
                       variant="default"
                       radius="xl"
                       size="lg"
                       alt="icon"
-                      src={illustData.user.avatar}
+                      src={data.user.avatar}
                     />
+                    <span className="text-xl">{data.user.name}</span>
                   </Lib.Link>
-                  <div className="w-full flex flex-col gap-2">
-                    <Lib.Link
-                      href={RouterPath.users(illustData.user.uuid)}
-                      className="text-xl"
-                    >
-                      {illustData.user.name}
-                    </Lib.Link>
-                    {/* {follow ? (
-                  <Mantine.Button
-                    variant="outlined"
-                    size="small"
-                    onClick={handleFollow}
-                    className="w-32"
-                  >
-                    {t_ShowPost("unFollow")}
-                  </Mantine.Button>
-                ) : (
-                  <Mantine.Button
-                    variant="contained"
-                    size="small"
-                    onClick={handleFollow}
-                    className="w-32"
-                  >
-                    {t_ShowPost("follow")}
-                  </Mantine.Button>
-                )} */}
-                  </div>
+                  {/* <div className="w-full flex flex-col gap-2 justify-center items-center">
+                    {follow ? (
+                      <Mantine.Button
+                        variant="outlined"
+                        size="small"
+                        onClick={handleFollow}
+                        className="w-32"
+                      >
+                        {t_ShowPost("unFollow")}
+                      </Mantine.Button>
+                    ) : (
+                      <Mantine.Button
+                        variant="contained"
+                        size="small"
+                        onClick={handleFollow}
+                        className="w-32"
+                      >
+                        {t_ShowPost("follow")}
+                      </Mantine.Button>
+                    )}
+                  </div> */}
                 </>
               ) : (
                 <Mantine.Skeleton height={70} />
               )}
             </div>
-            {/* <div className="flex flex-wrap gap-3">
-              <Lib.Link href="" className="bg-slate-300 rounded px-2">
-                X
-              </Lib.Link>
-              <Lib.Link href="" className="bg-slate-300 rounded px-2">
-                pixiv
-              </Lib.Link>
-              <Lib.Link href="" className="bg-slate-300 rounded px-2">
-                privatter
-              </Lib.Link>
-              <Lib.Link href="" className="bg-slate-300 rounded px-2">
-                {t_ShowPost("fusetter")}
-              </Lib.Link>
-              <Lib.Link href="" className="bg-slate-300 rounded px-2">
-                {t_ShowPost("other")}
-              </Lib.Link>
-            </div> */}
+            {data?.user?.links && (
+              <div className="flex flex-wrap gap-3">
+                {data.user.links.twitter && (
+                  <a
+                    href={`https://x.com/${data.user.links.twitter}`}
+                    className="bg-slate-300 rounded px-2 hover:bg-slate-500 hover:text-white transition-all"
+                  >
+                    X
+                  </a>
+                )}
+                {data.user.links.twitter && (
+                  <a
+                    href={`https://www.pixiv.net/users/${data.user.links.twitter}`}
+                    className="bg-slate-300 rounded px-2 hover:bg-slate-500 hover:text-white transition-all"
+                  >
+                    pixiv
+                  </a>
+                )}
+                {data.user.links.twitter && (
+                  <a
+                    href={`https://fusetter.com/u/${data.user.links.twitter}`}
+                    className="bg-slate-300 rounded px-2 hover:bg-slate-500 hover:text-white transition-all"
+                  >
+                    {t_ShowPost("fusetter")}
+                  </a>
+                )}
+                {data.user.links.twitter && (
+                  <a
+                    href={`https://privatter.net/u/${data.user.links.twitter}`}
+                    className="bg-slate-300 rounded px-2 hover:bg-slate-500 hover:text-white transition-all"
+                  >
+                    privatter
+                  </a>
+                )}
+                {data.user.links.other && (
+                  <a
+                    href={data.user.links.other}
+                    className="bg-slate-300 rounded px-2 hover:bg-slate-500 hover:text-white transition-all"
+                  >
+                    {t_ShowPost("other")}
+                  </a>
+                )}
+              </div>
+            )}
             <div>
-              {illustData ? (
-                <p>{illustData.user.profile}</p>
+              {data ? (
+                <p>{data.user.profile}</p>
               ) : (
                 <Mantine.Skeleton height={35} />
               )}

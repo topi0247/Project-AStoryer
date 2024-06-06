@@ -18,6 +18,7 @@ Rails.application.routes.draw do
         member do
           get 'bookmarks'
           get 'postsIllust'
+          resource :profile, only: %i[update]
         end
       end
       resources :favorites, only: %i[show create destroy]

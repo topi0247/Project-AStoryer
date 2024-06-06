@@ -66,7 +66,7 @@ export interface INoticeStates {
 export interface IUserPageEdit {
   headerImage: string;
   avatar: string;
-  link: {
+  links: {
     twitter: string;
     pixiv: string;
     fusetter: string;

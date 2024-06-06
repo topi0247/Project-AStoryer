@@ -9,6 +9,18 @@ import { IUserPageEdit } from "@/types";
 import { useState } from "react";
 import { FaImage } from "rocketicons/fa";
 import { useForm } from "@mantine/form";
+import { Put2API } from "@/lib";
+import { useRecoilState } from "recoil";
+import { userState } from "@/recoilState";
+import { mutate } from "swr";
+
+enum LinkType {
+  twitter = "twitter",
+  pixiv = "pixiv",
+  fusetter = "fusetter",
+  privatter = "privatter",
+  other = "other",
+}
 
 export default function UserEdit({
   userProfile,
@@ -23,52 +35,104 @@ export default function UserEdit({
   const [avatarBlob, setAvatarBlob] = useState(userProfile.avatar);
   const theme = MantineCore.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
+  const [user, setUser] = useRecoilState(userState);
+
+  const get_url = (type: LinkType) => {
+    switch (type) {
+      case LinkType.twitter:
+        if (userProfile.links.twitter)
+          return `https://x.com/${userProfile.links.twitter}`;
+        break;
+      case LinkType.pixiv:
+        if (userProfile.links.pixiv)
+          return `https://pixiv.net/users/${userProfile.links.pixiv}`;
+        break;
+      case LinkType.fusetter:
+        if (userProfile.links.fusetter)
+          return `https://fusetter.com/u/${userProfile.links.fusetter}`;
+        break;
+      case LinkType.privatter:
+        if (userProfile.links.privatter)
+          return `https://privatter.net/u/${userProfile.links.privatter}`;
+        break;
+      case LinkType.other:
+        if (userProfile.links.other) return userProfile.links.other;
+        break;
+      default:
+        return "";
+    }
+    return "";
+  };
 
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
       headerImage: headerImageBlob,
       avatar: avatarBlob,
-      twitter: userProfile.link.twitter,
-      pixiv: userProfile.link.pixiv,
-      fusetter: userProfile.link.fusetter,
-      privatter: userProfile.link.privatter,
-      other: userProfile.link.other,
+      twitter: get_url(LinkType.twitter),
+      pixiv: get_url(LinkType.pixiv),
+      fusetter: get_url(LinkType.fusetter),
+      privatter: get_url(LinkType.privatter),
+      other: get_url(LinkType.other),
       profile: userProfile.profile,
     },
     validate: {
       twitter: (value) => {
-        if (value && !value.match(/^https:\/\/twitter.com\/.*/)) {
+        if (
+          value &&
+          (!value.match(/^https:\/\/x\.com\/.+$/) || !isValidURL(value))
+        ) {
           return "有効なURLではありません";
         }
         return null;
       },
       pixiv: (value) => {
-        if (value && !value.match(/^https:\/\/pixiv.com\/.*/)) {
+        if (
+          value &&
+          (!value.match(/^https:\/\/www.pixiv\.net\/users\/.+$/) ||
+            !isValidURL(value))
+        ) {
           return "有効なURLではありません";
         }
         return null;
       },
       fusetter: (value) => {
-        if (value && !value.match(/^https:\/\/fusetter.com\/.*/)) {
+        if (
+          value &&
+          (!value.match(/^https:\/\/fusetter\.com\/u\/.+$/) ||
+            !isValidURL(value))
+        ) {
           return "有効なURLではありません";
         }
         return null;
       },
       privatter: (value) => {
-        if (value && !value.match(/^https:\/\/privatter.com\/.*/)) {
+        if (
+          value &&
+          (!value.match(/^https:\/\/privatter\.net\/u\/.+$/) ||
+            !isValidURL(value))
+        ) {
           return "有効なURLではありません";
         }
         return null;
       },
       other: (value) => {
-        if (value && !value.match(/^https:\/\/.*/)) {
+        if (value && !isValidURL(value)) {
           return "有効なURLではありません";
         }
         return null;
       },
+      profile: (value) => {
+        if (value.length > 1000) {
+          return "1000文字以内で入力してください";
+        }
+      },
     },
   });
+
+  const isValidURL = (url: string) => {
+    return URL.canParse(url);
+  };
 
   const handleClose = () => {
     if (hasChanges() && !confirm("変更を破棄しますか？")) {
@@ -79,7 +143,7 @@ export default function UserEdit({
     handleClear();
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // 変更点があるか確認
     if (!hasChanges()) {
       alert("変更がありません");
@@ -89,10 +153,40 @@ export default function UserEdit({
     const { twitter, pixiv, fusetter, privatter, other, profile } =
       form.getValues();
 
-    // TODO : 更新処理
-    alert("更新しました");
-    close();
-    handleClear();
+    const data = {
+      profile: {
+        header_image: headerImageBlob,
+        avatar: avatarBlob,
+        text: profile,
+        links: {
+          twitter,
+          pixiv,
+          fusetter,
+          privatter,
+          other,
+        },
+      },
+    };
+
+    try {
+      const res = await Put2API(
+        `/users/${user.uuid}/profile`,
+        JSON.stringify(data)
+      );
+
+      if (res.status !== 200) {
+        throw new Error("エラーが発生しました");
+      }
+
+      alert("変更しました");
+      mutate(`/users/${user.uuid}`);
+      if (res.data.avatar) {
+        setUser((prev) => ({ ...prev, avatar: res.data.avatar }));
+      }
+      close();
+    } catch (error) {
+      alert("エラーが発生しました");
+    }
   };
 
   const hasChanges = () => {
@@ -102,11 +196,11 @@ export default function UserEdit({
     const data = [
       headerImageBlob === userProfile.headerImage,
       avatarBlob === userProfile.avatar,
-      twitter === userProfile.link.twitter,
-      pixiv === userProfile.link.pixiv,
-      fusetter === userProfile.link.fusetter,
-      privatter === userProfile.link.privatter,
-      other === userProfile.link.other,
+      twitter === get_url(LinkType.twitter),
+      pixiv === get_url(LinkType.pixiv),
+      fusetter === get_url(LinkType.fusetter),
+      privatter === get_url(LinkType.privatter),
+      other === get_url(LinkType.other),
       profile === userProfile.profile,
     ];
 
@@ -131,11 +225,11 @@ export default function UserEdit({
     form.setValues({
       headerImage: headerImageBlob,
       avatar: avatarBlob,
-      twitter: userProfile.link.twitter,
-      pixiv: userProfile.link.pixiv,
-      fusetter: userProfile.link.fusetter,
-      privatter: userProfile.link.privatter,
-      other: userProfile.link.other,
+      twitter: get_url(LinkType.twitter),
+      pixiv: get_url(LinkType.pixiv),
+      fusetter: get_url(LinkType.fusetter),
+      privatter: get_url(LinkType.privatter),
+      other: userProfile.links.other,
       profile: userProfile.profile,
     });
   };
@@ -162,7 +256,9 @@ export default function UserEdit({
             onSubmit={form.onSubmit(handleSubmit)}
           >
             <section className="w-full">
-              <label htmlFor="headerImage">ヘッダー画像</label>
+              <MantineCore.InputLabel htmlFor="headerImage">
+                ヘッダー画像
+              </MantineCore.InputLabel>
               <MantineDropzone.Dropzone
                 name="headerImage"
                 onDrop={(files) => handleDrop(files, setHeaderImageBlob)}
@@ -196,7 +292,9 @@ export default function UserEdit({
             </section>
             <div className="w-full flex flex-col gap-3 md:flex-row md:justify-center md:items-center">
               <section className="w-full md:w-96">
-                <label htmlFor="headerImage">アイコン画像</label>
+                <MantineCore.InputLabel htmlFor="headerImage">
+                  アイコン画像
+                </MantineCore.InputLabel>
                 <MantineDropzone.Dropzone
                   name="avatarImage"
                   onDrop={(files) => handleDrop(files, setAvatarBlob)}
@@ -230,19 +328,18 @@ export default function UserEdit({
                 <dl className="w-full">
                   <div>
                     <dt>
-                      <label htmlFor="twitter">
+                      <MantineCore.InputLabel htmlFor="twitter">
                         X
                         <span className="text-red-400 text-xs ml-4">
                           {form.errors.twitter}
                         </span>
-                      </label>
+                      </MantineCore.InputLabel>
                     </dt>
                     <dd>
                       <MantineCore.Input
                         name="twitter"
-                        placeholder="https://twitter.com/..."
+                        placeholder="https://x.com/..."
                         className="w-full"
-                        key={form.key("twitter")}
                         {...form.getInputProps("twitter")}
                       />
                     </dd>
@@ -250,19 +347,18 @@ export default function UserEdit({
 
                   <div>
                     <dt>
-                      <label htmlFor="pixiv">
+                      <MantineCore.InputLabel htmlFor="pixiv">
                         pixiv
                         <span className="text-red-400 text-xs ml-4">
                           {form.errors.pixiv}
                         </span>
-                      </label>
+                      </MantineCore.InputLabel>
                     </dt>
                     <dd className="w-full">
                       <MantineCore.Input
                         name="pixiv"
-                        placeholder="https://pixiv.net/..."
+                        placeholder="https://www.pixiv.net/users/..."
                         className="w-full"
-                        key={form.key("pixiv")}
                         {...form.getInputProps("pixiv")}
                       />
                     </dd>
@@ -270,19 +366,18 @@ export default function UserEdit({
 
                   <div>
                     <dt className="mt-2">
-                      <label htmlFor="fusetter">
+                      <MantineCore.InputLabel htmlFor="fusetter">
                         fusetter
                         <span className="text-red-400 text-xs ml-4">
                           {form.errors.fusetter}
                         </span>
-                      </label>
+                      </MantineCore.InputLabel>
                     </dt>
                     <dd className="w-full">
                       <MantineCore.Input
                         name="fusetter"
-                        placeholder="https://fusetter.com/..."
+                        placeholder="https://fusetter.com/u/..."
                         className="w-full"
-                        key={form.key("fusetter")}
                         {...form.getInputProps("fusetter")}
                       />
                     </dd>
@@ -290,19 +385,18 @@ export default function UserEdit({
 
                   <div>
                     <dt className="mt-2">
-                      <label htmlFor="privatter">
+                      <MantineCore.InputLabel htmlFor="privatter">
                         privatter
                         <span className="text-red-400 text-xs ml-4">
                           {form.errors.privatter}
                         </span>
-                      </label>
+                      </MantineCore.InputLabel>
                     </dt>
                     <dd className="w-full">
                       <MantineCore.Input
                         name="privatter"
-                        placeholder="https://privatter.net/..."
+                        placeholder="https://privatter.net/u/..."
                         className="w-full"
-                        key={form.key("privatter")}
                         {...form.getInputProps("privatter")}
                       />
                     </dd>
@@ -310,19 +404,18 @@ export default function UserEdit({
 
                   <div>
                     <dt className="mt-2">
-                      <label htmlFor="other">
+                      <MantineCore.InputLabel htmlFor="other">
                         その他
                         <span className="text-red-400 text-xs ml-4">
                           {form.errors.other}
                         </span>
-                      </label>
+                      </MantineCore.InputLabel>
                     </dt>
                     <dd className="w-full">
                       <MantineCore.Input
                         name="other"
                         placeholder="https://example.com/..."
                         className="w-full"
-                        key={form.key("other")}
                         {...form.getInputProps("other")}
                       />
                     </dd>
@@ -331,16 +424,20 @@ export default function UserEdit({
               </section>
             </div>
             <section className="w-full">
-              <label htmlFor="profile">プロフィール</label>
               <MantineCore.Textarea
                 name="profile"
                 rows={5}
+                label="プロフィール"
                 placeholder="プロフィール"
                 className="w-full"
+                {...form.getInputProps("profile")}
               />
             </section>
             <section className="w-full text-center">
-              <MantineCore.Button type="submit">
+              <MantineCore.Button
+                type="submit"
+                className="bg-green-400 hover:bg-green-600 transition-all"
+              >
                 {t_General("save")}
               </MantineCore.Button>
             </section>
