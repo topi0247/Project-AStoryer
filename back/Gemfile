@@ -18,6 +18,9 @@ gem "image_processing", "~> 1.2"
 # CORS対策
 gem "rack-cors"
 
+# メール確認用
+gem 'letter_opener_web', group:  :development
+
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
   gem "pry-byebug"

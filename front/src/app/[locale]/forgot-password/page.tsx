@@ -3,20 +3,17 @@
 import * as MantineForm from "@mantine/form";
 import * as Mantine from "@mantine/core";
 import * as UI from "@/components/ui";
-import { Link, useRouter } from "@/lib";
+import { Link, Post2API, useRouter } from "@/lib";
 import { useTranslations } from "next-intl";
 import { useSetRecoilState } from "recoil";
 import * as RecoilState from "@/recoilState";
-
-interface IFormInputs {
-  email: string;
-}
+import { useState } from "react";
 
 export default function ForgotPasswordPage() {
   const t_Auth = useTranslations("Auth");
   const t_General = useTranslations("General");
-  const setModalOpen = useSetRecoilState(RecoilState.modalOpenState);
-  const setModalTitle = useSetRecoilState(RecoilState.modalTitleState);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   const router = useRouter();
 
   const form = MantineForm.useForm({
@@ -29,11 +26,20 @@ export default function ForgotPasswordPage() {
     },
   });
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const { email } = form.getValues();
-    // TODO : パスワード再設定の申請用処理
-    setModalOpen(true);
-    setModalTitle(t_Auth("sendMail"));
+    try {
+      const res = await Post2API("/auth/password", { email });
+      if (res.data.success) {
+        setModalMessage(t_Auth("sendMail"));
+      }
+      setModalMessage(res.data.message);
+    } catch {
+      setModalMessage(t_Auth("sendMailFailed"));
+    } finally {
+      setModalOpen(true);
+    }
   };
 
   const handleBackHome = () => {
@@ -81,18 +87,14 @@ export default function ForgotPasswordPage() {
           </div>
         </section>
       </article>
-      <UI.TransitionsModal>
-        <div className="text-center">{t_Auth("sensMailDescription")}</div>
-        <div className="flex gap-4 justify-center items-center mt-4 w-68 m-auto">
-          <Mantine.Button
-            type="submit"
-            variant="outlined"
-            onClick={handleBackHome}
-          >
+      <Mantine.Modal opened={modalOpen} onClose={() => setModalOpen(false)}>
+        <div className="flex flex-col gap-4 justify-center items-center mt-4 w-68 m-auto">
+          {modalMessage}
+          <Mantine.Button variant="outlined" onClick={handleBackHome}>
             {t_General("backHome")}
           </Mantine.Button>
         </div>
-      </UI.TransitionsModal>
+      </Mantine.Modal>
     </>
   );
 }

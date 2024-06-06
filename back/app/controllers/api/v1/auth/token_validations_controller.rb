@@ -3,7 +3,6 @@ class Api::V1::Auth::TokenValidationsController < DeviseTokenAuth::TokenValidati
   protected
 
   def render_validate_token_success
-
     avatar_url = nil
     if @resource.profile.present? && @resource.profile.avatar.attached?
       avatar_url = url_for(@resource.profile.avatar)

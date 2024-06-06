@@ -82,13 +82,12 @@ export default function LoginPage() {
             >
               {t_Auth("toSignUp")}
             </Link>
-            {/* TODO : パスワードリセットは後回し */}
-            {/* <Link
+            <Link
               href="/forgot-password"
               className="underline hover:opacity-50 transition-all"
             >
               {t_Auth("toPasswordReset")}
-            </Link> */}
+            </Link>
           </div>
           <div className="w-full relative h-10">
             <div className="border-t border-green-400 w-full text-center overflow-visible absolute top-1/2 left-0" />

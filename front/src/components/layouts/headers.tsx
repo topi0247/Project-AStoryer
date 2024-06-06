@@ -33,6 +33,9 @@ export default function Headers() {
         return;
       }
 
+      // パスワードリセット時はオートログインしない
+      if (params.get("reset_password") === "true") return;
+
       const accessToken = params.get("token");
       const uid = params.get("uid");
       const client = params.get("client");
