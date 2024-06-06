@@ -83,3 +83,10 @@ export enum IPublicState {
   Follower = "only_follower",
   Private = "private_publish",
 }
+
+export interface AccountProps {
+  name: string;
+  email?: string;
+  google_oauth2?: string;
+  discord?: string;
+}

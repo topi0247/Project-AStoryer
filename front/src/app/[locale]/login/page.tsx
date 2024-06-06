@@ -77,18 +77,17 @@ export default function LoginPage() {
           </form>
           <div className="text-center text-sm text-blue-500 flex gap-2 flex-col md:flex-row">
             <Link
-              href="/signup"
+              href={RouterPath.signUp}
               className="underline hover:opacity-50 transition-all"
             >
               {t_Auth("toSignUp")}
             </Link>
-            {/* TODO : パスワードリセットは後回し */}
-            {/* <Link
-              href="/forgot-password"
+            <Link
+              href={RouterPath.requestPasswordReset}
               className="underline hover:opacity-50 transition-all"
             >
               {t_Auth("toPasswordReset")}
-            </Link> */}
+            </Link>
           </div>
           <div className="w-full relative h-10">
             <div className="border-t border-green-400 w-full text-center overflow-visible absolute top-1/2 left-0" />

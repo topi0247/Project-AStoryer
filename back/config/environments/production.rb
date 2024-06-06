@@ -89,4 +89,18 @@ Rails.application.configure do
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   config.action_mailer.default_url_options = Settings.default_url_options.to_h
+
+  # メール設定
+  credentials = Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY'])
+  Aws::Rails.add_action_mailer_delivery_method(
+    :ses,
+    credentials:,
+    region: 'ap-northeast-1'
+  )
+
+  config.action_mailer.default_url_options = Settings.default_url_options.to_h
+  config.action_mailer.delivery_method = :ses
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.perform_caching = false
+  config.action_mailer.raise_delivery_errors = true
 end

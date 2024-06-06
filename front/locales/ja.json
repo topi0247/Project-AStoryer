@@ -48,6 +48,7 @@
     "resetPasswordDescription": "新しいパスワードを入力してください。",
     "resetting": "再設定",
     "sendMail": "メールアドレス宛に送信しました",
+    "sendMailFailed": "メールの送信に失敗しました",
     "sensMailDescription": "送られたメールをご確認ください。",
     "resetPasswordSuccess": "パスワードを再設定しました"
   },

@@ -14,7 +14,6 @@ export default function TransitionsModal({
   centered?: boolean;
 }) {
   const [open, setOpen] = useRecoilState(ModalState.modalOpenState);
-  const title = useRecoilValue(ModalState.modalTitleState);
 
   const handleClose = () => {
     setOpen(false);
@@ -23,12 +22,7 @@ export default function TransitionsModal({
 
   return (
     <>
-      <Modal
-        opened={open}
-        onClose={handleClose}
-        title={title}
-        centered={centered}
-      >
+      <Modal opened={open} onClose={handleClose} centered={centered}>
         {children}
       </Modal>
     </>
