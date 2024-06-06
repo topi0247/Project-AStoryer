@@ -89,7 +89,7 @@ export default function UserEdit({
       pixiv: (value) => {
         if (
           value &&
-          (!value.match(/^https:\/\/pixiv\.com\/users\/.+$/) ||
+          (!value.match(/^https:\/\/www.pixiv\.net\/users\/.+$/) ||
             !isValidURL(value))
         ) {
           return "有効なURLではありません";
@@ -357,7 +357,7 @@ export default function UserEdit({
                     <dd className="w-full">
                       <MantineCore.Input
                         name="pixiv"
-                        placeholder="https://pixiv.net/..."
+                        placeholder="https://www.pixiv.net/users/..."
                         className="w-full"
                         {...form.getInputProps("pixiv")}
                       />
@@ -376,7 +376,7 @@ export default function UserEdit({
                     <dd className="w-full">
                       <MantineCore.Input
                         name="fusetter"
-                        placeholder="https://fusetter.com/..."
+                        placeholder="https://fusetter.com/u/..."
                         className="w-full"
                         {...form.getInputProps("fusetter")}
                       />
@@ -395,7 +395,7 @@ export default function UserEdit({
                     <dd className="w-full">
                       <MantineCore.Input
                         name="privatter"
-                        placeholder="https://privatter.net/..."
+                        placeholder="https://privatter.net/u/..."
                         className="w-full"
                         {...form.getInputProps("privatter")}
                       />

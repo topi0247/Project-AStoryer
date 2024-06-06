@@ -2,7 +2,6 @@
 
 import { useDisclosure } from "@mantine/hooks";
 import * as Mantine from "@mantine/core";
-import * as UI from "@/components/ui";
 import { useEffect, useState } from "react";
 
 export default function Profile({ profileText }: { profileText: string }) {
@@ -11,16 +10,17 @@ export default function Profile({ profileText }: { profileText: string }) {
   const MAX_TEXT_LENGTH = 200;
   const MAX_BREAK_COUNT = 2;
 
-  if (!profileText || profileText.length === 0) {
-    return null;
-  }
-
   useEffect(() => {
+    if (!profileText || profileText.length === 0) return;
     const breakCount = profileText.split("\n").length;
     setIsCollapse(
       breakCount > MAX_BREAK_COUNT || profileText.length > MAX_TEXT_LENGTH
     );
   }, [profileText]);
+
+  if (!profileText || profileText.length === 0) {
+    return null;
+  }
 
   return (
     <Mantine.Box className="bg-white p-5 rounded w-full relative">
