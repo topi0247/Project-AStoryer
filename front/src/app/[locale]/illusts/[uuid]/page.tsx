@@ -381,7 +381,7 @@ export default function IllustPage({
                     />
                     <span className="text-xl">{data.user.name}</span>
                   </Lib.Link>
-                  <div className="w-full flex flex-col gap-2 justify-center items-center">
+                  {/* <div className="w-full flex flex-col gap-2 justify-center items-center">
                     {follow ? (
                       <Mantine.Button
                         variant="outlined"
@@ -401,7 +401,7 @@ export default function IllustPage({
                         {t_ShowPost("follow")}
                       </Mantine.Button>
                     )}
-                  </div>
+                  </div> */}
                 </>
               ) : (
                 <Mantine.Skeleton height={70} />
