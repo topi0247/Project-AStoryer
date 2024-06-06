@@ -30,6 +30,8 @@ end
 group :production do
   # 画像保存のストレージサービス
   gem "aws-sdk-s3", require: false
+  # メールサーバー
+  gem 'aws-sdk-rails', '~> 3'
   # 監視
   gem "stackprof"
   gem "sentry-ruby"
