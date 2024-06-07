@@ -92,7 +92,12 @@ class User < ActiveRecord::Base
   end
 
   def followed?(other_user_uuid)
-    relationship = following_relationships.find_by(followed_uuid: other_user_uuid)
+    relationship = follower_relationships.find_by(followed_uuid: other_user_uuid)
+    relationship.present?
+  end
+
+  def following?(other_user_uuid)
+    relationship = following_relationships.find_by(follower_uuid: other_user_uuid)
     relationship.present?
   end
 

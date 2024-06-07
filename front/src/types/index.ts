@@ -102,4 +102,5 @@ export interface IIndexFollowData {
   uuid: string;
   name: string;
   avatar: string;
+  isFollowing: boolean;
 }
