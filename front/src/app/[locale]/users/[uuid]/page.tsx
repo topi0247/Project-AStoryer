@@ -308,7 +308,7 @@ export default function UserPage({ params }: { params: { uuid: string } }) {
       {(tabType.current === Tab.following ||
         tabType.current === Tab.follower) && (
         <article className="mb-16">
-          <Users.FollowIndex url={url.current} />
+          <Users.FollowIndex url={url.current} userUuid={uuid} />
         </article>
       )}
     </>
