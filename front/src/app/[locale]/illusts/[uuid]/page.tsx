@@ -1,14 +1,14 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import * as RecoilState from "@/recoilState";
 import * as Lib from "@/lib";
 import * as Mantine from "@mantine/core";
 import { IconButtonList } from "@/components/ui";
 import { useTranslations } from "next-intl";
 import { useMediaQuery } from "@mantine/hooks";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { RouterPath } from "@/settings";
 import { Carousel } from "@mantine/carousel";
 import "@mantine/carousel/styles.css";
@@ -16,13 +16,20 @@ import "@mantine/carousel/styles.css";
 const fetcherIllust = (url: string) =>
   Lib.GetFromAPI(url).then((res) => res.data);
 
+const fecherFollow = (url: string) =>
+  Lib.GetFromAPI(url).then((res) => res.data);
+
 export default function IllustPage({
   params: { uuid },
 }: {
   params: { uuid: string };
 }) {
+  const [user, setUser] = useRecoilState(RecoilState.userState);
   const { data, error } = useSWR(`/posts/${uuid}`, fetcherIllust);
-  const user = useRecoilValue(RecoilState.userState);
+  const { data: followData, error: followError } = useSWR(
+    data?.user?.uuid ? `users/${data.user.uuid}/relationship` : "",
+    fecherFollow
+  );
   const [expansionMode, setExpansionMode] = useState(false);
   const [openCaption, setOpenCaption] = useState(false);
   const [follow, setFollow] = useState(false);
@@ -45,17 +52,45 @@ export default function IllustPage({
     }
   }, [error]);
 
+  useEffect(() => {
+    if (!followData) return;
+    setFollow(followData.isFollowing);
+  }, [followData]);
+
   const handleOpenUser = () => {
     // TODO : 投稿者の情報モーダルの表示
   };
 
-  const handleFollow = () => {
-    // TODO : 未ログインならログイン誘導モーダルを表示
-    setModalOpen(true);
-    return;
-
-    // TODO : フォロー・フォロー解除の処理
-    setFollow(!follow);
+  const handleFollow = async () => {
+    try {
+      if (follow) {
+        const res = await Lib.Delete2API(
+          `users/${data.user.uuid}/relationship`
+        );
+        if (res.status === 204) {
+          setFollow(false);
+          setUser((prevUser) => ({
+            ...prevUser,
+            following_count: prevUser.following_count - 1,
+          }));
+        }
+      } else {
+        const res = await Lib.Post2API(`users/${data.user.uuid}/relationship`, {
+          user_uuid: data.user.uuid,
+        });
+        if (res.status === 201) {
+          setFollow(true);
+          setUser((prevUser) => ({
+            ...prevUser,
+            following_count: prevUser.following_count + 1,
+          }));
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      mutate(`users/${data.user.uuid}/relationship`);
+    }
   };
 
   const handleSendComment = (e: FormEvent) => {
@@ -381,27 +416,29 @@ export default function IllustPage({
                     />
                     <span className="text-xl">{data.user.name}</span>
                   </Lib.Link>
-                  {/* <div className="w-full flex flex-col gap-2 justify-center items-center">
-                    {follow ? (
-                      <Mantine.Button
-                        variant="outlined"
-                        size="small"
-                        onClick={handleFollow}
-                        className="w-32"
-                      >
-                        {t_ShowPost("unFollow")}
-                      </Mantine.Button>
-                    ) : (
-                      <Mantine.Button
-                        variant="contained"
-                        size="small"
-                        onClick={handleFollow}
-                        className="w-32"
-                      >
-                        {t_ShowPost("follow")}
-                      </Mantine.Button>
-                    )}
-                  </div> */}
+                  {user.uuid !== "" && user.uuid !== data.user.uuid && (
+                    <div className="w-full flex flex-col gap-2 justify-center items-center">
+                      {follow ? (
+                        <Mantine.Button
+                          variant="outline"
+                          size="small"
+                          onClick={handleFollow}
+                          className="w-32"
+                        >
+                          {t_ShowPost("unFollow")}
+                        </Mantine.Button>
+                      ) : (
+                        <Mantine.Button
+                          variant="contained"
+                          size="small"
+                          onClick={handleFollow}
+                          className="w-32"
+                        >
+                          {t_ShowPost("follow")}
+                        </Mantine.Button>
+                      )}
+                    </div>
+                  )}
                 </>
               ) : (
                 <Mantine.Skeleton height={70} />

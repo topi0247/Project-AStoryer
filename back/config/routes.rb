@@ -27,6 +27,7 @@ Rails.application.routes.draw do
           get 'follower'
           get 'following'
           resource :profile, only: %i[update]
+          resource :relationship, only: %i[show create destroy]
         end
       end
       resources :favorites, only: %i[show create destroy]

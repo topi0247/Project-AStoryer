@@ -199,7 +199,7 @@ class Post < ApplicationRecord
   end
 
   # 表示用のカスタムjson
-  def as_custom_show_json(content)
+  def as_custom_show_json(content, current_user=nil)
     {
       uuid: short_uuid,
       title: title,

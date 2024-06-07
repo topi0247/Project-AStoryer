@@ -91,6 +91,11 @@ class User < ActiveRecord::Base
     nil
   end
 
+  def followed?(other_user_uuid)
+    relationship = following_relationships.find_by(followed_uuid: other_user_uuid)
+    relationship.present?
+  end
+
   def as_header_json(avatar_url)
     {
       uuid: short_uuid,
