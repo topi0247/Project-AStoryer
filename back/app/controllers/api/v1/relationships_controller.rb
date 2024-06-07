@@ -8,15 +8,16 @@ class Api::V1::RelationshipsController < Api::V1::BasesController
   def create
     user = User.find_by_short_uuid(relationship_params[:user_uuid])
     @relationship = Relationship.new(followed_uuid: user.uuid, follower_uuid: current_api_v1_user.uuid)
-
-    if @relationship.save!
-      head :created
-    else
-      render json: { errors: @relationship.errors.full_messages }, status: :unprocessable_entity
+    begin
+      if @relationship.save!
+        head :created
+      else
+        render json: { errors: @relationship.errors.full_messages }, status: :unprocessable_entity
+      end
+    rescue => e
+      logger.error e
+      render json: { error: e.message }, status: :bad_request
     end
-  rescue => e
-    logger.error e
-    render json: { error: e.message }, status: :bad_request
   end
 
   def destroy

@@ -1,14 +1,14 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import * as RecoilState from "@/recoilState";
 import * as Lib from "@/lib";
 import * as Mantine from "@mantine/core";
 import { IconButtonList } from "@/components/ui";
 import { useTranslations } from "next-intl";
 import { useMediaQuery } from "@mantine/hooks";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { RouterPath } from "@/settings";
 import { Carousel } from "@mantine/carousel";
 import "@mantine/carousel/styles.css";
@@ -24,7 +24,7 @@ export default function IllustPage({
 }: {
   params: { uuid: string };
 }) {
-  const user = useRecoilValue(RecoilState.userState);
+  const [user, setUser] = useRecoilState(RecoilState.userState);
   const { data, error } = useSWR(`/posts/${uuid}`, fetcherIllust);
   const { data: followData, error: followError } = useSWR(
     data?.user?.uuid ? `users/${data.user.uuid}/relationship` : "",
@@ -69,6 +69,10 @@ export default function IllustPage({
         );
         if (res.status === 204) {
           setFollow(false);
+          setUser((prevUser) => ({
+            ...prevUser,
+            following_count: prevUser.following_count - 1,
+          }));
         }
       } else {
         const res = await Lib.Post2API(`users/${data.user.uuid}/relationship`, {
@@ -76,10 +80,16 @@ export default function IllustPage({
         });
         if (res.status === 201) {
           setFollow(true);
+          setUser((prevUser) => ({
+            ...prevUser,
+            following_count: prevUser.following_count + 1,
+          }));
         }
       }
     } catch (e) {
       console.error(e);
+    } finally {
+      mutate(`users/${data.user.uuid}/relationship`);
     }
   };
 
@@ -410,7 +420,7 @@ export default function IllustPage({
                     <div className="w-full flex flex-col gap-2 justify-center items-center">
                       {follow ? (
                         <Mantine.Button
-                          variant="outlined"
+                          variant="outline"
                           size="small"
                           onClick={handleFollow}
                           className="w-32"
