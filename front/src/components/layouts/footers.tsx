@@ -1,6 +1,7 @@
 import { Link } from "@/lib";
 import { RouterPath } from "@/settings";
 import { useTranslations } from "next-intl";
+import * as Mantine from "@mantine/core";
 
 export default function Footers() {
   const t_Footer = useTranslations("Footer");
@@ -8,8 +9,11 @@ export default function Footers() {
     <footer className="p-4 flex text-white justify-between md:items-center w-full md:py-8">
       <div className="flex flex-col gap-3 md:block md:gap-0 text-2xl md:ml-8">
         <h3 className="md:text-center md:m-auto">
-          <Link href={RouterPath.home} className="flex flex-col">
-            AStoryer <span className="text-sm">- あすとりや -</span>
+          <Link
+            href={RouterPath.home}
+            className="flex flex-col justify-center items-center w-32 h-auto object-contain"
+          >
+            <Mantine.Image src="/assets/AppLogo.png" />
           </Link>
         </h3>
         <p className="md:hidden text-sm">©2024 AStoryer -あすとりや-</p>
