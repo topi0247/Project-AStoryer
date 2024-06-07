@@ -10,11 +10,9 @@ const feature = (url: string) => GetFromAPI(url).then((res) => res.data);
 export default function FollowIndex({
   uuid,
   url,
-  tabType,
 }: {
   uuid: string;
   url: string;
-  tabType: Tab;
 }) {
   const { data, error } = useSWR(url, feature);
 
@@ -28,7 +26,7 @@ export default function FollowIndex({
             ))}
           </>
         ) : (
-          data.users.map(
+          data.users?.map(
             ({ user, i }: { user: IIndexFollowData; i: number }) => (
               <FollowUser key={i} user={user} />
             )

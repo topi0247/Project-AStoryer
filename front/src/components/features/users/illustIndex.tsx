@@ -11,11 +11,9 @@ const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 export default function IllustIndex({
   uuid,
-  tabType,
   url,
 }: {
   uuid: string;
-  tabType: Tab;
   url: string;
 }) {
   const [illusts, setIllusts] = useState<IndexIllustData[]>([]);

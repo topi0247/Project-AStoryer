@@ -24,6 +24,8 @@ Rails.application.routes.draw do
         member do
           get 'bookmarks'
           get 'postsIllust'
+          get 'follower'
+          get 'following'
           resource :profile, only: %i[update]
         end
       end

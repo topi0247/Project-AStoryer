@@ -16,23 +16,17 @@ export default function UserTabs({
   tabType: Tab;
   handleTabChange: (value: Tab) => void;
 }) {
-  const [tab, setTab] = useState<Tab>(tabType);
   const t_UserPage = useTranslations("UserPage");
   const user = useRecoilValue(userState);
 
-  useEffect(() => {
-    setTab(tabType);
-  }, [tabType]);
-
   const handleChange = (tabName: string | null) => {
     if (!tabName) return;
-    setTab(tabName as Tab);
     handleTabChange(tabName as Tab);
   };
 
   return (
     <Mantine.Tabs
-      value={tab}
+      value={tabType}
       onChange={handleChange}
       color="rgb(74 222 128)"
       className="overflow-x-auto"
