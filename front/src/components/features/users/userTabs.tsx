@@ -20,6 +20,10 @@ export default function UserTabs({
   const t_UserPage = useTranslations("UserPage");
   const user = useRecoilValue(userState);
 
+  useEffect(() => {
+    setTab(tabType);
+  }, [tabType]);
+
   const handleChange = (tabName: string | null) => {
     if (!tabName) return;
     setTab(tabName as Tab);
