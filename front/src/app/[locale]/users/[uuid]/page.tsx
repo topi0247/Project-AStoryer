@@ -301,14 +301,14 @@ export default function UserPage({ params }: { params: { uuid: string } }) {
       {/* イラスト一覧 */}
       {(tabType.current === Tab.post || tabType.current === Tab.bookmark) && (
         <article className="mb-16">
-          <Users.IllustIndex uuid={uuid} url={url.current} />
+          <Users.IllustIndex url={url.current} />
         </article>
       )}
       {/* フォロー・フォロワー一覧 */}
       {(tabType.current === Tab.following ||
         tabType.current === Tab.follower) && (
         <article className="mb-16">
-          <Users.FollowIndex uuid={uuid} url={url.current} />
+          <Users.FollowIndex url={url.current} />
         </article>
       )}
     </>

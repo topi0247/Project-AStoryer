@@ -5,16 +5,10 @@ import { FollowUser } from ".";
 import { GetFromAPI } from "@/lib";
 import useSWR from "swr";
 
-const feature = (url: string) => GetFromAPI(url).then((res) => res.data);
+const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
-export default function FollowIndex({
-  uuid,
-  url,
-}: {
-  uuid: string;
-  url: string;
-}) {
-  const { data, error } = useSWR(url, feature);
+export default function FollowIndex({ url }: { url: string }) {
+  const { data, error } = useSWR(url, fetcher);
 
   return (
     <section className="container my-2 m-auto">
