@@ -78,7 +78,7 @@ class Api::V1::UsersController < Api::V1::BasesController
         user: {
           uuid: user.short_uuid,
           name: user.name,
-          avatar: user.profile.avatar.attached? ? url_for(user.profile.avatar) : nil,
+          avatar: user.profile&.avatar&.attached? ? url_for(user.profile.avatar) : nil,
         }
       }
     end
@@ -89,9 +89,11 @@ class Api::V1::UsersController < Api::V1::BasesController
   def follower
     users = @user.followers.map do |user|
       {
-        uuid: user.short_uuid,
-        name: user.name,
-        avatar: user.profile.avatar.attached? ? url_for(user.profile.avatar) : nil,
+        user: {
+          uuid: user.short_uuid,
+          name: user.name,
+          avatar: user.profile&.avatar&.attached? ? url_for(user.profile.avatar) : nil,
+        }
       }
     end
 
