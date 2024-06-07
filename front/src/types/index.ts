@@ -90,3 +90,16 @@ export interface AccountProps {
   google_oauth2?: string;
   discord?: string;
 }
+
+export enum Tab {
+  post = "post",
+  bookmark = "bookmark",
+  follower = "follower",
+  following = "following",
+}
+
+export interface IIndexFollowData {
+  uuid: string;
+  name: string;
+  avatar: string;
+}

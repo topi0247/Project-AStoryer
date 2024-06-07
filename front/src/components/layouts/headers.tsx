@@ -188,9 +188,9 @@ export function AccountMenu({
             <span className="ml-4">{user.name}</span>
           </div>
         </Mantine.Menu.Item>
-        {/* <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center">
           <Mantine.Menu.Item
-            onClick={() => handleLink(RouterPath.users(user.uuid))}
+            onClick={() => handleLink(RouterPath.following(user.uuid))}
           >
             <div className="flex flex-col justify-center items-center">
               <span className="text-center">{t_Menu("follow")}</span>
@@ -198,14 +198,14 @@ export function AccountMenu({
             </div>
           </Mantine.Menu.Item>
           <Mantine.Menu.Item
-            onClick={() => handleLink(RouterPath.users(user.uuid))}
+            onClick={() => handleLink(RouterPath.follower(user.uuid))}
           >
             <div className="flex flex-col justify-center items-center">
               <span>{t_Menu("follower")}</span>
               <span>{user.follower_count}</span>
             </div>
           </Mantine.Menu.Item>
-        </div> */}
+        </div>
         <Mantine.Menu.Item
           onClick={() => handleLink(RouterPath.users(user.uuid))}
           leftSection={<VscAccount />}

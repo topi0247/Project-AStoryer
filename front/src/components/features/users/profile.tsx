@@ -26,7 +26,7 @@ export default function Profile({ profileText }: { profileText: string }) {
     <Mantine.Box className="bg-white p-5 rounded w-full relative">
       <Mantine.Text
         className={`text-lg whitespace-pre ${
-          opened || !isCollapse ? "max-h-auto" : `gradientText max-h-32`
+          opened || !isCollapse ? "h-auto" : "gradientText overflow-hidden h-16"
         }
         }`}
       >
