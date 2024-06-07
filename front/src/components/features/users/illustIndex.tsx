@@ -9,13 +9,7 @@ import { Skeleton } from "@mantine/core";
 
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
-export default function IllustIndex({
-  uuid,
-  url,
-}: {
-  uuid: string;
-  url: string;
-}) {
+export default function IllustIndex({ url }: { url: string }) {
   const [illusts, setIllusts] = useState<IndexIllustData[]>([]);
   const { data, error } = useSWR(url, fetcher);
 

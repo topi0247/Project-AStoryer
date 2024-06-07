@@ -1,6 +1,6 @@
 class Api::V1::UsersController < Api::V1::BasesController
-  skip_before_action :authenticate_api_v1_user!, only: %i[show postsIllust bookmarks]
-  before_action :set_user, only: %i[show postsIllust bookmarks]
+  skip_before_action :authenticate_api_v1_user!, only: %i[show postsIllust bookmarks follower]
+  before_action :set_user, only: %i[show postsIllust bookmarks following follower]
 
   def show
     header_image_url = nil
@@ -72,6 +72,32 @@ class Api::V1::UsersController < Api::V1::BasesController
     render json: posts, status: :ok
   end
 
+  def following
+    users = @user.following.map do |user|
+      {
+        user: {
+          uuid: user.short_uuid,
+          name: user.name,
+          avatar: user.profile.avatar.attached? ? url_for(user.profile.avatar) : nil,
+        }
+      }
+    end
+
+    render json: {users: users}, status: :ok
+  end
+
+  def follower
+    users = @user.followers.map do |user|
+      {
+        uuid: user.short_uuid,
+        name: user.name,
+        avatar: user.profile.avatar.attached? ? url_for(user.profile.avatar) : nil,
+      }
+    end
+
+    render json: {users: users}, status: :ok
+  end
+
   private
 
   def set_user
@@ -79,7 +105,7 @@ class Api::V1::UsersController < Api::V1::BasesController
       if params[:id].length != 22
         raise ActiveRecord::RecordInvalid
       end
-      @user = User.find_by_short_uuid(params[:id])
+      @user = User.find_by_short_uuid(user_params[:id])
       if @user.nil?
         raise ActiveRecord::RecordNotFound
       end
@@ -90,5 +116,9 @@ class Api::V1::UsersController < Api::V1::BasesController
     rescue => e
       render json: { error: e.message }, status: :internal_server_error
     end
+  end
+
+  def user_params
+    params.permit(:id)
   end
 end
