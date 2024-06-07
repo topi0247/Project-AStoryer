@@ -109,6 +109,8 @@
   "UserPage": {
     "post": "投稿一覧",
     "bookmark": "ブックマーク一覧",
+    "following": "フォロー中",
+    "follower": "フォロワー",
     "fusetter": "ふせったー",
     "other": "その他",
     "headerImage": "ヘッダー画像",

@@ -188,7 +188,7 @@ export function AccountMenu({
             <span className="ml-4">{user.name}</span>
           </div>
         </Mantine.Menu.Item>
-        {/* <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center">
           <Mantine.Menu.Item
             onClick={() => handleLink(RouterPath.users(user.uuid))}
           >
@@ -205,7 +205,7 @@ export function AccountMenu({
               <span>{user.follower_count}</span>
             </div>
           </Mantine.Menu.Item>
-        </div> */}
+        </div>
         <Mantine.Menu.Item
           onClick={() => handleLink(RouterPath.users(user.uuid))}
           leftSection={<VscAccount />}
