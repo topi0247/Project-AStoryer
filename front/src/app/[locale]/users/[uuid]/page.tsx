@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { RouterPath } from "@/settings";
 import { useRecoilValue } from "recoil";
 import { userState } from "@/recoilState";
+import { Tab } from "@/types";
 
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
@@ -32,8 +33,10 @@ export default function UserPage({ params }: { params: { uuid: string } }) {
   const t_UserPage = useTranslations("UserPage");
   const { data, error } = useSWR(`/users/${uuid}`, fetcher);
   const [userProfile, setUserProfile] = useState<UserProfile>();
-  const router = useRouter();
   const user = useRecoilValue(userState);
+  const [tabType, setTabType] = useState<Tab>(Tab.post);
+  const [url, setUrl] = useState<string>(`/users/${uuid}/postsIllust`);
+  const router = useRouter();
 
   useEffect(() => {
     if (error) {
@@ -57,6 +60,78 @@ export default function UserPage({ params }: { params: { uuid: string } }) {
       profile: data.profile,
     });
   }, [data]);
+
+  useEffect(() => {
+    let newUrl = "";
+    switch (window.location.search) {
+      case "?tab=bookmark":
+        setTabType(Tab.bookmark);
+        newUrl = `/users/${uuid}/bookmarks`;
+        break;
+      case "?tab=following":
+        setTabType(Tab.following);
+        newUrl = `/users/${uuid}/following`;
+        break;
+      case "?tab=follower":
+        setTabType(Tab.follower);
+        newUrl = `/users/${uuid}/follower`;
+        break;
+      default:
+        setTabType(Tab.post);
+        newUrl = `/users/${uuid}/postsIllust`;
+        break;
+    }
+    setUrl(newUrl);
+  }, []);
+
+  useEffect(() => {
+    let newUrl = "";
+    switch (tabType) {
+      case Tab.bookmark:
+        setTabType(Tab.bookmark);
+        newUrl = `/users/${uuid}/bookmarks`;
+        break;
+      case Tab.following:
+        setTabType(Tab.following);
+        newUrl = `/users/${uuid}/following`;
+        break;
+      case Tab.follower:
+        setTabType(Tab.follower);
+        newUrl = `/users/${uuid}/follower`;
+        break;
+      default:
+        setTabType(Tab.post);
+        newUrl = `/users/${uuid}/postsIllust`;
+        break;
+    }
+
+    setUrl(newUrl);
+  }, [uuid, tabType]);
+
+  const handleTabChange = (tab: Tab) => {
+    switch (tab) {
+      case Tab.bookmark:
+        setTabType(Tab.bookmark);
+        setUrl(`/users/${uuid}/bookmarks`);
+        router.push(RouterPath.bookmark(uuid), { scroll: false });
+        break;
+      case Tab.following:
+        setTabType(Tab.following);
+        setUrl(`/users/${uuid}/following`);
+        router.push(RouterPath.following(uuid), { scroll: false });
+        break;
+      case Tab.follower:
+        setTabType(Tab.follower);
+        setUrl(`/users/${uuid}/follower`);
+        router.push(RouterPath.follower(uuid), { scroll: false });
+        break;
+      default:
+        setTabType(Tab.post);
+        setUrl(`/users/${uuid}/postsIllust`);
+        router.push(RouterPath.users(uuid), { scroll: false });
+        break;
+    }
+  };
 
   return (
     <>
@@ -197,10 +272,27 @@ export default function UserPage({ params }: { params: { uuid: string } }) {
         </section>
       </article>
 
-      {/* イラスト一覧 */}
-      <article className="mb-16">
-        <Users.IllustIndex uuid={uuid} />
+      {/* タブ */}
+      <article id="tabs" className="mx-2 md:container md:m-auto md:mb-8">
+        <Users.UserTabs
+          userUuid={uuid}
+          tabType={tabType}
+          handleTabChange={handleTabChange}
+        />
       </article>
+
+      {/* イラスト一覧 */}
+      {(tabType === Tab.post || tabType === Tab.bookmark) && (
+        <article className="mb-16">
+          <Users.IllustIndex uuid={uuid} url={url} tabType={tabType} />
+        </article>
+      )}
+      {/* フォロー・フォロワー一覧 */}
+      {(tabType === Tab.following || tabType === Tab.follower) && (
+        <article className="mb-16">
+          <Users.FollowIndex uuid={uuid} url={url} tabType={tabType} />
+        </article>
+      )}
     </>
   );
 }

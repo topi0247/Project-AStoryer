@@ -97,3 +97,9 @@ export enum Tab {
   follower = "follower",
   following = "following",
 }
+
+export interface IIndexFollowData {
+  uuid: string;
+  name: string;
+  avatar: string;
+}

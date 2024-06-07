@@ -27,7 +27,12 @@ export default function UserTabs({
   };
 
   return (
-    <Mantine.Tabs value={tab} onChange={handleChange} color="rgb(74 222 128)">
+    <Mantine.Tabs
+      value={tab}
+      onChange={handleChange}
+      color="rgb(74 222 128)"
+      className="overflow-x-auto"
+    >
       <Mantine.Tabs.List aria-label="一覧切り替え">
         <Mantine.Tabs.Tab value={Tab.post} className="transition-all">
           {t_UserPage("post")}
