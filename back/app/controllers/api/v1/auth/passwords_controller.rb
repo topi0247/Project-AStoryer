@@ -91,4 +91,10 @@ class Api::V1::Auth::PasswordsController < DeviseTokenAuth::PasswordsController
       message: I18n.t('devise_token_auth.passwords.successfully_updated')
     }
   end
+
+  def redirect_options
+    {
+      allow_other_host: true
+    }
+  end
 end
