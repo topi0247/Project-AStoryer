@@ -69,5 +69,9 @@ DeviseTokenAuth.setup do |config|
   config.default_password_reset_url = "#{ENV['FRONT_URL']}/ja/reset-password"
 
   # リダイレクトのホワイトリスト
-  config.redirect_whitelist = ["#{ENV['FRONT_URL']}"]
+  config.redirect_whitelist = [
+    "#{ENV['FRONT_URL']}",
+    "#{ENV['FRONT_URL']}/ja/reset-password",
+    "#{ENV['FRONT_URL']}/en/reset-password"
+  ]
 end
