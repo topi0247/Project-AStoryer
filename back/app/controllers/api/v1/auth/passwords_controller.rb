@@ -52,7 +52,7 @@ class Api::V1::Auth::PasswordsController < DeviseTokenAuth::PasswordsController
                                                   redirect_header_options)
         redirect_to(@resource.build_auth_url(@redirect_url,
                                              redirect_headers),
-                                             redirect_options)
+                                             redirect_options, allow_other_host: true)
       end
     else
       render_edit_error
