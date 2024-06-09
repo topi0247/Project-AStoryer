@@ -3,17 +3,39 @@
 import * as MantineForm from "@mantine/form";
 import * as Mantine from "@mantine/core";
 import * as UI from "@/components/ui";
-import { useRouter } from "@/lib";
+import { Put2API, useRouter } from "@/lib";
 import { useTranslations } from "next-intl";
-import { useSetRecoilState } from "recoil";
-import * as RecoilState from "@/recoilState";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/hook";
+import { RouterPath } from "@/settings";
 
 export default function ResetPasswordPage() {
+  const { setAccessTokens } = useAuth();
   const t_Auth = useTranslations("Auth");
   const t_General = useTranslations("General");
-  const setModalOpen = useSetRecoilState(RecoilState.modalOpenState);
-  const setModalTitle = useSetRecoilState(RecoilState.modalTitleState);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("reset_password") !== "true") {
+        router.push(RouterPath.home);
+        return;
+      }
+
+      const accessToken = params.get("token");
+      const uid = params.get("uid");
+      const client = params.get("client");
+      const expiry = params.get("expiry");
+      const isToken = accessToken && uid && client && expiry;
+      if (isToken) {
+        setAccessTokens(accessToken, client, uid, expiry);
+      }
+    };
+    fetchData();
+  }, []);
 
   const form = MantineForm.useForm({
     mode: "uncontrolled",
@@ -33,16 +55,37 @@ export default function ResetPasswordPage() {
     },
   });
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const { password, password_confirmation } = form.getValues();
-    // TODO : パスワード再設定処理
-    setModalOpen(true);
-    setModalTitle(t_Auth("resetPasswordSuccess"));
+
+    try {
+      const res = await Put2API("/auth/password", {
+        password,
+        password_confirmation,
+      });
+      if (res.status !== 200) throw new Error();
+      if (res.data.success) {
+        const accessToken = res.headers["access-token"];
+        const client = res.headers.client;
+        const uid = res.headers.uid;
+        const expiry = res.headers.expiry;
+        if (accessToken && client && uid && expiry) {
+          setAccessTokens(accessToken, client, uid, expiry);
+        }
+      }
+      setModalMessage(res.data.message);
+    } catch {
+      setModalMessage(t_Auth("resetPasswordFailed"));
+      return;
+    } finally {
+      setModalOpen(true);
+    }
   };
 
-  const handleBackHome = () => {
+  const handleLogin = () => {
     setModalOpen(false);
-    router.push("/");
+    router.push(RouterPath.login);
   };
 
   return (
@@ -77,13 +120,14 @@ export default function ResetPasswordPage() {
           </div>
         </section>
       </article>
-      <UI.TransitionsModal>
-        <div className="flex gap-4 justify-center items-center h-20 mt-4 w-68 m-auto">
-          <Mantine.Button variant="outlined" onClick={handleBackHome}>
+      <Mantine.Modal opened={modalOpen} onClose={() => setModalOpen(false)}>
+        <div className="flex flex-col gap-4 justify-center items-center mt-4 w-68 m-auto">
+          {modalMessage}
+          <Mantine.Button variant="outlined" onClick={handleLogin}>
             {t_General("backHome")}
           </Mantine.Button>
         </div>
-      </UI.TransitionsModal>
+      </Mantine.Modal>
     </>
   );
 }

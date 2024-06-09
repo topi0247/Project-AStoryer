@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_03_043856) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_06_053842) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -81,6 +81,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_03_043856) do
     t.string "image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "links", force: :cascade do |t|
+    t.uuid "user_uuid", null: false
+    t.integer "link_kind", null: false
+    t.string "content", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_uuid", "link_kind", "content"], name: "index_links_on_user_uuid_and_link_kind_and_content", unique: true
   end
 
   create_table "notices", force: :cascade do |t|
@@ -184,7 +193,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_03_043856) do
     t.json "tokens"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.boolean "allow_password_change", default: false
+    t.index ["allow_password_change"], name: "index_users_on_allow_password_change"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_sent_at"], name: "index_users_on_reset_password_sent_at", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
@@ -197,6 +212,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_03_043856) do
   add_foreign_key "favorites", "posts", column: "post_uuid", primary_key: "uuid"
   add_foreign_key "favorites", "users", column: "user_uuid", primary_key: "uuid"
   add_foreign_key "illust_attachments", "illusts"
+  add_foreign_key "links", "users", column: "user_uuid", primary_key: "uuid"
   add_foreign_key "post_game_systems", "posts", column: "post_uuid", primary_key: "uuid"
   add_foreign_key "post_synalios", "posts", column: "post_uuid", primary_key: "uuid"
   add_foreign_key "post_synalios", "synalios"

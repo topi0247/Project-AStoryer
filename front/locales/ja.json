@@ -33,6 +33,7 @@
     "signupWithGoogle": "Googleで登録",
     "signupWithDiscord": "Discordで登録",
     "signupFailed": "登録に失敗しました",
+    "authFailed": "認証に失敗しました",
     "toLogin": "ログインはこちら",
     "toSignUp": "新規登録はこちら",
     "toPasswordReset": "パスワードを忘れた方はこちら",
@@ -48,12 +49,13 @@
     "resetPasswordDescription": "新しいパスワードを入力してください。",
     "resetting": "再設定",
     "sendMail": "メールアドレス宛に送信しました",
+    "sendMailFailed": "メールの送信に失敗しました",
     "sensMailDescription": "送られたメールをご確認ください。",
     "resetPasswordSuccess": "パスワードを再設定しました"
   },
   "General": {
     "send": "送信",
-    "backHome": "ホームへ戻る",
+    "backHome": "トップへ戻る",
     "followedNewPosts": "フォロー新着順",
     "newPosts": "新着順",
     "oldPosts": "投稿順",
@@ -107,6 +109,8 @@
   "UserPage": {
     "post": "投稿一覧",
     "bookmark": "ブックマーク一覧",
+    "following": "フォロー中",
+    "follower": "フォロワー",
     "fusetter": "ふせったー",
     "other": "その他",
     "headerImage": "ヘッダー画像",

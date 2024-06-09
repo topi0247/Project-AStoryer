@@ -1,9 +1,20 @@
 class Api::V1::UsersController < Api::V1::BasesController
-  skip_before_action :authenticate_api_v1_user!, only: %i[show postsIllust bookmarks]
-  before_action :set_user, only: %i[show postsIllust bookmarks]
+  skip_before_action :authenticate_api_v1_user!, only: %i[show postsIllust bookmarks follower]
+  before_action :set_user, only: %i[show postsIllust bookmarks following follower]
 
   def show
-    render json: @user.as_custom_json, status: :ok
+    header_image_url = nil
+    avatar_url = nil
+    if @user.profile.present?
+      if@user.profile.header_image.attached?
+        header_image_url = url_for(@user.profile.header_image)
+      end
+      if @user.profile.avatar.attached?
+        avatar_url = url_for(@user.profile.avatar)
+      end
+    end
+
+    render json: @user.as_custom_json(header_image_url,avatar_url), status: :ok
   end
 
   def postsIllust
@@ -61,12 +72,57 @@ class Api::V1::UsersController < Api::V1::BasesController
     render json: posts, status: :ok
   end
 
+  def following
+    users = @user.following.map do |user|
+      {
+        user: {
+          uuid: user.short_uuid,
+          name: user.name,
+          avatar: user.profile&.avatar&.attached? ? url_for(user.profile.avatar) : nil,
+          isFollowing: true
+        }
+      }
+    end
+
+    render json: {users: users}, status: :ok
+  end
+
+  def follower
+    users = @user.followers.map do |user|
+      {
+        user: {
+          uuid: user.short_uuid,
+          name: user.name,
+          avatar: user.profile&.avatar&.attached? ? url_for(user.profile.avatar) : nil,
+          isFavorite: current_api_v1_user&.following?(user)
+        }
+      }
+    end
+
+    render json: {users: users}, status: :ok
+  end
+
   private
 
   def set_user
-    @user = User.find_by_short_uuid(params[:id])
-    if @user.nil?
-      render json: { error: 'Not Found' }, status: :not_found and return
+    begin
+      if params[:id].length != 22
+        raise ActiveRecord::RecordInvalid
+      end
+      @user = User.find_by_short_uuid(user_params[:id])
+      if @user.nil?
+        raise ActiveRecord::RecordNotFound
+      end
+    rescue ActiveRecord::RecordInvalid => e
+      render json: { error: 'Invalid UUID' }, status: :not_found
+    rescue ActiveRecord::RecordNotFound => e
+      render json: { error: 'Not Found' }, status: :not_found
+    rescue => e
+      render json: { error: e.message }, status: :internal_server_error
     end
+  end
+
+  def user_params
+    params.permit(:id)
   end
 end

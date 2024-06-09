@@ -102,7 +102,7 @@ export default function SignUpPage() {
           </form>
           <div className="text-center">
             <Link
-              href="/login"
+              href={RouterPath.login}
               className="text-center text-sm text-blue-500 underline hover:opacity-50 transition-all"
             >
               {t_Auth("toLogin")}

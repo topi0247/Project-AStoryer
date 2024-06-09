@@ -11,11 +11,13 @@ export default function Synalio({ formProps }: { formProps: any }) {
   if (error) return;
 
   return (
-    <Mantine.Autocomplete
-      name="synalioTitle"
-      label={t_PostGeneral("synalioTitle")}
-      data={data}
-      {...formProps}
-    />
+    <>
+      <Mantine.InputLabel>{t_PostGeneral("synalioTitle")}</Mantine.InputLabel>
+      {data === undefined ? (
+        <Mantine.Skeleton height={35} />
+      ) : (
+        <Mantine.Autocomplete name="synalioTitle" data={data} {...formProps} />
+      )}
+    </>
   );
 }

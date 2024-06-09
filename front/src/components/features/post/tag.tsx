@@ -15,19 +15,25 @@ export default function Tag({
   onChange: Dispatch<SetStateAction<string[]>>;
   value: string[];
 }) {
-  const { data: Tags, error: errorTags } = useSWR("/tags", fetcher);
+  const { data, error } = useSWR("/tags", fetcher);
   const t_PostGeneral = useTranslations("PostGeneral");
 
-  if (errorTags) return;
+  if (error) return;
 
   return (
-    <Mantine.TagsInput
-      name="tags"
-      label={t_PostGeneral("tag")}
-      splitChars={[" ", "|"]}
-      data={Tags}
-      onChange={onChange}
-      value={value}
-    />
+    <>
+      <Mantine.InputLabel>{t_PostGeneral("tag")}</Mantine.InputLabel>
+      {data === undefined ? (
+        <Mantine.Skeleton height={35} />
+      ) : (
+        <Mantine.TagsInput
+          name="tags"
+          splitChars={[" ", "|"]}
+          data={data}
+          onChange={onChange}
+          value={value}
+        />
+      )}
+    </>
   );
 }

@@ -29,6 +29,10 @@ class Api::V1::Auth::OmniauthCallbacksController <  DeviseTokenAuth::OmniauthCal
     end
   end
 
+  def failure
+    redirect_to "#{ENV['FRONT_URL']}/ja/auth-failure", allow_other_host: true
+  end
+
   private
 
   # 保存とリダイレクト

@@ -16,4 +16,10 @@ export const RouterPath = {
   users: (uuid: string) => `/users/${uuid}`,
   account: "/account",
   bookmark: (uuid: string) => `/users/${uuid}?tab=bookmark`,
+  following: (uuid: string) => `/users/${uuid}?tab=following`,
+  follower: (uuid: string) => `/users/${uuid}?tab=follower`,
+  error: "/error",
+  notFound: "/not-found",
+  requestPasswordReset: "/request-password-reset",
+  resetPassword: "/reset-password",
 };

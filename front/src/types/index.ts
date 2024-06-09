@@ -66,7 +66,7 @@ export interface INoticeStates {
 export interface IUserPageEdit {
   headerImage: string;
   avatar: string;
-  link: {
+  links: {
     twitter: string;
     pixiv: string;
     fusetter: string;
@@ -82,4 +82,25 @@ export enum IPublicState {
   URL = "only_url",
   Follower = "only_follower",
   Private = "private_publish",
+}
+
+export interface AccountProps {
+  name: string;
+  email?: string;
+  google_oauth2?: string;
+  discord?: string;
+}
+
+export enum Tab {
+  post = "post",
+  bookmark = "bookmark",
+  follower = "follower",
+  following = "following",
+}
+
+export interface IIndexFollowData {
+  uuid: string;
+  name: string;
+  avatar: string;
+  isFollowing: boolean;
 }

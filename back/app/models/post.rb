@@ -78,10 +78,8 @@ class Post < ApplicationRecord
       true
     when 'only_follower'
       self.user.followers.include?(current_user)
-    when 'private_publish'
-      current_user == user
     else
-      false
+      current_user == user
     end
   end
 
@@ -201,7 +199,7 @@ class Post < ApplicationRecord
   end
 
   # 表示用のカスタムjson
-  def as_custom_show_json(content)
+  def as_custom_show_json(content, current_user=nil)
     {
       uuid: short_uuid,
       title: title,
@@ -215,7 +213,7 @@ class Post < ApplicationRecord
         name: user.name,
         profile: user.profile&.text,
         avatar: user.profile&.avatar&.url,
-        follower: user.followers.count
+        links: Link.get_links(user.uuid),
       },
       publish_state: publish_state,
       published_at: published_at.strftime('%Y/%m/%d %H:%M:%S'),

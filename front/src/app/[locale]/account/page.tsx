@@ -3,23 +3,21 @@
 import useSWR from "swr";
 import { useTranslations } from "next-intl";
 import { Email, Name, NoticeTabs } from "@/components/features/account";
-import { GetFromAPI } from "@/lib";
-
-interface AccountProps {
-  name: string;
-  email?: string;
-  google_oauth2?: string;
-  discord?: string;
-}
+import { GetFromAPI, Link, useRouter } from "@/lib";
+import { LoadingOverlay } from "@mantine/core";
+import { RouterPath } from "@/settings";
+import { AccountProps } from "@/types";
 
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 export default function AccountPage() {
   const { data, error } = useSWR("/account", fetcher);
   const t_AccountSettings = useTranslations("AccountSettings");
-  // TODO : ローディング・エラー画面
-  if (error) return <div>error</div>;
-  if (data === undefined) return <div>Now Loading</div>;
+  const router = useRouter();
+  if (error) {
+    router.push(RouterPath.notFound);
+  }
+  if (data === undefined) return <LoadingOverlay visible />;
   const account = data?.account as AccountProps;
 
   return (
@@ -41,7 +39,7 @@ export default function AccountPage() {
             </dt>
             <dd className="flex flex-col justify-center ml-4 md:ml-0 border-b border-slate-300 pb-2">
               {account.email ? (
-                <Email email={account.email} />
+                <Email account={account} />
               ) : (
                 <span className="text-xs">SNS連携でログインしています</span>
               )}
@@ -67,15 +65,17 @@ export default function AccountPage() {
                 Discord{data.account.discord ? "連携中" : "未連携"}
               </span>
             </dd>
-            {/* TODO : パスワード再設定はあとにする */}
-            {/* <dt className="md:border-b md:border-slate-300 md:pb-2">
+            <dt className="md:border-b md:border-slate-300 md:pb-2">
               {t_AccountSettings("password")}
             </dt>
             <dd className="ml-4 md:ml-0 border-b border-slate-300 pb-2">
-              <button className="text-sm text-blue-500 underline hover:opacity-50 transition-all">
+              <Link
+                href={RouterPath.requestPasswordReset}
+                className="text-sm text-blue-500 underline hover:opacity-50 transition-all"
+              >
                 {t_AccountSettings("changePassword")}
-              </button>
-            </dd> */}
+              </Link>
+            </dd>
           </dl>
 
           {/* TODO : 通知設定はあとにする */}

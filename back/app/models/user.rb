@@ -23,6 +23,7 @@ class User < ActiveRecord::Base
   include DeviseTokenAuth::Concerns::User
   has_many :authentications, foreign_key: :user_uuid, dependent: :destroy
   has_one :profile, foreign_key: :user_uuid, dependent: :destroy
+  has_many :links, foreign_key: :user_uuid, dependent: :destroy
   has_many :user_notices, foreign_key: :user_uuid, dependent: :destroy
   has_many :notices, through: :user_notices
   has_many :posts, foreign_key: :user_uuid, dependent: :destroy
@@ -90,26 +91,36 @@ class User < ActiveRecord::Base
     nil
   end
 
-  def as_header_json
+  def followed?(other_user_uuid)
+    relationship = follower_relationships.find_by(followed_uuid: other_user_uuid)
+    relationship.present?
+  end
+
+  def following?(other_user_uuid)
+    relationship = following_relationships.find_by(follower_uuid: other_user_uuid)
+    relationship.present?
+  end
+
+  def as_header_json(avatar_url)
     {
       uuid: short_uuid,
       name: name,
-      avatar: profile&.avatar&.url,
-      header_image: profile&.header_image&.url,
+      avatar: avatar_url,
       following_count: following.count || 0,
       follower_count: followers.count || 0,
     }
   end
 
-  def as_custom_json(posts = [])
+  def as_custom_json(header_image_url, avatar_url)
     {
       uuid: short_uuid,
       name: name,
-      avatar: profile&.avatar&.url,
-      header_image: profile&.header_image&.url,
+      avatar: avatar_url,
+      header_image: header_image_url,
       profile: profile&.text,
       following_count: following.count || 0,
       follower_count: followers.count || 0,
+      links: Link.get_links(uuid),
     }
   end
 end
