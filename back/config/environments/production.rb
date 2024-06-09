@@ -91,7 +91,7 @@ Rails.application.configure do
   config.action_mailer.default_url_options = Settings.default_url_options.to_h
 
   # メール設定
-  credentials = Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY'])
+  credentials = Aws::Credentials.new(ENV['ACCESS_KEY_ID'], ENV['SECRET_ACCESS_KEY'])
   Aws::Rails.add_action_mailer_delivery_method(
     :ses,
     credentials:,
