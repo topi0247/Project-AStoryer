@@ -88,13 +88,11 @@ Rails.application.configure do
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
-  config.action_mailer.default_url_options = Settings.default_url_options.to_h
-
   # メール設定
   credentials = Aws::Credentials.new(ENV['ACCESS_KEY_ID'], ENV['SECRET_ACCESS_KEY'])
   Aws::Rails.add_action_mailer_delivery_method(
     :ses,
-    credentials:,
+    credentials: credentials,
     region: 'ap-northeast-1'
   )
 
