@@ -23,14 +23,14 @@ class Api::V1::Auth::OmniauthCallbacksController <  DeviseTokenAuth::OmniauthCal
           sign_in(user)
           save_to_redirect(user, token_hash, client_id, token, expiry)
         else
-          redirect_to "#{ENV['FRONT_URL']}/?status=error", allow_other_host: true
+          redirect_to "#{ENV['FRONT_URL']}/?status=error"
         end
       end
     end
   end
 
   def failure
-    redirect_to "#{ENV['FRONT_URL']}/ja/auth-failure", allow_other_host: true
+    redirect_to "#{ENV['FRONT_URL']}/ja/auth-failure"
   end
 
   private
@@ -45,7 +45,7 @@ class Api::V1::Auth::OmniauthCallbacksController <  DeviseTokenAuth::OmniauthCal
     if user.save
       redirect_to "#{ENV['FRONT_URL']}/ja?uid=#{user.uid}&token=#{token}&client=#{client_id}&expiry=#{expiry}", allow_other_host: true
     else
-      redirect_to "#{ENV['FRONT_URL']}/ja?status=error", allow_other_host: true
+      redirect_to "#{ENV['FRONT_URL']}/ja?status=error"
     end
   end
 
