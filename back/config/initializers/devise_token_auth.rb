@@ -67,4 +67,7 @@ DeviseTokenAuth.setup do |config|
 
   # リセットパスワードのメール送信時のリダイレクト先
   config.default_password_reset_url = "#{ENV['FRONT_URL']}/ja/reset-password"
+
+  # リダイレクトのホワイトリスト
+  config.redirect_whitelist = ["#{ENV['FRONT_URL']}"]
 end
