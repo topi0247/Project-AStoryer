@@ -5,7 +5,7 @@ class Api::V1::PostsController < Api::V1::BasesController
   before_action :set_post, only: %i[update destroy]
 
   def index
-    posts = Post.includes(:postable, :user).where(publish_state: 'all_publish').order(published_at: :desc).limit(20)
+    posts = Post.includes(:postable, :user, postable: { illust_attachments: :image }).where(publish_state: 'all_publish').order(published_at: :desc).limit(20)
     posts_json = posts.map do |post|
       content = nil
       if post.illust?
@@ -23,7 +23,7 @@ class Api::V1::PostsController < Api::V1::BasesController
         raise ActiveRecord::RecordInvalid
       end
 
-      post = Post.includes(:postable, :tags, :synalios, :user).find_by_short_uuid(params[:id])
+      post = Post.includes(:postable, :tags, :synalios, :user, postable: { illust_attachments: :image }).find_by_short_uuid(params[:id])
 
       if post.nil? || !post.publishable?(current_api_v1_user)
         raise ActiveRecord::RecordNotFound
@@ -51,7 +51,7 @@ class Api::V1::PostsController < Api::V1::BasesController
   def create
     Post.transaction do
       begin
-        default_params = post_params.except(:postable_attributes, :tags, :synalios, :game_systems)
+        default_params = post_params.except(:postable_attributes, :tags, :synalios, :game_systems, :illust_attachments)
         post = current_api_v1_user.posts.build(default_params)
 
         # 下書き以外は投稿日時保存
@@ -91,7 +91,7 @@ class Api::V1::PostsController < Api::V1::BasesController
   end
 
   def edit
-    post = current_api_v1_user.posts.includes(:postable, :tags, :synalios).find_by_short_uuid(params[:id])
+    post = current_api_v1_user.posts.includes(:postable, :tags, :synalios, postable: { illust_attachments: :image }).find_by_short_uuid(params[:id])
 
     if post.nil? || post.postable.nil?
       render json: { error: 'Not Found' }, status: :not_found and return
