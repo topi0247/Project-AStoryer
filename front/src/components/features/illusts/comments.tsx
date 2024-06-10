@@ -94,7 +94,7 @@ export default function Comments({ uuid }: { uuid: string }) {
           id: res.data.id,
           text: text,
           user: user,
-          created_at: new Date().toISOString(),
+          created_at: new Date().toLocaleString(),
         },
         ...comments,
       ];
