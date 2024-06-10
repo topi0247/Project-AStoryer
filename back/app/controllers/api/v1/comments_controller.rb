@@ -4,9 +4,17 @@ class Api::V1::CommentsController < Api::V1::BasesController
 
   def index
     comments = @post.comments.order(created_at: :desc).map do |comment|
+      avatar = url_for(comment.user.profile&.avatar) if comment.user.profile&.avatar&.attached?
       {
         id: comment.id,
         text: comment.text,
+        user: {
+          id: comment.id,
+          uuid: comment.user.short_uuid,
+          name: comment.user.name,
+          avatar: avatar
+        },
+        created_at: comment.created_at.strftime('%Y/%m/%d %H:%M:%S')
       }
     end
     render json: { comments: comments }, status: :ok
@@ -18,7 +26,7 @@ class Api::V1::CommentsController < Api::V1::BasesController
       comment.user = current_api_v1_user
       @post.comments << comment
       if @post.save
-        render json: { message: 'Comment created' }, status: :created
+        render json: { id: comment.id }, status: :created
       else
         render json: { message: 'Comment not created' }, status: :internal_server_error
         raise ActiveRecord::Rollback
