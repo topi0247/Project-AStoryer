@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import * as RecoilState from "@/recoilState";
 import * as Lib from "@/lib";
@@ -12,6 +12,7 @@ import useSWR, { mutate } from "swr";
 import { RouterPath } from "@/settings";
 import { Carousel } from "@mantine/carousel";
 import "@mantine/carousel/styles.css";
+import { Comments } from "@/components/features/illusts";
 
 const fetcherIllust = (url: string) =>
   Lib.GetFromAPI(url).then((res) => res.data);
@@ -34,7 +35,6 @@ export default function IllustPage({
   const [openCaption, setOpenCaption] = useState(false);
   const [follow, setFollow] = useState(false);
   const [clickImage, setClickImage] = useState(0);
-  const setModalOpen = useSetRecoilState(RecoilState.modalOpenState);
   const t_ShowPost = useTranslations("ShowPost");
   const theme = Mantine.useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
@@ -91,15 +91,6 @@ export default function IllustPage({
     } finally {
       mutate(`users/${data.user.uuid}/relationship`);
     }
-  };
-
-  const handleSendComment = (e: FormEvent) => {
-    e.preventDefault();
-    // TODO : 未ログインならログイン誘導モーダルを表示
-    setModalOpen(true);
-    return;
-
-    // TODO : コメントの送信処理
   };
 
   const handleZoomImage = (i: number) => {
@@ -330,70 +321,7 @@ export default function IllustPage({
             </section>
           </div>
           <article className="flex flex-col gap-4">
-            <section className="bg-slate-100 rounded p-3 flex flex-col gap-2 relative">
-              <h3 className="text-xl font-semibold">
-                {t_ShowPost("postComment")}
-              </h3>
-              <form onSubmit={handleSendComment}>
-                <div className="flex items-start gap-4">
-                  <Mantine.Avatar
-                    variant="default"
-                    radius="xl"
-                    size="md"
-                    alt="icon"
-                    src={user?.avatar}
-                  />
-                  <div className="flex flex-col gap-2 w-full">
-                    <span className="p-0 m-0 font-semibold"></span>
-                    <Mantine.Textarea
-                      minRows={3}
-                      className="w-full bg-gray-200 rounded p-2 focus:outline-none resize-none"
-                      autosize
-                    />
-                    <div className="w-full text-center">
-                      <Mantine.Button
-                        type="submit"
-                        variant="contained"
-                        className="bg-orange-100 text-black hover:bg-orange-400"
-                      >
-                        {t_ShowPost("send")}
-                      </Mantine.Button>
-                    </div>
-                  </div>
-                </div>
-              </form>
-              <div className="w-full h-full absolute top-0 left-0 bg-gray-500 bg-opacity-80 text-white font-semibold md:text-3xl flex justify-center items-center rounded">
-                <p>{t_ShowPost("requiredComment")}</p>
-              </div>
-            </section>
-
-            {/* <section>
-              <ul className="bg-slate-100 rounded p-3 flex flex-col">
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <li
-                    key={i}
-                    className="flex gap-4 items-start py-4 border-b border-slate-200 last-of-type:border-none"
-                  >
-                    <Lib.Link href="/users/1">
-                      <Mantine.Avatar alt="icon" src={data.user.avatar} />
-                    </Lib.Link>
-                    <div className="flex flex-col gap-1">
-                      <Lib.Link href="/users/1" className="font-semibold">
-                        ユーザー名
-                      </Lib.Link>
-                      <p>
-                        コメント コメント コメント コメント コメント
-                        コメントコメント コメント コメント コメント コメント
-                        コメント コメント コメントコメント コメント コメント
-                        コメント コメント コメント コメント コメントコメント
-                        コメント コメント コメント コメント コメント コメント
-                        コメントコメント コメント
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </section> */}
+            <Comments uuid={uuid} />
           </article>
         </div>
 

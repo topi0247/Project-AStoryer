@@ -87,7 +87,8 @@
     "follow": "フォロー",
     "unFollow": "フォロー解除",
     "send": "送信",
-    "requiredComment": "準備中...",
+    "requiredComment": "ログインでコメントできます",
+    "comment": "コメント",
     "fusetter": "ふせったー",
     "other": "その他"
   },
