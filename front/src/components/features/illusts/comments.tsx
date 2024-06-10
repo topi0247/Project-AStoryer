@@ -235,14 +235,16 @@ export default function Comments({ uuid }: { uuid: string }) {
                     <p>{comment.text}</p>
                     <div className="flex justify-end items-center text-xs text-gray-500">
                       {comment.created_at}
-                      <Mantine.Button
-                        variant="transparent"
-                        size="xs"
-                        className="p-0 ml-2"
-                        onClick={() => handleDelete(comment.id)}
-                      >
-                        <RiDeleteBin6Line className="icon-gray-400 p-0 hover:icon-gray-700 transition-all" />
-                      </Mantine.Button>
+                      {comment.user.uuid === user.uuid && (
+                        <Mantine.Button
+                          variant="transparent"
+                          size="xs"
+                          className="p-0 ml-2"
+                          onClick={() => handleDelete(comment.id)}
+                        >
+                          <RiDeleteBin6Line className="icon-gray-400 p-0 hover:icon-gray-700 transition-all" />
+                        </Mantine.Button>
+                      )}
                     </div>
                   </div>
                 </li>
