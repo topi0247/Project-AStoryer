@@ -27,6 +27,8 @@ class Post < ApplicationRecord
   has_many :favorites, foreign_key: :post_uuid, dependent: :destroy
   has_many :bookmarks, foreign_key: :post_uuid, dependent: :destroy
   has_many :post_game_systems, foreign_key: :post_uuid, dependent: :destroy
+  has_many :post_comments, foreign_key: :post_uuid, dependent: :destroy
+  has_many :comments, through: :post_comments
 
   validates :title, presence: true, length: { maximum: 20 }
   validates :caption, length: { maximum: 10_000 }
