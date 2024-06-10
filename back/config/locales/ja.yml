@@ -1,5 +1,10 @@
 ja:
   activerecord:
+    models:
+      comment: コメント
+    attributes:
+      comment:
+        text: 本文
     errors:
       models:
         post:
@@ -12,3 +17,15 @@ ja:
               required: "投稿タイプを設定してください"
             post_game_systems:
               invalid: "無効なゲームシステムです"
+        comment:
+          attributes:
+            text:
+              blank: "本文を入力してください"
+              too_long: "本文は%{count}文字以内で入力してください"
+              record_invalid: "バリデーションに失敗しました: %{errors}"
+            user:
+              required: "ユーザーを設定してください"
+      messages:
+        blank: "本文を入力してください"
+        too_long: "本文は%{count}文字以内で入力してください"
+        record_invalid: "バリデーションに失敗しました: %{errors}"

@@ -15,7 +15,9 @@ Rails.application.routes.draw do
       }
       resource :account, only: %i[show update]
       resource :notice, only: %i[update]
-      resources :posts, only: %i[index show create edit update destroy]
+      resources :posts do
+        resources :comments, only: %i[index create update destroy]
+      end
       resources :illusts, only: %i[index]
       resources :tags, only: %i[index create]
       resources :synalios, only: %i[index]
