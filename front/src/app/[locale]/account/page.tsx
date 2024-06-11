@@ -2,27 +2,64 @@
 
 import useSWR from "swr";
 import { useTranslations } from "next-intl";
-import { Email, Name, NoticeTabs } from "@/components/features/account";
-import { GetFromAPI, Link, useRouter } from "@/lib";
-import { LoadingOverlay } from "@mantine/core";
+import { Email, Name } from "@/components/features/account";
+import { Delete2API, GetFromAPI, Link, useRouter } from "@/lib";
+import { Button, Checkbox, LoadingOverlay, Modal } from "@mantine/core";
 import { RouterPath } from "@/settings";
 import { AccountProps } from "@/types";
+import { useState } from "react";
+import { useAuth } from "@/hook";
+import { useSetRecoilState } from "recoil";
+import { userState } from "@/recoilState";
 
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 export default function AccountPage() {
   const { data, error } = useSWR("/account", fetcher);
+  const { setAccessTokens } = useAuth();
+  const setUser = useSetRecoilState(userState);
   const t_AccountSettings = useTranslations("AccountSettings");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [isDeleteConfirmation, setIsDeleteConfirmation] =
+    useState<boolean>(false);
+  const [deleteConfirmationError, setDeleteConfirmationError] = useState("");
   const router = useRouter();
-  if (error) {
-    router.push(RouterPath.notFound);
-  }
+  if (error) return router.push(RouterPath.error);
   if (data === undefined) return <LoadingOverlay visible />;
+  if (data === null) return router.push(RouterPath.notFound);
   const account = data?.account as AccountProps;
+
+  const handleAccountDelete = async () => {
+    if (!isDeleteConfirmation) {
+      setDeleteConfirmationError(
+        t_AccountSettings("deleteConfirmationMessage")
+      );
+      return;
+    }
+
+    try {
+      const res = await Delete2API("/auth");
+      if (res.status !== 200) {
+        throw new Error(t_AccountSettings("deleteError"));
+      }
+      setAccessTokens("", "", "", "");
+      setUser({
+        uuid: "",
+        name: "",
+        avatar: "",
+        following_count: 0,
+        follower_count: 0,
+      });
+      setModalOpen(false);
+      router.push(RouterPath.home);
+    } catch (error) {
+      alert(t_AccountSettings("deleteError"));
+    }
+  };
 
   return (
     <article className="my-8 m-auto w-full px-4">
-      <div className="bg-white p-8 rounded max-w-[480px] w-full m-auto flex flex-col justify-center items-center">
+      <div className="bg-white p-8 rounded max-w-[480px] w-full m-auto flex flex-col justify-center items-center gap-8">
         <h2 className="text-2xl font-semibold text-center mb-4">
           {t_AccountSettings("settings")}
         </h2>
@@ -41,10 +78,14 @@ export default function AccountPage() {
               {account.email ? (
                 <Email account={account} />
               ) : (
-                <span className="text-xs">SNS連携でログインしています</span>
+                <span className="text-xs">
+                  {t_AccountSettings("loginWithSNS")}
+                </span>
               )}
             </dd>
-            <dt className="md:border-b md:border-slate-300 md:pb-2">SNS連携</dt>
+            <dt className="md:border-b md:border-slate-300 md:pb-2">
+              {t_AccountSettings("withSNS")}
+            </dt>
             <dd className="ml-4 md:ml-0 border-b border-slate-300 pb-2 flex justify-start items-start flex-wrap gap-2">
               <span
                 className={`border rounded text-xs px-2 py-1  ${
@@ -77,7 +118,55 @@ export default function AccountPage() {
               </Link>
             </dd>
           </dl>
-
+        </section>
+        <section>
+          <Button
+            color="red"
+            className="transition-all hover:bg-red-700"
+            onClick={() => setModalOpen(true)}
+          >
+            {t_AccountSettings("deleteAccount")}
+          </Button>
+          <Modal opened={modalOpen} onClose={() => setModalOpen(false)}>
+            <div className="flex flex-col justify-center items-center text-center gap-4">
+              <p className="whitespace-pre">
+                {t_AccountSettings("deleteMessage")}
+              </p>
+              <Checkbox
+                label={t_AccountSettings("deleteCheckboxLabel")}
+                size="md"
+                radius="xl"
+                color="red"
+                checked={isDeleteConfirmation}
+                onChange={(event) =>
+                  setIsDeleteConfirmation(event.currentTarget.checked)
+                }
+              />
+              {deleteConfirmationError !== "" && (
+                <p className="text-red-400">{deleteConfirmationError}</p>
+              )}
+              <Button
+                type="button"
+                color="red"
+                onClick={() => handleAccountDelete()}
+              >
+                {t_AccountSettings("deleteButton")}
+              </Button>
+              <Button
+                type="button"
+                color="gray"
+                onClick={() => {
+                  setModalOpen(false);
+                  setIsDeleteConfirmation(false);
+                  setDeleteConfirmationError("");
+                }}
+              >
+                {t_AccountSettings("back")}
+              </Button>
+            </div>
+          </Modal>
+        </section>
+        <section>
           {/* TODO : 通知設定はあとにする */}
           {/* <h3 className="text-xl font-semibold text-center mt-10 mb-2">
             {t_AccountSettings("notificationSettings")}
