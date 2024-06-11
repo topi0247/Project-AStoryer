@@ -31,14 +31,16 @@ export default function AccountPage() {
 
   const handleAccountDelete = async () => {
     if (!isDeleteConfirmation) {
-      setDeleteConfirmationError("削除するにはチェックを入れてください");
+      setDeleteConfirmationError(
+        t_AccountSettings("deleteConfirmationMessage")
+      );
       return;
     }
 
     try {
       const res = await Delete2API("/auth");
       if (res.status !== 200) {
-        throw new Error("削除に失敗しました");
+        throw new Error(t_AccountSettings("deleteError"));
       }
       setAccessTokens("", "", "", "");
       setUser({
@@ -51,7 +53,7 @@ export default function AccountPage() {
       setModalOpen(false);
       router.push(RouterPath.home);
     } catch (error) {
-      alert("エラーが発生しました。もう一度お試しください。");
+      alert(t_AccountSettings("deleteError"));
     }
   };
 
@@ -76,10 +78,14 @@ export default function AccountPage() {
               {account.email ? (
                 <Email account={account} />
               ) : (
-                <span className="text-xs">SNS連携でログインしています</span>
+                <span className="text-xs">
+                  {t_AccountSettings("loginWithSNS")}
+                </span>
               )}
             </dd>
-            <dt className="md:border-b md:border-slate-300 md:pb-2">SNS連携</dt>
+            <dt className="md:border-b md:border-slate-300 md:pb-2">
+              {t_AccountSettings("withSNS")}
+            </dt>
             <dd className="ml-4 md:ml-0 border-b border-slate-300 pb-2 flex justify-start items-start flex-wrap gap-2">
               <span
                 className={`border rounded text-xs px-2 py-1  ${
@@ -119,17 +125,15 @@ export default function AccountPage() {
             className="transition-all hover:bg-red-700"
             onClick={() => setModalOpen(true)}
           >
-            アカウント削除
+            {t_AccountSettings("deleteAccount")}
           </Button>
           <Modal opened={modalOpen} onClose={() => setModalOpen(false)}>
             <div className="flex flex-col justify-center items-center text-center gap-4">
-              <p>
-                投稿データが永続的に失われます。
-                <br />
-                本当に削除してよろしいですか？
+              <p className="whitespace-pre">
+                {t_AccountSettings("deleteMessage")}
               </p>
               <Checkbox
-                label="アカウントを削除する"
+                label={t_AccountSettings("deleteCheckboxLabel")}
                 size="md"
                 radius="xl"
                 color="red"
@@ -146,7 +150,7 @@ export default function AccountPage() {
                 color="red"
                 onClick={() => handleAccountDelete()}
               >
-                削除
+                {t_AccountSettings("deleteButton")}
               </Button>
               <Button
                 type="button"
@@ -157,7 +161,7 @@ export default function AccountPage() {
                   setDeleteConfirmationError("");
                 }}
               >
-                戻る
+                {t_AccountSettings("back")}
               </Button>
             </div>
           </Modal>
