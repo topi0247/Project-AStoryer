@@ -35,6 +35,7 @@ module App
       g.test_framework nil
     end
 
+    config.time_zone = 'Tokyo'
     config.i18n.default_locale = :ja
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore, key: '_astoryer_auth_token'

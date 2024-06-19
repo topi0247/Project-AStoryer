@@ -27,6 +27,7 @@ class User < ActiveRecord::Base
   has_many :user_notices, foreign_key: :user_uuid, dependent: :destroy
   has_many :notices, through: :user_notices
   has_many :posts, foreign_key: :user_uuid, dependent: :destroy
+  has_many :comments, foreign_key: :user_uuid, dependent: :destroy
 
   # フォローしている人とフォローされている人を取得するためのアソシエーション
   has_many :following_relationships, class_name: 'Relationship', foreign_key: 'follower_uuid', dependent: :destroy, inverse_of: :follower

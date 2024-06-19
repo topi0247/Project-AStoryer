@@ -87,7 +87,8 @@
     "follow": "フォロー",
     "unFollow": "フォロー解除",
     "send": "送信",
-    "requiredComment": "準備中...",
+    "requiredComment": "ログインでコメントできます",
+    "comment": "コメント",
     "fusetter": "ふせったー",
     "other": "その他"
   },
@@ -95,6 +96,8 @@
     "settings": "設定",
     "accountName": "アカウント名",
     "email": "メールアドレス",
+    "withSNS": "SNS連携",
+    "loginWithSNS": "SNS連携でログインしています",
     "change": "変更する",
     "password": "パスワード",
     "changePassword": "パスワード変更",
@@ -104,7 +107,14 @@
     "favorite": "いいねされたとき",
     "bookmark": "ブックマークされたとき",
     "comment": "コメントされたとき",
-    "follower": "フォローされたとき"
+    "follower": "フォローされたとき",
+    "deleteAccount": "アカウント削除",
+    "deleteMessage": "投稿データが永続的に失われます\n本当に削除してよろしいですか？",
+    "deleteCheckboxLabel": "アカウントを削除する",
+    "deleteButton": "削除",
+    "back": "戻る",
+    "deleteConfirmationMessage": "削除するにはチェックを入れてください",
+    "deleteError": "削除に失敗しました。もう一度お試しください"
   },
   "UserPage": {
     "post": "投稿一覧",
