@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       resource :account, only: %i[show update]
       resource :notice, only: %i[update]
       resources :posts do
+        get 'edit', to: 'posts#edit'
         resources :comments, only: %i[index create update destroy]
       end
       resources :illusts, only: %i[index]
