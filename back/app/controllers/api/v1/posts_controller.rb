@@ -5,7 +5,7 @@ class Api::V1::PostsController < Api::V1::BasesController
   before_action :set_post, only: %i[update destroy]
 
   def index
-    posts = Post.includes(:postable, :user, postable: :illust_attachments).where(publish_state: 'all_publish').order(published_at: :desc).limit(20)
+    posts = Post.includes(:postable, :user, postable: :illust_attachments).where(publish_state: 'all_publish').order(published_at: :desc).limit(24)
     posts_json = posts.map do |post|
       content = nil
       if post.illust?
