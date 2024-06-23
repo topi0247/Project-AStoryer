@@ -57,15 +57,15 @@ export default function SpHeaders({
     if (!ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     if (open) {
-      setAvatarIconPos({ x: rect.x + 10, y: rect.y - 90 });
-      setSearchIconPos({ x: rect.x - 40, y: rect.y - 90 });
-      setPencilIconPos({ x: rect.x - 90, y: rect.y - 90 });
-      setSettingIconPos({ x: rect.x - 90, y: rect.y - 40 });
-      setLogoutIconPos({ x: rect.x - 90, y: rect.y + 10 });
+      setSearchIconPos({ x: rect.x, y: rect.y - 140 });
+      setPencilIconPos({ x: rect.x - 70, y: rect.y - 140 });
+      setAvatarIconPos({ x: rect.x - 140, y: rect.y - 140 });
+      setSettingIconPos({ x: rect.x - 140, y: rect.y - 70 });
+      setLogoutIconPos({ x: rect.x - 140, y: rect.y });
     } else {
-      setAvatarIconPos({ x: rect.x, y: rect.y });
       setSearchIconPos({ x: rect.x, y: rect.y });
       setPencilIconPos({ x: rect.x, y: rect.y });
+      setAvatarIconPos({ x: rect.x, y: rect.y });
       setSettingIconPos({ x: rect.x, y: rect.y });
       setLogoutIconPos({ x: rect.x, y: rect.y });
     }
@@ -106,49 +106,74 @@ export default function SpHeaders({
         } md:hidden fixed bottom-0 right-0 w-full min-h-screen z-50 bg-black bg-opacity-40`}
       >
         <LayoutGroup>
-          {user.name && (
-            <motion.button
-              className="absolute top-0 left-0 w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
-              animate={{ x: avatarIconPos.x, y: avatarIconPos.y }}
-              transition={{ type: "spring" }}
-              onClick={() => handleLink(RouterPath.users(user.uuid))}
-            >
-              <VscAccount className="w-full h-full icon-white" />
-            </motion.button>
-          )}
           <motion.button
-            className="absolute top-0 left-0 w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
+            className="absolute top-0 left-0 w-16 aspect-square bg-green-300 hover:bg-green-400 rounded-full p-2 "
             animate={{ x: searchIconPos.x, y: searchIconPos.y }}
             transition={{ type: "spring" }}
             onClick={() => handleSearchModal(true)}
           >
-            <IoMdSearch className="w-full h-full icon-white" />
+            <div className="w-full flex flex-col justify-center items-center text-white relative">
+              <IoMdSearch className="w-8 h-8 icon-white" />
+              <span className="text-xs inline-block leading-3">
+                {t_Header("search")}
+              </span>
+            </div>
           </motion.button>
           {user.name && (
             <>
               <motion.button
-                className="absolute top-0 left-0 w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
+                className="absolute top-0 left-0 w-16 aspect-square bg-green-300 hover:bg-green-400 rounded-full p-2 "
                 animate={{ x: pencilIconPos.x, y: pencilIconPos.y }}
                 transition={{ type: "spring" }}
                 onClick={() => handleLink(RouterPath.illustPost)}
               >
-                <ImPencil className="w-full h-full icon-white" />
+                <div className="w-full flex flex-col justify-center items-center text-white relative">
+                  <ImPencil className="w-8 h-8 icon-white" />
+                  <span className="text-xs inline-block leading-3">
+                    {t_Header("post")}
+                  </span>
+                </div>
               </motion.button>
+              {user.name && (
+                <motion.button
+                  className="absolute top-0 left-0 w-16 aspect-square bg-green-300 hover:bg-green-400 rounded-full p-2 "
+                  animate={{ x: avatarIconPos.x, y: avatarIconPos.y }}
+                  transition={{ type: "spring" }}
+                  onClick={() => handleLink(RouterPath.users(user.uuid))}
+                >
+                  <div className="w-full flex flex-col justify-center items-center text-white relative">
+                    <VscAccount className="w-8 h-8 icon-white" />
+                    <span className="text-[8px] inline-block leading-3">
+                      {t_Header("myPage")}
+                    </span>
+                  </div>
+                </motion.button>
+              )}
               <motion.button
-                className="absolute top-0 left-0 w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
+                className="absolute top-0 left-0 w-16 aspect-square bg-green-300 hover:bg-green-400 rounded-full p-2 "
                 animate={{ x: settingIconPos.x, y: settingIconPos.y }}
                 transition={{ type: "spring" }}
                 onClick={() => handleLink(RouterPath.account)}
               >
-                <IoMdSettings className="w-full h-full icon-white" />
+                <div className="w-full flex flex-col justify-center items-center text-white relative">
+                  <IoMdSettings className="w-8 h-8 icon-white" />
+                  <span className="text-xs inline-block leading-3">
+                    {t_Header("settings")}
+                  </span>
+                </div>
               </motion.button>
               <motion.button
-                className="absolute top-0 left-0 w-12 h-12 bg-green-300 hover:bg-green-400 rounded-full p-2 "
+                className="absolute top-0 left-0 w-16 aspect-square bg-green-300 hover:bg-green-400 rounded-full p-2 "
                 animate={{ x: logoutIconPos.x, y: logoutIconPos.y }}
                 transition={{ type: "spring" }}
                 onClick={handleLogout}
               >
-                <MdLogout className="w-full h-full icon-white" />
+                <div className="w-full flex flex-col justify-center items-center text-white relative">
+                  <MdLogout className="w-8 h-8 icon-white" />
+                  <span className="text-[8px] inline-block leading-3">
+                    {t_Header("logout")}
+                  </span>
+                </div>
               </motion.button>
             </>
           )}
@@ -160,14 +185,19 @@ export default function SpHeaders({
       >
         <div
           ref={ref}
-          className="w-12 h-12 bg-green-300 rounded-full flex justify-center items-center cursor-pointer"
+          className="w-16 aspect-square bg-green-300 rounded-full flex justify-center items-center cursor-pointer"
         >
           <Mantine.Button
             color="transparent"
             onClick={handleMenuOpen}
             className="bg-transparent hover:bg-transparent p-0"
           >
-            <MenuIconAnim open={open} />
+            <div className="flex flex-col justify-center items-center text-white relative">
+              <MenuIconAnim open={open} />
+              <span className="text-xs inline-block leading-3">
+                {open ? "Close" : "Menu"}
+              </span>
+            </div>
           </Mantine.Button>
         </div>
       </div>
@@ -210,7 +240,7 @@ export function MenuIconAnim({ open = false }: { open: boolean }) {
   return (
     <svg
       id="hamburger"
-      className="Header__toggle-svg bg-green-300 rounded-full w-12 h-12"
+      className="Header__toggle-svg h-6 w-8"
       viewBox="0 0 60 40"
     >
       <g
