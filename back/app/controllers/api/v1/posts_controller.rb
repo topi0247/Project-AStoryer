@@ -91,6 +91,10 @@ class Api::V1::PostsController < Api::V1::BasesController
   end
 
   def edit
+    if params[:post_id].length != 22
+      render json: { error: 'Not Found' }, status: :not_found and return
+    end
+
     post = current_api_v1_user.posts.includes(:postable, :tags, :synalios, postable: :illust_attachments).find_by_short_uuid(params[:post_id])
 
     if post.nil? || post.postable.nil?

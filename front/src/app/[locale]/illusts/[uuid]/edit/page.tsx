@@ -105,11 +105,16 @@ export default function IllustEditPage({
     setIsInitialSetIllust(illustData.image ? true : false);
   }, [illustData]);
 
-  const getFetcherError = () => {
-    return error;
-  };
-
-  if (getFetcherError()) return <div>error</div>;
+  useEffect(() => {
+    if (error) {
+      if (error.response.status === 404) {
+        router.push(RouterPath.notFound);
+      } else {
+        router.push(RouterPath.error);
+      }
+      return;
+    }
+  }, [error]);
 
   const handleSubmit = async () => {
     const { title, caption, publishRange, synalioTitle, gameSystem } =
