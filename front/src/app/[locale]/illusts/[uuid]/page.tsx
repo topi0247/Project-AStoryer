@@ -14,11 +14,7 @@ import { Carousel } from "@mantine/carousel";
 import "@mantine/carousel/styles.css";
 import { Comments } from "@/components/features/illusts";
 
-const fetcherIllust = (url: string) =>
-  Lib.GetFromAPI(url).then((res) => res.data);
-
-const fecherFollow = (url: string) =>
-  Lib.GetFromAPI(url).then((res) => res.data);
+const fetcher = (url: string) => Lib.GetFromAPI(url).then((res) => res.data);
 
 export default function IllustPage({
   params: { uuid },
@@ -26,10 +22,10 @@ export default function IllustPage({
   params: { uuid: string };
 }) {
   const [user, setUser] = useRecoilState(RecoilState.userState);
-  const { data, error } = useSWR(`/posts/${uuid}`, fetcherIllust);
+  const { data, error } = useSWR(`/posts/${uuid}`, fetcher);
   const { data: followData, error: followError } = useSWR(
     data?.user?.uuid ? `users/${data.user.uuid}/relationship` : "",
-    fecherFollow
+    fetcher
   );
   const [expansionMode, setExpansionMode] = useState(false);
   const [openCaption, setOpenCaption] = useState(false);

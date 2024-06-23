@@ -2,8 +2,10 @@
 
 import { IIndexFollowData, Tab } from "@/types";
 import { FollowUser } from ".";
-import { GetFromAPI } from "@/lib";
+import { GetFromAPI, useRouter } from "@/lib";
 import useSWR from "swr";
+import { useEffect } from "react";
+import { RouterPath } from "@/settings";
 
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
@@ -15,6 +17,18 @@ export default function FollowIndex({
   userUuid: string;
 }) {
   const { data, error } = useSWR(url, fetcher);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (error) {
+      if (error.response.status === 401) {
+        router.push(RouterPath.follower(userUuid));
+      } else {
+        router.push(RouterPath.error);
+      }
+      return;
+    }
+  }, [error]);
 
   return (
     <section className="container my-2 m-auto">
