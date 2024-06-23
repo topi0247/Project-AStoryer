@@ -179,8 +179,7 @@ export default function IllustEditPage({
         setErrorMessage(t_EditGeneral("deleteError"));
         return;
       }
-      mutate(`/posts/${uuid}/edit`);
-      mutate(`/posts/${uuid}`);
+
       router.push(RouterPath.users(user.uuid));
     } catch (e) {
       setErrorMessage(t_EditGeneral("deleteError"));
