@@ -1,86 +1,164 @@
 "use client";
-import React from "react";
-import { HomeParallax } from "@/components/features/home";
-import { GetFromAPI } from "@/lib";
+import React, { useEffect } from "react";
+import { GetFromAPI, Link } from "@/lib";
 import useSWR from "swr";
-import { H2, LoginLink } from "@/components/ui";
+import { Image } from "@mantine/core";
+import { IHomeIllustData } from "@/types";
+import { RouterPath } from "@/settings";
 
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
 export default function Home() {
-  const { data, error } = useSWR("/posts", fetcher);
-  if (error) return;
-  if (!data) return;
+  const { data } = useSWR("/posts", fetcher);
+  const [illusts, setIllusts] = React.useState<IHomeIllustData[]>([]);
 
-  const illusts = data.map(
-    (illust: {
-      uuid: string;
-      title: string;
-      data: string[];
-      user: {
-        uuid: string;
-        name: string;
-        avatar: string;
-      };
-    }) => ({
-      uuid: illust.uuid,
-      title: illust.title,
-      image: illust.data[0],
-      user: {
-        uuid: illust.user.uuid,
-        name: illust.user.name,
-        avatar: illust.user.avatar,
-      },
-    })
-  );
+  useEffect(() => {
+    if (data) {
+      const illustData = data.map(
+        (illust: { uuid: string; title: string; data: string[] }) => ({
+          uuid: illust.uuid,
+          title: illust.title,
+          image: illust.data[0],
+        })
+      );
+      setIllusts(illustData);
+    }
+  }, [data]);
 
   return (
-    <>
-      <HomeParallax illusts={illusts} />
-      <article className="flex justify-center items-center gap-8 flex-col mb-20 px-8 w-full max-w-[600px] m-auto">
-        <H2>AStoryer - あすとりや - とは</H2>
-        <section className="text-sm md:text-base bg-white p-4 rounded w-full">
-          <p>TRPGの創作物を投稿できるサービスです</p>
-          <p>例えば…</p>
-          <ul className="list-disc pl-6">
-            <li>ディスプレイ立ち絵</li>
-            <li>自PCの立ち絵</li>
-            <li>自PCや自陣のイラスト</li>
-          </ul>
-          <p>などなど…</p>
-        </section>
-        <section className="w-full">
-          <h3 className="font-semibold mb-2 md:text-xl">できること</h3>
-          <ul className="bg-white p-2 rounded text-sm md:text-base">
-            <li>イラストの閲覧</li>
-            <li>ユーザーページ閲覧</li>
-            <li>検索と検索結果の閲覧</li>
-            <li>
-              イラストの投稿や編
-              <span className="text-xs ml-2">※登録ユーザーのみ</span>
-            </li>
-          </ul>
-        </section>
-        <section className="w-full">
-          <h3 className="font-semibold mb-2 md:text-xl">試験提供中</h3>
-          <p className="text-sm">現在β版につき、機能変更・追加があります。</p>
-          <div className="bg-white text-sm md:text-base rounded p-2">
-            <p>
-              追加予定機能 <br />
-              （変わる可能性があります）
-            </p>
-            <ul className="list-disc pl-6">
-              <li>フォロー・フォロワー機能</li>
-              <li>ブックマーク機能</li>
-              <li>投稿へのコメント機能</li>
-            </ul>
+    <div className="relative">
+      {illusts && (
+        <article className="opacity-20 grid grid-cols-3 justify-center items-center h-[80vh] w-full overflow-hidden">
+          {illusts.map((illust: IHomeIllustData, index: number) => (
+            <section key={index} className="w-full h-full aspect-square">
+              <Image
+                src={illust.image}
+                alt={illust.title}
+                className="object-cover w-full h-full object-top"
+              />
+            </section>
+          ))}
+        </article>
+      )}
+      <article className="w-full py-36 flex justify-center items-center m-auto absolute top-0 left-0">
+        <section className="w-4/5 bg-white p-8 bg-opacity-70 shadow-md">
+          <Image
+            src="/assets/AppLogo.png"
+            alt="siteLogo"
+            className="object-cover w-full h-full"
+          />
+          <p className="text-center py-4">
+            TRPG向け
+            <br />
+            「うちの子」創作投稿サイト
+          </p>
+          <div className="flex gap-2 justify-center items-center">
+            <Link
+              href={RouterPath.signUp}
+              className="text-center underline text-sky-500"
+            >
+              新規登録
+            </Link>
+            <Link
+              href={RouterPath.login}
+              className="text-center underline text-sky-500"
+            >
+              ログイン
+            </Link>
           </div>
         </section>
-        <section className="w-full flex flex-col justify-center items-center gap-8">
-          <h3 className="text-xl font-semibold">さっそく使ってみる！</h3>
-          <LoginLink />
+      </article>
+      <article className="m-8">
+        <section className="bg-white p-4">
+          <h2 className="text-xl font-bold relative inline-block z-10">
+            「うちのこ」「自陣」を紹介しよう
+            <div className="h-4/5 aspect-square inline-block absolute top-0 left-0 -z-10 opacity-30">
+              <Image
+                src="/assets/logo.png"
+                alt="logo"
+                className="object-cover"
+              />
+            </div>
+          </h2>
+          <p>
+            AStoryer - あすとりや -
+            はTRPGで生まれたキャラクターたちの創作を投稿できるサービスです。
+            <br />
+            あなたの「うちのこ」や「自陣」を投稿したり、「よそのこ」や「他陣」を見ることができます。
+            <br />
+            システムやシナリオ名で検索することで、特定の創作の投稿を見ることもできます。
+          </p>
         </section>
       </article>
-    </>
+      <article className="m-8">
+        <section className="bg-white p-4">
+          <h2 className="text-xl font-bold relative inline-block z-10">
+            できること
+            <div className="h-4/5 aspect-square inline-block absolute top-0 left-0 -z-10 opacity-30">
+              <Image
+                src="/assets/logo.png"
+                alt="logo"
+                className="object-cover"
+              />
+            </div>
+          </h2>
+          <ul className="my-4">
+            <li>・イラスト検索</li>
+            <li>・イラスト閲覧</li>
+            <li>★イラスト投稿</li>
+            <li>★いいね</li>
+            <li>★ブックマーク</li>
+            <li>★コメント</li>
+            <li>★フォロー</li>
+          </ul>
+          <p className="my-2 text-sm">★はログインすると使えます</p>
+        </section>
+      </article>
+      <article className="m-8">
+        <section className="bg-white p-4">
+          <h2 className="text-xl font-bold relative inline-block z-10">
+            新着順
+            <div className="h-4/5 aspect-square inline-block absolute top-0 left-0 -z-10 opacity-30">
+              <Image
+                src="/assets/logo.png"
+                alt="logo"
+                className="object-cover"
+              />
+            </div>
+          </h2>
+          <div className="grid grid-cols-1 gap-1 my-4">
+            {illusts &&
+              illusts.map((illust: IHomeIllustData, index: number) => (
+                <div key={index} className="w-full h-full aspect-square">
+                  <Image
+                    src={illust.image}
+                    alt={illust.title}
+                    className="object-cover w-full h-full object-top"
+                  />
+                </div>
+              ))}
+          </div>
+          <h3 className="text-xl font-bold text-center">
+            使ってみたい？
+            <br />
+            さっそく登録しよう！
+          </h3>
+          <div className="flex gap-2 justify-center items-center py-4">
+            <Link
+              href={RouterPath.signUp}
+              className="text-center underline text-sky-500"
+            >
+              新規登録
+            </Link>
+            <Link
+              href={RouterPath.login}
+              className="text-center underline text-sky-500"
+            >
+              ログイン
+            </Link>
+          </div>
+        </section>
+      </article>
+    </div>
   );
 }
