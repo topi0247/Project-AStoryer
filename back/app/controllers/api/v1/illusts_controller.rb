@@ -17,7 +17,7 @@ class Api::V1::IllustsController < Api::V1::BasesController
       posts_json = search_results.map do |post|
         content = nil
         if post.illust?
-          content = url_for(post.postable.image)
+          content = url_for(post.postable.get_first_image)
         end
         post.as_custom_index_json(content)
       end
