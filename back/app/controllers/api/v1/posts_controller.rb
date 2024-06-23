@@ -36,7 +36,7 @@ class Api::V1::PostsController < Api::V1::BasesController
         end
       end
 
-      render json: post.as_custom_show_json(content, current_api_v1_user), status: :ok
+      render json: post.as_custom_show_json(content), status: :ok
     rescue ActiveRecord::RecordInvalid => e
       render json: { error: 'Invalid UUID' }, status: :not_found
     rescue ActiveRecord::RecordNotFound => e
