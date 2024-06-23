@@ -151,10 +151,10 @@ export default function Home() {
               </div>
             </h2>
             <ul className="my-4">
-              <li>・イラスト検索</li>
-              <li>・イラスト閲覧</li>
+              <li>イラスト検索</li>
+              <li>イラスト閲覧</li>
             </ul>
-            <div className="">
+            <div>
               <h3 className="h-3 relative z-10">
                 <span className="bg-green-400 ml-3 py-2 px-3 font-semibold text-white rounded">
                   ログインするとできること
