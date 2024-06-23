@@ -94,7 +94,7 @@ class Api::V1::UsersController < Api::V1::BasesController
           uuid: user.short_uuid,
           name: user.name,
           avatar: user.profile&.avatar&.attached? ? url_for(user.profile.avatar) : nil,
-          isFavorite: current_api_v1_user&.following?(user)
+          isFollowing: current_api_v1_user&.following?(user)
         }
       }
     end
