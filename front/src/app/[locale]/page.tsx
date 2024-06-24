@@ -37,19 +37,16 @@ export default function Home() {
     <div className="relative overflow-hidden">
       <article className="opacity-20 h-[80vh] w-[200vw] m-auto">
         {illustData1 && (
-          <div className="flex h-1/3">
-            {illustData1.map((illust: IHomeIllustData, index: number) => (
-              <section
-                key={index}
-                className="h-full aspect-square infinite-scroll-left"
-              >
-                <Image
-                  src={illust.image}
-                  alt={illust.title}
-                  className="object-cover w-full h-full object-top"
-                />
-              </section>
-            ))}
+          <div className="flex h-1/3 w-full overflow-hidden loop_warp">
+              {illustData1.map((illust: IHomeIllustData, index: number) => (
+                <section key={index} className="h-full aspect-square">
+                  <Image
+                    src={illust.image}
+                    alt={illust.title}
+                    className="object-cover w-full h-full object-top"
+                  />
+                </section>
+              ))}
           </div>
         )}
         {illustData2 && (
@@ -186,13 +183,18 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-1 my-4">
             {illustAll &&
               illustAll.map((illust: IHomeIllustData, index: number) => (
-                <div key={index} className="w-full h-full aspect-square">
+                <Link
+                  href={RouterPath.illust(illust.uuid)}
+                  key={index}
+                  className="w-full h-full aspect-square overflow-hidden relative"
+                >
                   <Image
                     src={illust.image}
                     alt={illust.title}
                     className="object-cover w-full h-full object-top"
                   />
-                </div>
+                  <div className="absolute w-full h-full bg-black top-0 left-0 opacity-0 hover:opacity-30 transition-all" />
+                </Link>
               ))}
           </div>
 
@@ -200,7 +202,7 @@ export default function Home() {
             <h3 className="text-xl font-bold text-center">
               使ってみたい？
               <br className="md:hidden" />
-              登録しよう！
+              さっそく登録しよう！
             </h3>
             <div className="flex gap-2 justify-center items-center py-4">
               <Link

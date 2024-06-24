@@ -3,6 +3,32 @@
 @tailwind utilities;
 
 /* 左から右への無限アメーション */
+.loop_wrap div:first-child {
+  animation: loop 50s -25s linear infinite;
+}
+
+.loop_wrap div:last-child {
+  animation: loop2 50s linear infinite;
+}
+
+@keyframes loop {
+  0% {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes loop2 {
+  0% {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-200%);
+  }
+}
+
 .infinite-scroll-left {
   animation: infinity-scroll-left 20s infinite linear 0.5s both;
 }
