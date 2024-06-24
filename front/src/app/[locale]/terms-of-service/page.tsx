@@ -1,7 +1,7 @@
 export default function TermsOfServicePage() {
   return (
-    <article className="mx-4 my-8 *:my-4">
-      <h1 className="text-xl text-center">利用規約</h1>
+    <article className="mx-4 pb-16 pt-4 *:my-4 md:container md:m-auto md:max-w-[800px]">
+      <h1 className="text-xl text-center md:text-2xl">利用規約</h1>
       <section>
         <p>
           　この規約（以下「本規約」といいます。）は、とぴ（以下「運営者」といいます。）が提供するTRPG用創作イラスト投稿サイト「AStoryer
