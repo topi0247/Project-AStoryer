@@ -36,11 +36,14 @@ export default function Footers() {
                 {t_Footer("privacyPolicy")}
               </Link>
             </li>
-            {/* <li>
-              <Link href="/contact" className="hover:opacity-80 transition-all">
+            <li>
+              <Link
+                href={RouterPath.contact}
+                className="hover:opacity-80 transition-all"
+              >
                 {t_Footer("contact")}
               </Link>
-            </li> */}
+            </li>
           </ul>
         </nav>
         <p className="">©2024 AStoryer -あすとりや-</p>

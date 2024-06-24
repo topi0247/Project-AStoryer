@@ -1,3 +1,6 @@
+import { Link } from "@/lib";
+import { RouterPath } from "@/settings";
+
 export default function PrivacyPolicyPage() {
   return (
     <article className="mx-4 pb-16 pt-4 *:my-4 md:container md:m-auto md:max-w-[800px]">
@@ -209,7 +212,9 @@ export default function PrivacyPolicyPage() {
         <p>
           　個人データの取扱いに関するご質問や苦情、開示等のご請求については、以下の窓口までお問い合わせフォームからお問い合わせください。
           <br />
-          個人情報お問い合わせフォーム：
+          <Link href={RouterPath.contact} className="text-blue-400 underline">
+            個人情報お問い合わせフォーム
+          </Link>
         </p>
       </section>
 
