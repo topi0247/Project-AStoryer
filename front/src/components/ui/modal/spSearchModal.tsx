@@ -84,7 +84,7 @@ export default function SPSearchModal({
     if (userName) query += getQuery(query, "userName", userName);
 
     // 検索タイプ取得
-    if (searchType) query += getQuery(query, "searchType", searchType);
+    if (searchType) query += getQuery(query, "searchType", "AND");
 
     close();
     closeMenu();
