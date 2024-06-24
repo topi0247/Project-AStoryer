@@ -1,5 +1,10 @@
 "use client";
-import { TransitionsModal, SearchModal, RequiredLoginModal } from "./modal";
+import {
+  TransitionsModal,
+  SearchModal,
+  RequiredLoginModal,
+  SPSearchModal,
+} from "./modal";
 import H2 from "./headTag";
 import ToggleSort from "./toggleSort";
 import { IconButtonList } from "./iconsButton";
@@ -14,6 +19,7 @@ export {
   SearchModal,
   IconButtonList,
   RequiredLoginModal,
+  SPSearchModal,
   Collapse,
   Pagination,
   LoginLink,
