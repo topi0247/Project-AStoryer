@@ -23,4 +23,5 @@ export const RouterPath = {
   requestPasswordReset: "/request-password-reset",
   resetPassword: "/reset-password",
   termsOfService: "/terms-of-service",
+  privacyPolicy: "/privacy-policy",
 };
