@@ -37,16 +37,19 @@ export default function Home() {
     <div className="relative overflow-hidden">
       <article className="opacity-20 h-[80vh] w-[200vw] m-auto">
         {illustData1 && (
-          <div className="flex h-1/3 w-full overflow-hidden loop_warp">
-              {illustData1.map((illust: IHomeIllustData, index: number) => (
-                <section key={index} className="h-full aspect-square">
-                  <Image
-                    src={illust.image}
-                    alt={illust.title}
-                    className="object-cover w-full h-full object-top"
-                  />
-                </section>
-              ))}
+          <div className="flex h-1/3">
+            {illustData1.map((illust: IHomeIllustData, index: number) => (
+              <section
+                key={index}
+                className="h-full  aspect-square infinite-scroll-left"
+              >
+                <Image
+                  src={illust.image}
+                  alt={illust.title}
+                  className="object-cover w-full h-full object-top"
+                />
+              </section>
+            ))}
           </div>
         )}
         {illustData2 && (
