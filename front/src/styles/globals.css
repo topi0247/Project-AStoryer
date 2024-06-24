@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 左から右への無限アメーション */
 .infinite-scroll-left {
   animation: infinity-scroll-left 20s infinite linear 0.5s both;
 }
