@@ -28,15 +28,15 @@ export default function Footers() {
                 {t_Footer("termsOfService")}
               </Link>
             </li>
-            {/* <li>
+            <li>
               <Link
-                href="/privacy-policy"
+                href={RouterPath.privacyPolicy}
                 className="hover:opacity-80 transition-all"
               >
                 {t_Footer("privacyPolicy")}
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link href="/contact" className="hover:opacity-80 transition-all">
                 {t_Footer("contact")}
               </Link>
