@@ -73,7 +73,11 @@ class Api::V1::UsersController < Api::V1::BasesController
   end
 
   def following
-    users = @user.following.map do |user|
+    if(current_api_v1_user == nil || current_api_v1_user.uuid != @user.uuid)
+      render json: { error: 'Unauthorized' }, status: :unauthorized and return
+    end
+
+    users = current_api_v1_user.following.map do |user|
       {
         user: {
           uuid: user.short_uuid,
@@ -94,7 +98,7 @@ class Api::V1::UsersController < Api::V1::BasesController
           uuid: user.short_uuid,
           name: user.name,
           avatar: user.profile&.avatar&.attached? ? url_for(user.profile.avatar) : nil,
-          isFavorite: current_api_v1_user&.following?(user)
+          isFollowing: current_api_v1_user&.following?(user)
         }
       }
     end

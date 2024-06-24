@@ -5,7 +5,7 @@ class Api::V1::PostsController < Api::V1::BasesController
   before_action :set_post, only: %i[update destroy]
 
   def index
-    posts = Post.includes(:postable, :user, postable: :illust_attachments).where(publish_state: 'all_publish').order(published_at: :desc).limit(20)
+    posts = Post.includes(:postable, :user, postable: :illust_attachments).where(publish_state: 'all_publish').order(published_at: :desc).limit(24)
     posts_json = posts.map do |post|
       content = nil
       if post.illust?
@@ -36,7 +36,7 @@ class Api::V1::PostsController < Api::V1::BasesController
         end
       end
 
-      render json: post.as_custom_show_json(content, current_api_v1_user), status: :ok
+      render json: post.as_custom_show_json(content), status: :ok
     rescue ActiveRecord::RecordInvalid => e
       render json: { error: 'Invalid UUID' }, status: :not_found
     rescue ActiveRecord::RecordNotFound => e
@@ -91,7 +91,11 @@ class Api::V1::PostsController < Api::V1::BasesController
   end
 
   def edit
-    post = current_api_v1_user.posts.includes(:postable, :tags, :synalios, postable: :illust_attachments).find_by_short_uuid(params[:id])
+    if params[:post_id].length != 22
+      render json: { error: 'Not Found' }, status: :not_found and return
+    end
+
+    post = current_api_v1_user.posts.includes(:postable, :tags, :synalios, postable: :illust_attachments).find_by_short_uuid(params[:post_id])
 
     if post.nil? || post.postable.nil?
       render json: { error: 'Not Found' }, status: :not_found and return

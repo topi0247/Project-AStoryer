@@ -12,7 +12,14 @@
     "searchPlaceholder": "タグやシナリオ名で検索",
     "searchButton": "検索",
     "postButton": "作品を投稿",
-    "signUpOrLogin": "新規登録 / ログイン"
+    "signUpOrLogin": "新規登録 / ログイン",
+    "menu": "メニュー",
+    "close": "閉じる",
+    "myPage": "マイページ",
+    "search": "検索",
+    "post": "投稿",
+    "settings": "設定",
+    "logout": "ログアウト"
   },
   "Footer": {
     "about": "AStoryerとは",

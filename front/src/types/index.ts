@@ -2,11 +2,6 @@ export interface IHomeIllustData {
   uuid: string;
   title: string;
   image: string;
-  user: {
-    uuid: string;
-    name: string;
-    avatar: string;
-  };
 }
 
 export interface IndexIllustData {

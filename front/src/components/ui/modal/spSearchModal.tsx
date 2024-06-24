@@ -19,7 +19,15 @@ enum SearchType {
   OR = "OR",
 }
 
-export default function SearchModal() {
+export default function SPSearchModal({
+  opened,
+  close,
+  closeMenu,
+}: {
+  opened: boolean;
+  close: () => void;
+  closeMenu: () => void;
+}) {
   const { data: Tags, error: errorTags } = useSWR("/tags", fetcherTags);
   const { data: Synalios, error: errorSynalios } = useSWR(
     "/synalios",
@@ -31,7 +39,6 @@ export default function SearchModal() {
   );
   const t_Search = useTranslations("Search");
   const t_SearchOption = useTranslations("SearchOption");
-  const [opened, { open, close }] = useDisclosure(false);
   const [postTitle, setPostTitle] = useState("");
   const [gameSystem, setGameSystem] = useState<string>("");
   const [synalioName, setSynalioName] = useState("");
@@ -80,6 +87,7 @@ export default function SearchModal() {
     if (searchType) query += getQuery(query, "searchType", "AND");
 
     close();
+    closeMenu();
 
     router.push(RouterPath.illustSearch(query));
   };
@@ -90,14 +98,6 @@ export default function SearchModal() {
 
   return (
     <>
-      <Mantine.Button
-        variant="contained"
-        //className="bg-orange-200 hover:bg-orange-400 text-black transition-all"
-        className="bg-green-200 hover:bg-green-400 text-black transition-all"
-        onClick={open}
-      >
-        {t_Search("detailsSearch")}
-      </Mantine.Button>
       <Mantine.Modal
         opened={opened}
         onClose={close}

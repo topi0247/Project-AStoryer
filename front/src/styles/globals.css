@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+.infinite-scroll-left {
+  animation: infinity-scroll-left 20s infinite linear 0.5s both;
+}
+
+@keyframes infinity-scroll-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.infinite-scroll-right {
+  animation: infinity-scroll-right 20s infinite linear 0.5s both;
+}
+
+@keyframes infinity-scroll-right {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
 /* Googleでログイン・新規登録 */
 .gsi-material-button {
   -moz-user-select: none;

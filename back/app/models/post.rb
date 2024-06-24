@@ -201,7 +201,7 @@ class Post < ApplicationRecord
   end
 
   # 表示用のカスタムjson
-  def as_custom_show_json(content, current_user=nil)
+  def as_custom_show_json(content)
     {
       uuid: short_uuid,
       title: title,
@@ -217,7 +217,6 @@ class Post < ApplicationRecord
         avatar: user.profile&.avatar&.url,
         links: Link.get_links(user.uuid),
       },
-      publish_state: publish_state,
       published_at: published_at.strftime('%Y/%m/%d %H:%M:%S'),
     }
   end
