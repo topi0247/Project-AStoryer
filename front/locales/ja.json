@@ -97,7 +97,8 @@
     "requiredComment": "ログインでコメントできます",
     "comment": "コメント",
     "fusetter": "ふせったー",
-    "other": "その他"
+    "other": "その他",
+    "edit": "編集"
   },
   "AccountSettings": {
     "settings": "設定",
