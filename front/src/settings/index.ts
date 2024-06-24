@@ -22,4 +22,5 @@ export const RouterPath = {
   notFound: "/not-found",
   requestPasswordReset: "/request-password-reset",
   resetPassword: "/reset-password",
+  termsOfService: "/terms-of-service",
 };

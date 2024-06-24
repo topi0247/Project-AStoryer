@@ -6,8 +6,8 @@ import * as Mantine from "@mantine/core";
 export default function Footers() {
   const t_Footer = useTranslations("Footer");
   return (
-    <footer className="p-4 flex text-white justify-between md:items-center w-full md:py-8">
-      <div className="flex flex-col gap-3 md:block md:gap-0 text-2xl md:ml-8">
+    <footer className="p-4 flex flex-col md:flex-row text-white justify-between w-full md:py-8">
+      <div className="flex flex-col gap-3">
         <h3 className="md:text-center md:m-auto">
           <Link
             href={RouterPath.home}
@@ -16,25 +16,19 @@ export default function Footers() {
             <Mantine.Image src="/assets/AppLogo.png" />
           </Link>
         </h3>
-        <p className="md:hidden text-sm">©2024 AStoryer -あすとりや-</p>
       </div>
       <section className="text-sm md:text-normal md:mr-8 md:flex md:flex-col md:gap-3">
-        {/* <nav>
+        <nav className="my-4">
           <ul className="flex flex-col gap-1 md:gap-3 md:flex-row">
             <li>
-              <Link href="/about" className="hover:opacity-80 transition-all">
-                {t_Footer("about")}
-              </Link>
-            </li>
-            <li>
               <Link
-                href="/terms-of-service"
-                className="hover:opacity-80 transition-all"
+                href={RouterPath.termsOfService}
+                className="hover:opacity-80 transition-all "
               >
                 {t_Footer("termsOfService")}
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 href="/privacy-policy"
                 className="hover:opacity-80 transition-all"
@@ -46,10 +40,10 @@ export default function Footers() {
               <Link href="/contact" className="hover:opacity-80 transition-all">
                 {t_Footer("contact")}
               </Link>
-            </li>
+            </li> */}
           </ul>
-        </nav> */}
-        <p className="hidden md:block">©2024 AStoryer -あすとりや-</p>
+        </nav>
+        <p className="">©2024 AStoryer -あすとりや-</p>
       </section>
     </footer>
   );
