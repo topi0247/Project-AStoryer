@@ -238,3 +238,21 @@ svg #middle-line.activated {
     opacity: 0;
   }
 }
+
+ol.custom-number-list {
+  counter-reset: list-counter;
+}
+
+ol.custom-number-list > li {
+  counter-increment: list-counter;
+  position: relative;
+  padding-left: 2rem;
+}
+
+ol.custom-number-list > li::before {
+  content: "(" counter(list-counter) ")";
+  position: absolute;
+  left: 0;
+  width: 2rem;
+  display: inline-block;
+}

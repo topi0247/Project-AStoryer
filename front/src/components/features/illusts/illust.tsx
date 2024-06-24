@@ -59,18 +59,18 @@ export default function Illust({
         <>
           {illust.publishRange && (
             <>
-              <div className="absolute bottom-0 right-0 text-sm text-end">
+              <div className="absolute top-0 right-0 text-sm text-end">
+                <p className="px-2 py-1 bg-sky-300 text-white">
+                  {getPublishRange()}
+                </p>
+              </div>
+              <div className="flex justify-center items-center mb-4">
                 <Link
                   href={RouterPath.illustEdit(illust.uuid)}
-                  className="px-2 py-1 bg-slate-600 text-white rounded-l"
+                  className="w-32 bg-slate-300 rounded px-2 py-1 text-center hover:bg-slate-500 hover:text-white transition-all"
                 >
                   {t_General("edit")}
                 </Link>
-              </div>
-              <div className="absolute top-0 right-0 text-sm text-end">
-                <p className="px-2 py-1 bg-sky-300 bg-opacity-50 text-white rounded-l">
-                  {getPublishRange()}
-                </p>
               </div>
             </>
           )}

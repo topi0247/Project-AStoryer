@@ -363,6 +363,14 @@ export default function IllustPage({
                       )}
                     </div>
                   )}
+                  {user.uuid === data.user.uuid && (
+                    <Lib.Link
+                      href={RouterPath.illustEdit(data.uuid)}
+                      className="w-32 bg-slate-300 rounded px-2 py-1 text-center hover:bg-slate-500 hover:text-white transition-all"
+                    >
+                      {t_ShowPost("edit")}
+                    </Lib.Link>
+                  )}
                 </>
               ) : (
                 <Mantine.Skeleton height={70} />
