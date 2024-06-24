@@ -73,7 +73,7 @@ class Post < ApplicationRecord
   def publishable?(current_user=nil)
     case publish_state
     when 'draft'
-      current_user == user
+      current_user == self.user
     when 'all_publish'
       true
     when 'only_url'
@@ -81,7 +81,7 @@ class Post < ApplicationRecord
     when 'only_follower'
       self.user.followers.include?(current_user)
     else
-      current_user == user
+      current_user == self.user
     end
   end
 
@@ -217,7 +217,7 @@ class Post < ApplicationRecord
         avatar: user.profile&.avatar&.url,
         links: Link.get_links(user.uuid),
       },
-      published_at: published_at.strftime('%Y/%m/%d %H:%M:%S'),
+      published_at: published_at&.strftime('%Y/%m/%d %H:%M:%S'),
     }
   end
 
