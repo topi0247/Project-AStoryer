@@ -1,10 +1,12 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { GetFromAPI, Link } from "@/lib";
 import useSWR from "swr";
 import { Image } from "@mantine/core";
 import { IHomeIllustData } from "@/types";
 import { RouterPath } from "@/settings";
+import { useRecoilValue } from "recoil";
+import { userState } from "@/recoilState";
 
 const fetcher = (url: string) => GetFromAPI(url).then((res) => res.data);
 
@@ -14,6 +16,8 @@ export default function Home() {
   const [illustData1, setIllustData1] = React.useState<IHomeIllustData[]>([]);
   const [illustData2, setIllustData2] = React.useState<IHomeIllustData[]>([]);
   const [illustData3, setIllustData3] = React.useState<IHomeIllustData[]>([]);
+  const user = useRecoilValue(userState);
+  const [isLogin, setIsLogin] = useState(false);
 
   useEffect(() => {
     if (data) {
@@ -32,6 +36,10 @@ export default function Home() {
       setIllustAll(illustData);
     }
   }, [data]);
+
+  useEffect(() => {
+    setIsLogin(user.uuid ? true : false);
+  }, [user]);
 
   return (
     <div className="relative overflow-hidden">
@@ -97,20 +105,22 @@ export default function Home() {
             <br />
             「うちの子」創作投稿サイト
           </p>
-          <div className="flex gap-2 justify-center items-center">
-            <Link
-              href={RouterPath.signUp}
-              className="text-center underline text-sky-500"
-            >
-              新規登録
-            </Link>
-            <Link
-              href={RouterPath.login}
-              className="text-center underline text-sky-500"
-            >
-              ログイン
-            </Link>
-          </div>
+          {!isLogin && (
+            <div className="flex gap-2 justify-center items-center">
+              <Link
+                href={RouterPath.signUp}
+                className="text-center underline text-sky-500"
+              >
+                新規登録
+              </Link>
+              <Link
+                href={RouterPath.login}
+                className="text-center underline text-sky-500"
+              >
+                ログイン
+              </Link>
+            </div>
+          )}
         </section>
       </article>
       <div className="md:flex md:gap-4 mx-8">
@@ -201,27 +211,29 @@ export default function Home() {
               ))}
           </div>
 
-          <div className="my-12">
-            <h3 className="text-xl font-bold text-center">
-              使ってみたい？
-              <br className="md:hidden" />
-              さっそく登録しよう！
-            </h3>
-            <div className="flex gap-2 justify-center items-center py-4">
-              <Link
-                href={RouterPath.signUp}
-                className="text-center underline text-sky-500"
-              >
-                新規登録
-              </Link>
-              <Link
-                href={RouterPath.login}
-                className="text-center underline text-sky-500"
-              >
-                ログイン
-              </Link>
+          {!isLogin && (
+            <div className="my-12">
+              <h3 className="text-xl font-bold text-center">
+                使ってみたい？
+                <br className="md:hidden" />
+                さっそく登録しよう！
+              </h3>
+              <div className="flex gap-2 justify-center items-center py-4">
+                <Link
+                  href={RouterPath.signUp}
+                  className="text-center underline text-sky-500"
+                >
+                  新規登録
+                </Link>
+                <Link
+                  href={RouterPath.login}
+                  className="text-center underline text-sky-500"
+                >
+                  ログイン
+                </Link>
+              </div>
             </div>
-          </div>
+          )}
         </section>
       </article>
     </div>
