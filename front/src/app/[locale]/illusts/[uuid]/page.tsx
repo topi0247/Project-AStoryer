@@ -386,25 +386,25 @@ export default function IllustPage({
                     X
                   </a>
                 )}
-                {data.user.links.twitter && (
+                {data.user.links.pixiv && (
                   <a
-                    href={`https://www.pixiv.net/users/${data.user.links.twitter}`}
+                    href={`https://www.pixiv.net/users/${data.user.links.pixiv}`}
                     className="bg-slate-300 rounded px-2 hover:bg-slate-500 hover:text-white transition-all"
                   >
                     pixiv
                   </a>
                 )}
-                {data.user.links.twitter && (
+                {data.user.links.fusetter && (
                   <a
-                    href={`https://fusetter.com/u/${data.user.links.twitter}`}
+                    href={`https://fusetter.com/u/${data.user.links.fusetter}`}
                     className="bg-slate-300 rounded px-2 hover:bg-slate-500 hover:text-white transition-all"
                   >
                     {t_ShowPost("fusetter")}
                   </a>
                 )}
-                {data.user.links.twitter && (
+                {data.user.links.privatter && (
                   <a
-                    href={`https://privatter.net/u/${data.user.links.twitter}`}
+                    href={`https://privatter.net/u/${data.user.links.privatter}`}
                     className="bg-slate-300 rounded px-2 hover:bg-slate-500 hover:text-white transition-all"
                   >
                     privatter
