@@ -17,6 +17,13 @@ ja:
               required: "投稿タイプを設定してください"
             post_game_systems:
               invalid: "無効なゲームシステムです"
+        tag:
+          attributes:
+            name:
+              blank: "タグ名を入力してください"
+              too_long: "タグ名は%{count}文字以内で入力してください"
+              record_invalid: "バリデーションに失敗しました: %{errors}"
+              taken: "タグ名が既に使用されています"
         comment:
           attributes:
             text:
