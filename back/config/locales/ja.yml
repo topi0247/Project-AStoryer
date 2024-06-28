@@ -24,6 +24,13 @@ ja:
               too_long: "タグ名は%{count}文字以内で入力してください"
               record_invalid: "バリデーションに失敗しました: %{errors}"
               taken: "タグ名が既に使用されています"
+        synalio:
+          attributes:
+            name:
+              blank: "シナリオ名を入力してください"
+              too_long: "シナリオ名は%{count}文字以内で入力してください"
+              record_invalid: "バリデーションに失敗しました: %{errors}"
+              taken: "シナリオ名が既に使用されています"
         comment:
           attributes:
             text:
