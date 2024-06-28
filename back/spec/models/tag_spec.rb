@@ -11,6 +11,7 @@ RSpec.describe Tag, type: :model do
     it 'nameが重複して登録できないか' do
       tag1 = Tag.create(name: 'test')
       tag2 = Tag.create(name: 'test')
+      tag2.valid?
       expect(tag2.errors.full_messages).to include('Name タグ名が既に使用されています')
     end
 
