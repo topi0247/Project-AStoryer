@@ -43,6 +43,11 @@ class User < ActiveRecord::Base
 
   enum role: { general: 0, admin: 1 } # general: 一般ユーザー, admin: 管理者
 
+  validates :uid, presence: true
+  validates :provider, presence: true
+  validates :name, presence: true
+  validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+
   # uuidの短縮
   def short_uuid
     # base64で短縮

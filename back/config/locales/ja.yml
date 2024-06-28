@@ -39,7 +39,20 @@ ja:
               record_invalid: "バリデーションに失敗しました: %{errors}"
             user:
               required: "ユーザーを設定してください"
+        user:
+          attributes:
+            name:
+              taken: "が既に使用されています"
+            email:
+              taken: "が既に使用されています"
+            password:
+              record_invalid: "バリデーションに失敗しました: %{errors}"
+            uid:
+              record_invalid: "バリデーションに失敗しました: %{errors}"
+            provider:
+              record_invalid: "バリデーションに失敗しました: %{errors}"
       messages:
-        blank: "本文を入力してください"
-        too_long: "本文は%{count}文字以内で入力してください"
+        blank: "を入力してください"
+        too_long: "は%{count}文字以内で入力してください"
+        too_short: "は%{count}文字以上で入力してください"
         record_invalid: "バリデーションに失敗しました: %{errors}"
